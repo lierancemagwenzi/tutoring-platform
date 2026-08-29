@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Requests\Student;
+
+use App\Enums\BookingStatus;
+use App\Models\Booking;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
+
+class CancelBookingRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        $booking = $this->route('booking');
+
+        if ($booking instanceof Booking) {
+            return $booking->student_id === $this->user()->id;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            /** @var Booking $booking */
+            $booking = $this->route('booking');
+
+            if (! in_array($booking->status, [BookingStatus::Pending, BookingStatus::Accepted, BookingStatus::AwaitingPayment], true)) {
+                $validator->errors()->add('status', 'This booking can no longer be cancelled.');
+            }
+        });
+    }
+}

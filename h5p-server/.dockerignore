@@ -1,0 +1,15 @@
+node_modules
+build
+storage/libraries/*
+storage/content/*
+storage/temporary/*
+!storage/libraries/.gitkeep
+!storage/content/.gitkeep
+!storage/temporary/.gitkeep
+uploads/*
+!uploads/.gitkeep
+h5p/core/*
+h5p/editor/*
+.env
+*.log
+.git

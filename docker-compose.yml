@@ -1,0 +1,86 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '8000:8000'
+        environment:
+            APP_URL: http://localhost:8000
+            DB_CONNECTION: mysql
+            DB_HOST: mysql
+            DB_PORT: 3306
+            DB_DATABASE: learning_platform
+            DB_USERNAME: learning_platform
+            DB_PASSWORD: secret
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            CACHE_STORE: redis
+            SESSION_DRIVER: redis
+            QUEUE_CONNECTION: redis
+            # Internal, container-to-container — used by Laravel's H5PService.
+            H5P_SERVER_URL: http://h5p-server:8080
+            # What the browser loads directly for the editor/player runtime.
+            H5P_SERVER_PUBLIC_URL: http://localhost:8080
+            H5P_SERVER_API_KEY: ${H5P_SERVER_API_KEY:-change-me-in-every-environment}
+        volumes:
+            - .:/app
+        depends_on:
+            - mysql
+            - redis
+            - h5p-server
+
+    vite:
+        image: node:20-slim
+        working_dir: /app
+        command: sh -c "npm install && npm run dev -- --host"
+        ports:
+            - '5173:5173'
+        environment:
+            HOST: 0.0.0.0
+        volumes:
+            - .:/app
+            # Named volume overlaying /app/node_modules so `npm install`
+            # inside the (Linux) container doesn't overwrite your host's
+            # node_modules with Linux-compiled native binaries (esbuild,
+            # rollup, etc.) via the bind mount above.
+            - vite-node-modules:/app/node_modules
+
+    mysql:
+        image: mysql:8
+        environment:
+            MYSQL_DATABASE: learning_platform
+            MYSQL_USER: learning_platform
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - mysql-data:/var/lib/mysql
+
+    redis:
+        image: redis:7
+
+    h5p-server:
+        build:
+            context: ./h5p-server
+            dockerfile: Dockerfile
+        ports:
+            - '8080:8080'
+        environment:
+            PORT: 8080
+            H5P_SERVER_URL: http://h5p-server:8080
+            H5P_SERVER_PUBLIC_URL: http://localhost:8080
+            H5P_SERVER_API_KEY: ${H5P_SERVER_API_KEY:-change-me-in-every-environment}
+            H5P_STORAGE_PATH: /app/storage
+            H5P_UPLOADS_PATH: /app/uploads
+            H5P_CORE_PATH: /app/h5p/core
+            H5P_EDITOR_PATH: /app/h5p/editor
+            CORS_ORIGIN: http://localhost:8000,http://localhost:5173
+        volumes:
+            - h5p-storage:/app/storage
+            - h5p-uploads:/app/uploads
+
+volumes:
+    mysql-data:
+    h5p-storage:
+    h5p-uploads:
+    vite-node-modules:

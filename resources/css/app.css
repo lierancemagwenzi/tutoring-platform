@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* "default" theme — the original palette. */
+    --color-ink: #100054;
+    --color-accent: #1a0ad0;
+    --color-amber: #ffb100;
+    --color-panel-start: #0f0247;
+    --color-panel-end: #2405a9;
+}
+
+/*
+ * "dark" theme (docs/theme.jpg) — overrides the variables above wherever
+ * <html data-theme="dark"> is set. Toggled via the account menu at
+ * runtime (persisted to localStorage) or defaulted via VITE_THEME in .env
+ * — see resources/js/stores/theme.js.
+ */
+:root[data-theme='dark'] {
+    --color-ink: #0f0f0f;
+    --color-accent: #4f7a56;
+    --color-amber: #a7cba3;
+    --color-panel-start: #0f0f0f;
+    --color-panel-end: #1a1a1a;
+}

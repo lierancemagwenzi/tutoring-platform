@@ -1,0 +1,14 @@
+.git
+node_modules
+vendor
+public/build
+public/hot
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+.env
+.phpunit.cache
+.phpunit.result.cache
+h5p-server
+*.log
