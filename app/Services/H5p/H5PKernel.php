@@ -72,6 +72,11 @@ class H5PKernel
         return new \H5PExport($this->framework(), $this->core());
     }
 
+    public function contentValidator(): \H5PContentValidator
+    {
+        return new \H5PContentValidator($this->framework(), $this->core());
+    }
+
     protected function storagePath(): string
     {
         return storage_path('app/h5p');

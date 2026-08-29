@@ -360,13 +360,13 @@ class H5PService
             'fileIcon' => ['path' => $core->url.'/core/images/binary-file.png', 'width' => 50, 'height' => 50],
             'ajaxPath' => url('/h5p-assets/editor-ajax').'/',
             'libraryUrl' => $core->url.'/editor/',
-            'copyrightSemantics' => null,
-            // Not shipped in the h5p/h5p-editor package — every platform
-            // integration (WordPress/Drupal included) hardcodes this itself.
-            // H5PEditor.MetadataForm indexes it by field `name` (e.g.
-            // findField('title') for the extra-title panel), so at minimum
-            // 'title' must be present or the metadata form throws outright.
-            'metadataSemantics' => $this->metadataSemantics(),
+            // Both come straight from H5PContentValidator — it ships the
+            // real, complete versions (proper license-version cross-refs
+            // per license type, etc). An earlier version of this method
+            // hand-wrote an approximation of metadataSemantics before this
+            // was found; that's gone now.
+            'copyrightSemantics' => $this->kernel->contentValidator()->getCopyrightSemantics(),
+            'metadataSemantics' => $this->kernel->contentValidator()->getMetadataSemantics(),
             // H5PEditor.Editor renders into a fresh <iframe> with its own JS
             // realm (see h5peditor-editor.js's populateIframe(), which writes
             // only H5PEditor.assets.js/.css into that iframe's <head>) — it
@@ -405,66 +405,5 @@ class H5PService
     protected function assetUrls(string $base, array $paths): array
     {
         return array_map(fn ($path) => $base.$path, $paths);
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    protected function metadataSemantics(): array
-    {
-        return [
-            ['name' => 'title', 'type' => 'text', 'label' => 'Title', 'placeholder' => 'Give your content a title'],
-            ['name' => 'a11yTitle', 'type' => 'text', 'label' => 'Accessibility title', 'optional' => true],
-            [
-                'name' => 'license', 'type' => 'select', 'label' => 'License', 'default' => 'U',
-                'options' => [
-                    ['value' => 'U', 'label' => 'Undisclosed'],
-                    ['value' => 'CC BY', 'label' => 'Attribution'],
-                    ['value' => 'CC BY-SA', 'label' => 'Attribution-ShareAlike'],
-                    ['value' => 'CC BY-ND', 'label' => 'Attribution-NoDerivs'],
-                    ['value' => 'CC BY-NC', 'label' => 'Attribution-NonCommercial'],
-                    ['value' => 'CC BY-NC-SA', 'label' => 'Attribution-NonCommercial-ShareAlike'],
-                    ['value' => 'CC BY-NC-ND', 'label' => 'Attribution-NonCommercial-NoDerivs'],
-                    ['value' => 'GNU GPL', 'label' => 'General Public License'],
-                    ['value' => 'PD', 'label' => 'Public Domain'],
-                    ['value' => 'C', 'label' => 'Copyright'],
-                ],
-            ],
-            ['name' => 'licenseVersion', 'type' => 'select', 'label' => 'License Version', 'options' => []],
-            ['name' => 'yearFrom', 'type' => 'number', 'label' => 'Years (from)'],
-            ['name' => 'yearTo', 'type' => 'number', 'label' => 'Years (to)'],
-            ['name' => 'source', 'type' => 'text', 'label' => 'Source'],
-            ['name' => 'licenseExtras', 'type' => 'textarea', 'label' => 'License Extras'],
-            ['name' => 'authorComments', 'type' => 'textarea', 'label' => 'Author comments'],
-            [
-                'name' => 'authors', 'type' => 'list', 'label' => 'Authors', 'entity' => 'author', 'min' => 0, 'defaultNum' => 0,
-                'field' => [
-                    'name' => 'author', 'type' => 'group', 'label' => 'Author',
-                    'fields' => [
-                        ['name' => 'name', 'type' => 'text', 'label' => 'Name'],
-                        [
-                            'name' => 'role', 'type' => 'select', 'label' => 'Role', 'default' => 'Author',
-                            'options' => [
-                                ['value' => 'Author', 'label' => 'Author'],
-                                ['value' => 'Editor', 'label' => 'Editor'],
-                                ['value' => 'Licensee', 'label' => 'Licensee'],
-                                ['value' => 'Originator', 'label' => 'Originator'],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'name' => 'changes', 'type' => 'list', 'label' => 'Changelog', 'entity' => 'change', 'min' => 0, 'defaultNum' => 0,
-                'field' => [
-                    'name' => 'change', 'type' => 'group', 'label' => 'Change',
-                    'fields' => [
-                        ['name' => 'date', 'type' => 'text', 'label' => 'Date'],
-                        ['name' => 'author', 'type' => 'text', 'label' => 'Changed by'],
-                        ['name' => 'log', 'type' => 'textarea', 'label' => 'Description of change'],
-                    ],
-                ],
-            ],
-        ];
     }
 }
