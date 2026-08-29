@@ -265,6 +265,14 @@ class H5PService
             'baseUrl' => url('/'),
             'url' => $core->url,
             'siteUrl' => url('/'),
+            // Without this, h5peditor-library-selector.js always falls back
+            // to ns.SelectorLegacy (a bare <select> of installed libraries)
+            // instead of ns.SelectorHub — the actual visual content-type
+            // gallery (icons, screenshots, "Recommended" badges) the old
+            // Node service showed. The content-type-cache ajax action this
+            // needs was already built and tested; this was the one flag
+            // missing to actually use it.
+            'hubIsEnabled' => true,
             'postUserStatistics' => false,
             'ajax' => [
                 'setFinished' => '',
