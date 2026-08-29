@@ -6,7 +6,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Services\H5p\H5PKernel;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Drives the bundled H5PEditorAjax dispatcher (vendor/h5p/h5p-editor/

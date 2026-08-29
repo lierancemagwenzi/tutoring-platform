@@ -30,7 +30,7 @@ async function save() {
             // provider dropdown — never mixed with Tutor-Led Learning's H5P
             // content, which never gets this tag.
             await selfPacedStore.registerH5pContent({
-                h5p_content_id: result.contentId,
+                h5p_content_id: result.id,
                 title: result.metadata?.title ?? null,
             })
             router.back()
@@ -39,11 +39,11 @@ async function save() {
             await coursesStore.updateBlock(lessonBlockId.value, {
                 block_type: 'h5p',
                 status: block.status,
-                h5p_content_id: result.contentId,
+                h5p_content_id: result.id,
             })
             router.push({ name: 'tutor.lesson-blocks.h5p', params: { id: lessonBlockId.value } })
         } else {
-            router.push({ name: 'tutor.h5p-content.edit', params: { id: result.contentId } })
+            router.push({ name: 'tutor.h5p-content.edit', params: { id: result.id } })
         }
     } catch (error) {
         actionError.value = error.message ?? 'Could not save this activity. Please try again.'

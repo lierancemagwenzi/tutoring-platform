@@ -275,6 +275,76 @@ class H5PService
                 'scripts' => $this->assetUrls($core->url.'/core/', \H5PCore::$scripts),
                 'styles' => $this->assetUrls($core->url.'/core/', \H5PCore::$styles),
             ],
+            // h5p.js's H5P.t() reads these directly (H5PIntegration.l10n.H5P)
+            // with no built-in English fallback — the exact key set every
+            // H5P.t('key') call site in vendor/h5p/h5p-core/js/*.js needs.
+            'l10n' => [
+                'H5P' => [
+                    'fullscreen' => 'Fullscreen',
+                    'disableFullscreen' => 'Disable fullscreen',
+                    'download' => 'Download',
+                    'copyrightInformation' => 'Rights of use',
+                    'contentCopied' => 'Content is copied to the clipboard',
+                    'connectionLost' => 'Connection lost. Results will be stored and sent when you regain connection.',
+                    'connectionReestablished' => 'Connection reestablished.',
+                    'resubmitScores' => 'Attempting to submit stored results.',
+                    'offlineDialogHeader' => 'Your connection to the server was lost',
+                    'offlineDialogBody' => 'We were unable to send information about your completion of this task. Please check your internet connection.',
+                    'offlineDialogRetryMessage' => 'Retrying in :num....',
+                    'offlineDialogRetryButtonLabel' => 'Retry now',
+                    'offlineSuccessfulSubmit' => 'Successfully submitted results.',
+                    'size' => 'Size',
+                    'showAdvanced' => 'Show advanced',
+                    'hideAdvanced' => 'Hide advanced',
+                    'advancedHelp' => 'Include this text if you\'re embedding in a rich text editor',
+                    'embed' => 'Embed',
+                    'copyrightRestrictions' => 'Copyright restrictions',
+                    'clipboardHeader' => 'Copy content',
+                    'contentChanged' => 'This content has changed since you last used it.',
+                    'startingOver' => 'You\'ll be starting over.',
+                    'confirmDialogHeader' => 'Confirm action',
+                    'confirmDialogBody' => 'Please confirm that you wish to proceed. This action is not reversible.',
+                    'cancelLabel' => 'Cancel',
+                    'confirmLabel' => 'Confirm',
+                    'licenseU' => 'Undisclosed',
+                    'licenseCCBY' => 'Attribution',
+                    'licenseCCBYSA' => 'Attribution-ShareAlike',
+                    'licenseCCBYND' => 'Attribution-NoDerivs',
+                    'licenseCCBYNC' => 'Attribution-NonCommercial',
+                    'licenseCCBYNCSA' => 'Attribution-NonCommercial-ShareAlike',
+                    'licenseCCBYNCND' => 'Attribution-NonCommercial-NoDerivs',
+                    'licenseCC40' => 'International 4.0',
+                    'licenseCC30' => 'Unported 3.0',
+                    'licenseCC25' => 'Generic 2.5',
+                    'licenseCC20' => 'Generic 2.0',
+                    'licenseCC10' => 'Generic 1.0',
+                    'licenseGPL' => 'General Public License',
+                    'licensePD' => 'Public Domain',
+                    'licenseCC010' => 'CC0 1.0 Universal (CC0 1.0) Public Domain Dedication',
+                    'licensePDM' => 'Public Domain Mark',
+                    'licenseC' => 'Copyright',
+                    'contentType' => 'Content Type',
+                    'licenseExtras' => 'License Extras',
+                    'changes' => 'Changelog',
+                    'contentCopyrightWarning' => 'Content is copyright protected and cannot be reused.',
+                    'contentCopyrightWarningPlural' => 'Some of the content is copyright protected and cannot be reused.',
+                    'contentCopyrightUndisclosed' => 'Content copyright is undisclosed.',
+                    'connectionLostFrom' => 'Connection lost for :contentType. Results will be stored and sent when you regain connection.',
+                    'copyLabel' => 'Copy',
+                    'pasteLabel' => 'Paste',
+                    'noCopyrightsLabel' => 'No copyright information available for this content.',
+                    'downloadDescription' => 'Download this content as a H5P file.',
+                    'copyrightsDescription' => 'View copyright information for this content.',
+                    'embedDescription' => 'View the embed code for this content.',
+                    'h5pDescription' => 'Visit H5P.org to check out more cool content.',
+                    'reuseContent' => 'Reuse Content',
+                    'reuseDescription' => 'Reuse this content.',
+                    'help' => 'Help',
+                    'and' => 'and',
+                    'feedback' => 'Feedback',
+                    'sendFeedback' => 'Send Feedback',
+                ],
+            ],
         ];
     }
 
@@ -291,10 +361,36 @@ class H5PService
             'ajaxPath' => url('/h5p-assets/editor-ajax').'/',
             'libraryUrl' => $core->url.'/editor/',
             'copyrightSemantics' => null,
-            'metadataSemantics' => null,
+            // Not shipped in the h5p/h5p-editor package — every platform
+            // integration (WordPress/Drupal included) hardcodes this itself.
+            // H5PEditor.MetadataForm indexes it by field `name` (e.g.
+            // findField('title') for the extra-title panel), so at minimum
+            // 'title' must be present or the metadata form throws outright.
+            'metadataSemantics' => $this->metadataSemantics(),
+            // H5PEditor.Editor renders into a fresh <iframe> with its own JS
+            // realm (see h5peditor-editor.js's populateIframe(), which writes
+            // only H5PEditor.assets.js/.css into that iframe's <head>) — it
+            // has no access to the parent page's already-loaded H5P core, so
+            // these must include H5P core's own scripts/styles too, not just
+            // the editor package's, core first (h5peditor.js depends on it).
             'assets' => [
-                'js' => $this->assetUrls($core->url.'/editor/', \H5peditor::$scripts),
-                'css' => $this->assetUrls($core->url.'/editor/', \H5peditor::$styles),
+                'js' => [
+                    ...$this->assetUrls($core->url.'/core/', \H5PCore::$scripts),
+                    ...$this->assetUrls($core->url.'/editor/', \H5peditor::$scripts),
+                    // H5PEditor.t('core', ...) reads H5PEditor.language.core,
+                    // populated by this static script (`H5PEditor.language.core
+                    // = {...}`) — not shipped as one of H5peditor::$scripts.
+                    $core->url.'/editor/language/en.js',
+                    // Defines H5PEditor.getAjaxUrl(), which h5peditor-editor.js's
+                    // own iframe 'load' handler calls unconditionally — also
+                    // not part of H5peditor::$scripts (platforms are expected
+                    // to add it themselves).
+                    $core->url.'/editor/scripts/h5peditor-init.js',
+                ],
+                'css' => [
+                    ...$this->assetUrls($core->url.'/core/', \H5PCore::$styles),
+                    ...$this->assetUrls($core->url.'/editor/', \H5peditor::$styles),
+                ],
             ],
             'deleteMessage' => 'Are you sure you wish to delete this content?',
             'apiVersion' => \H5PCore::$coreApi,
@@ -309,5 +405,66 @@ class H5PService
     protected function assetUrls(string $base, array $paths): array
     {
         return array_map(fn ($path) => $base.$path, $paths);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    protected function metadataSemantics(): array
+    {
+        return [
+            ['name' => 'title', 'type' => 'text', 'label' => 'Title', 'placeholder' => 'Give your content a title'],
+            ['name' => 'a11yTitle', 'type' => 'text', 'label' => 'Accessibility title', 'optional' => true],
+            [
+                'name' => 'license', 'type' => 'select', 'label' => 'License', 'default' => 'U',
+                'options' => [
+                    ['value' => 'U', 'label' => 'Undisclosed'],
+                    ['value' => 'CC BY', 'label' => 'Attribution'],
+                    ['value' => 'CC BY-SA', 'label' => 'Attribution-ShareAlike'],
+                    ['value' => 'CC BY-ND', 'label' => 'Attribution-NoDerivs'],
+                    ['value' => 'CC BY-NC', 'label' => 'Attribution-NonCommercial'],
+                    ['value' => 'CC BY-NC-SA', 'label' => 'Attribution-NonCommercial-ShareAlike'],
+                    ['value' => 'CC BY-NC-ND', 'label' => 'Attribution-NonCommercial-NoDerivs'],
+                    ['value' => 'GNU GPL', 'label' => 'General Public License'],
+                    ['value' => 'PD', 'label' => 'Public Domain'],
+                    ['value' => 'C', 'label' => 'Copyright'],
+                ],
+            ],
+            ['name' => 'licenseVersion', 'type' => 'select', 'label' => 'License Version', 'options' => []],
+            ['name' => 'yearFrom', 'type' => 'number', 'label' => 'Years (from)'],
+            ['name' => 'yearTo', 'type' => 'number', 'label' => 'Years (to)'],
+            ['name' => 'source', 'type' => 'text', 'label' => 'Source'],
+            ['name' => 'licenseExtras', 'type' => 'textarea', 'label' => 'License Extras'],
+            ['name' => 'authorComments', 'type' => 'textarea', 'label' => 'Author comments'],
+            [
+                'name' => 'authors', 'type' => 'list', 'label' => 'Authors', 'entity' => 'author', 'min' => 0, 'defaultNum' => 0,
+                'field' => [
+                    'name' => 'author', 'type' => 'group', 'label' => 'Author',
+                    'fields' => [
+                        ['name' => 'name', 'type' => 'text', 'label' => 'Name'],
+                        [
+                            'name' => 'role', 'type' => 'select', 'label' => 'Role', 'default' => 'Author',
+                            'options' => [
+                                ['value' => 'Author', 'label' => 'Author'],
+                                ['value' => 'Editor', 'label' => 'Editor'],
+                                ['value' => 'Licensee', 'label' => 'Licensee'],
+                                ['value' => 'Originator', 'label' => 'Originator'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'name' => 'changes', 'type' => 'list', 'label' => 'Changelog', 'entity' => 'change', 'min' => 0, 'defaultNum' => 0,
+                'field' => [
+                    'name' => 'change', 'type' => 'group', 'label' => 'Change',
+                    'fields' => [
+                        ['name' => 'date', 'type' => 'text', 'label' => 'Date'],
+                        ['name' => 'author', 'type' => 'text', 'label' => 'Changed by'],
+                        ['name' => 'log', 'type' => 'textarea', 'label' => 'Description of change'],
+                    ],
+                ],
+            ],
+        ];
     }
 }

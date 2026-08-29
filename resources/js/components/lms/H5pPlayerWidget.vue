@@ -1,9 +1,7 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
-import { defineElements } from '@lumieducation/h5p-webcomponents'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { configureH5pAjax, loadH5pAssets } from '../../services/h5p'
 import { useH5pContentStore } from '../../stores/h5pContent'
-
-defineElements()
 
 const props = defineProps({
     contentId: { type: String, required: true },
@@ -16,44 +14,63 @@ const props = defineProps({
 const emit = defineEmits(['initialized', 'xapi'])
 
 const store = useH5pContentStore()
-const playerEl = ref(null)
+const container = ref(null)
 const loading = ref(true)
+const error = ref('')
+let instance = null
 
-async function loadContentCallback(contentId) {
-    return props.loadContent ? props.loadContent(contentId) : store.fetchPlayerModel(contentId)
-}
+async function render() {
+    loading.value = true
+    error.value = ''
+    instance = null
 
-onMounted(() => {
-    const el = playerEl.value
-    el.addEventListener('initialized', () => {
+    try {
+        const model = props.loadContent ? await props.loadContent(props.contentId) : await store.fetchPlayerModel(props.contentId)
+
+        // Must happen before loadH5pAssets(): h5p.js runs an auto-init tied
+        // to document-ready that reads the bare global H5PIntegration
+        // immediately as the script executes (the document is already
+        // "ready" in an SPA, so jQuery fires it synchronously on load) —
+        // setting this after the scripts load is too late.
+        window.H5PIntegration = window.H5PIntegration || {}
+        Object.assign(window.H5PIntegration, model.integration, {
+            contents: { ...window.H5PIntegration.contents, ...model.integration.contents },
+        })
+
+        await loadH5pAssets(model.scripts, model.styles)
+        configureH5pAjax()
+
+        if (!container.value) return
+        container.value.innerHTML = ''
+        const target = document.createElement('div')
+        target.className = 'h5p-content'
+        target.dataset.contentId = props.contentId
+        container.value.appendChild(target)
+
+        window.H5P.init(container.value)
+        instance = window.H5P.instances[window.H5P.instances.length - 1]
+        instance?.on('xAPI', (event) => emit('xapi', event.data?.statement ?? event.data))
+
         loading.value = false
         emit('initialized')
-    })
-    // The h5p-webcomponents player fires this on every interaction/completion
-    // xAPI statement — callers that care about attempt results (as opposed
-    // to a plain tutor preview) listen for it via the xapi event.
-    el.addEventListener('xAPI', (event) => {
-        emit('xapi', event.detail ?? event.data ?? event)
-    })
-    // Set before loadContentCallback: assigning loadContentCallback triggers
-    // an immediate render() using whatever contentId is set at that moment.
-    el.contentId = props.contentId
-    el.loadContentCallback = loadContentCallback
+    } catch (err) {
+        loading.value = false
+        error.value = err.message ?? 'Failed to load H5P content.'
+    }
+}
+
+onMounted(render)
+onBeforeUnmount(() => {
+    if (container.value) container.value.innerHTML = ''
 })
 
-watch(
-    () => props.contentId,
-    (contentId) => {
-        if (playerEl.value) {
-            playerEl.value.contentId = contentId
-        }
-    },
-)
+watch(() => props.contentId, render)
 </script>
 
 <template>
     <div>
         <p v-if="loading" class="text-sm text-gray-400">Loading H5P preview…</p>
-        <h5p-player ref="playerEl" />
+        <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+        <div ref="container"></div>
     </div>
 </template>
