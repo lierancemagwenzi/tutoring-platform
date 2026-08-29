@@ -26,11 +26,32 @@ class H5pAssetController extends Controller
         return $this->stream($this->root().'/content/'.$contentId.'/'.$file);
     }
 
-    protected function stream(string $path): StreamedResponse|Response
+    /**
+     * The H5P core client JS/CSS/fonts bundled inside the h5p/h5p-core
+     * composer package itself (H5PCore::$scripts/$styles reference these as
+     * paths relative to that package root) — not installed content, so this
+     * reads straight from vendor/, not storage_path('app/h5p').
+     */
+    public function core(string $file): StreamedResponse|Response
     {
+        return $this->stream(base_path('vendor/h5p/h5p-core').'/'.$file, base_path('vendor/h5p/h5p-core'));
+    }
+
+    /**
+     * Same idea for the editor's own bundled scripts/styles/ckeditor/etc
+     * (H5peditor::$scripts/$styles) from the h5p/h5p-editor package.
+     */
+    public function editor(string $file): StreamedResponse|Response
+    {
+        return $this->stream(base_path('vendor/h5p/h5p-editor').'/'.$file, base_path('vendor/h5p/h5p-editor'));
+    }
+
+    protected function stream(string $path, ?string $root = null): StreamedResponse|Response
+    {
+        $root ??= $this->root();
         $real = realpath($path);
 
-        if ($real === false || ! str_starts_with($real, $this->root()) || ! is_file($real)) {
+        if ($real === false || ! str_starts_with($real, $root) || ! is_file($real)) {
             return response('Not found', 404);
         }
 

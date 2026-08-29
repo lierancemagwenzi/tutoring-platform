@@ -38,9 +38,15 @@ class IntegrationStatusService
         return filled(config('services.google.client_id')) && filled(config('services.google.client_secret'));
     }
 
+    /**
+     * H5P now runs in-process (see App\Services\H5p\H5PKernel) rather than
+     * as a separately-configured external service, so there's no URL/key to
+     * check — the only thing that can meaningfully be "unconfigured" is its
+     * local storage directory not being writable.
+     */
     public function h5pConfigured(): bool
     {
-        return filled(config('services.h5p.url')) && filled(config('services.h5p.key'));
+        return is_writable(storage_path('app')) || is_dir(storage_path('app/h5p'));
     }
 
     public function emailConfigured(): bool

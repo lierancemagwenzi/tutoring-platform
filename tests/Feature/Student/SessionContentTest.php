@@ -19,13 +19,13 @@ use App\Services\Booking\BookingConfirmationService;
 use App\Services\Commerce\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
+use Tests\Concerns\InteractsWithH5pLibrary;
 use Tests\TestCase;
 
 class SessionContentTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithH5pLibrary, RefreshDatabase;
 
     private Subject $subject;
 
@@ -168,11 +168,13 @@ class SessionContentTest extends TestCase
 
     private function makeH5pBlock(SessionLesson $sessionLesson, string $title, ?array $assignment): LessonBlock
     {
+        $contentId = (string) $this->seedH5pContent(random_int(1000, 999999), $title);
+
         $block = $sessionLesson->lesson->blocks()->create([
             'block_type' => 'h5p',
             'position' => $sessionLesson->lesson->blocks()->count(),
             'title' => $title,
-            'content' => ['h5p_content_id' => '123'],
+            'content' => ['h5p_content_id' => $contentId],
             'settings' => [],
             'status' => 'published',
         ]);
@@ -311,16 +313,13 @@ class SessionContentTest extends TestCase
     {
         [$studentUser, $booking, $sessionLesson] = $this->createBookedSession();
         $block = $this->makeH5pBlock($sessionLesson, 'Available H5P', ['availability_mode' => 'always_available']);
-
-        Http::fake([
-            '*/api/content/123/player-model' => Http::response(['contentId' => '123', 'dependencies' => []]),
-        ]);
+        $contentId = $block->content['h5p_content_id'];
 
         Sanctum::actingAs($studentUser);
         $response = $this->getJson("/api/bookings/{$booking->id}/lesson-blocks/{$block->id}/h5p-player-model");
 
         $response->assertOk();
-        $response->assertJsonPath('contentId', '123');
+        $response->assertJsonPath("integration.contents.cid-{$contentId}.library", 'H5P.MultiChoice 1.16');
     }
 
     public function test_student_cannot_get_h5p_player_model_for_an_unassigned_block(): void

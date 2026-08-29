@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\H5p;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Services\H5p\H5PKernel;
 use Illuminate\Http\Request;
@@ -46,6 +47,15 @@ class H5pAjaxController extends Controller
         // directly instead of going through the dispatcher.
         if ($action === 'libraries' && $request->filled('machineName')) {
             return $this->singleLibrary($request);
+        }
+
+        // Installing/uploading a content type pulls new library code onto
+        // the server (from the Hub, or from an uploaded .h5p) — restrict to
+        // tutors, same as every other authoring action in this app. The rest
+        // of this route group only needs a logged-in session (see
+        // routes/web.php) since students play H5P content too.
+        if (in_array($action, ['library-install', 'library-upload'], true) && $request->user()?->role !== UserRole::Tutor) {
+            abort(403, 'This action is only available to tutors.');
         }
 
         $ajax = $this->kernel->editor()->ajax;

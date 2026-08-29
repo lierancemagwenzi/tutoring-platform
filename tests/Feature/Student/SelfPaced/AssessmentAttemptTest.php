@@ -11,13 +11,13 @@ use App\Models\Subject;
 use App\Models\TutorProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
+use Tests\Concerns\InteractsWithH5pLibrary;
 use Tests\TestCase;
 
 class AssessmentAttemptTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithH5pLibrary, RefreshDatabase;
 
     private function tutor(): TutorProfile
     {
@@ -228,16 +228,13 @@ class AssessmentAttemptTest extends TestCase
         ]);
         $student = User::factory()->create();
         $this->enroll($student, $course);
-
-        Http::fake([
-            '*/api/content/123/player-model' => Http::response(['contentId' => '123', 'dependencies' => []]),
-        ]);
+        $this->seedH5pContent(123);
 
         Sanctum::actingAs($student);
         $response = $this->getJson("/api/student/self-paced-courses/{$course->id}/assessments/{$assessment->id}/h5p-player-model");
 
         $response->assertOk();
-        $response->assertJsonPath('contentId', '123');
+        $response->assertJsonPath('integration.contents.cid-123.library', 'H5P.MultiChoice 1.16');
     }
 
     public function test_h5p_player_model_is_not_available_for_a_surveyjs_assessment(): void

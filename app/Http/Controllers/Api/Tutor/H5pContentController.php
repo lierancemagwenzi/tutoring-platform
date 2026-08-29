@@ -9,17 +9,18 @@ use App\Http\Requests\Tutor\UpdateH5pContentRequest;
 use App\Http\Resources\H5pContentResource;
 use App\Services\H5p\H5PService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * H5P content itself lives entirely on the dedicated H5P server (see
- * h5p-server/) — Laravel only brokers access to it. Every action here is
- * gated by the 'tutor' middleware; the H5P server has no concept of
- * per-tutor ownership, so (matching how content-type libraries are shared
- * platform-wide) H5P content is a library shared across all tutors, the
- * same way a duplicated H5P lesson block references rather than clones its
- * content. See App\Services\LessonBlocks\H5pBlockHandler for how a specific
- * piece of content gets attached to a lesson block.
+ * H5P content is stored locally via the official H5P PHP libraries (see
+ * App\Services\H5p\H5PService/H5PKernel) — this controller is a thin HTTP
+ * layer over that. Every action here is gated by the 'tutor' middleware;
+ * H5P content has no per-tutor ownership at the storage layer (matching how
+ * content-type libraries are shared platform-wide), so it's a library
+ * shared across all tutors, the same way a duplicated H5P lesson block
+ * references rather than clones its content. See
+ * App\Services\LessonBlocks\H5pBlockHandler for how a specific piece of
+ * content gets attached to a lesson block.
  */
 class H5pContentController extends Controller
 {
@@ -66,14 +67,9 @@ class H5pContentController extends Controller
         return response()->json(['message' => 'H5P content deleted.']);
     }
 
-    public function export(string $contentId): Response
+    public function export(string $contentId): StreamedResponse
     {
-        $upstream = $this->h5p->export($contentId);
-
-        return response($upstream->body(), 200, [
-            'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => "attachment; filename=\"{$contentId}.h5p\"",
-        ]);
+        return $this->h5p->export($contentId);
     }
 
     public function import(ImportH5pContentRequest $request): JsonResponse

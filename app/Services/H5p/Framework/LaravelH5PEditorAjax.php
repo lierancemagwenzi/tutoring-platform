@@ -35,15 +35,19 @@ class LaravelH5PEditorAjax implements \H5PEditorAjaxInterface
 
     public function getContentTypeCache($machineName = null)
     {
+        // The Hub's own cache shape keys the list "contentTypes" and
+        // identifies each entry by "id" (e.g. "H5P.Accordion") — verified
+        // against a real h5p.org response, not the h5p-core docblock (which
+        // doesn't specify the shape).
         $cache = DB::table('h5p_options')->where('key', 'content_type_cache')->value('value');
-        $libraries = $cache ? (json_decode($cache)->libraries ?? []) : [];
+        $libraries = $cache ? (json_decode($cache)->contentTypes ?? []) : [];
 
         if ($machineName === null) {
             return $libraries;
         }
 
         foreach ($libraries as $library) {
-            if (($library->machineName ?? null) === $machineName) {
+            if (($library->id ?? null) === $machineName) {
                 return $library;
             }
         }

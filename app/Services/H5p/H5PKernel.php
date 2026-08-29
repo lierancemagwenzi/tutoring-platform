@@ -32,12 +32,19 @@ class H5PKernel
 
     public function core(): \H5PCore
     {
+        // $export stays false: this only controls whether H5PCore
+        // auto-(re)generates a cached .h5p export file on every content
+        // save (via filterParameters() -> H5PExport::createExportFile()).
+        // The old Node service only ever exported on demand
+        // (GET /api/content/:id/export), so H5PService::export() calls
+        // H5PExport::createExportFile() itself instead of paying that cost
+        // on every save.
         return $this->core ??= new \H5PCore(
             $this->framework(),
             $this->storagePath(),
             $this->assetBaseUrl(),
             'en',
-            true,
+            false,
         );
     }
 
@@ -55,13 +62,14 @@ class H5PKernel
         return new \H5PValidator($this->framework(), $this->core());
     }
 
-    /**
-     * H5PStorage also owns package import/export (createExportFile(),
-     * savePackage()) — there's no separate H5PExport class in h5p-core.
-     */
     public function storage(): \H5PStorage
     {
         return new \H5PStorage($this->framework(), $this->core());
+    }
+
+    public function export(): \H5PExport
+    {
+        return new \H5PExport($this->framework(), $this->core());
     }
 
     protected function storagePath(): string

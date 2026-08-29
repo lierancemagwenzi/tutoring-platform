@@ -15,15 +15,15 @@ use App\Models\TutorSubject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Tests\Concerns\InteractsWithH5pLibrary;
 use Tests\TestCase;
 
 class LessonBuilderTest extends TestCase
 {
-    use RefreshDatabase;
+    use InteractsWithH5pLibrary, RefreshDatabase;
 
     private Subject $subject;
 
@@ -460,16 +460,7 @@ class LessonBuilderTest extends TestCase
     {
         [$tutor, $course] = $this->tutorWithCourse();
         $lesson = $this->createLesson($this->createChapter($course));
-        $h5pContentId = '123';
-
-        Http::fake([
-            '*/api/content/123' => Http::response([
-                'id' => $h5pContentId,
-                'title' => 'Interactive Quiz',
-                'mainLibrary' => 'H5P.InteractiveVideo',
-                'language' => 'en',
-            ]),
-        ]);
+        $h5pContentId = (string) $this->seedH5pContent(123, 'Interactive Quiz');
 
         Sanctum::actingAs($tutor);
 
@@ -632,16 +623,7 @@ class LessonBuilderTest extends TestCase
     {
         [$tutor, $course] = $this->tutorWithCourse();
         $lesson = $this->createLesson($this->createChapter($course));
-        $h5pContentId = '123';
-
-        Http::fake([
-            '*/api/content/123' => Http::response([
-                'id' => $h5pContentId,
-                'title' => 'Interactive Quiz',
-                'mainLibrary' => 'H5P.InteractiveVideo',
-                'language' => 'en',
-            ]),
-        ]);
+        $h5pContentId = (string) $this->seedH5pContent(123, 'Interactive Quiz');
 
         $block = $lesson->blocks()->create([
             'block_type' => 'h5p', 'position' => 0, 'content' => ['h5p_content_id' => $h5pContentId], 'settings' => [], 'status' => 'draft',
