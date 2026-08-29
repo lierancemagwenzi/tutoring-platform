@@ -254,6 +254,23 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
         } else {
             DB::table('h5p_libraries')->where('id', $libraryData['libraryId'])->update($row);
         }
+
+        // H5PValidator::getLibraryData() populates $libraryData['language']
+        // from the library's own language/*.json files (e.g. en.json) when
+        // present — each value already a validated JSON string, same as
+        // 'semantics' above. Without this, H5peditorStorage::getLanguage()
+        // has nothing to return and editor widgets that pull their own UI
+        // strings this way (H5PEditor.WizardSettings, H5PEditor.RangeList,
+        // etc — anything beyond the static core editor/language/en.js
+        // strings) render "Missing translations for library X".
+        if (! empty($libraryData['language'])) {
+            foreach ($libraryData['language'] as $languageCode => $languageJson) {
+                DB::table('h5p_libraries_languages')->updateOrInsert(
+                    ['library_id' => $libraryData['libraryId'], 'language_code' => $languageCode],
+                    ['language_json' => $languageJson],
+                );
+            }
+        }
     }
 
     public function insertContent($content, $contentMainId = null)

@@ -65,10 +65,14 @@ class LaravelH5PEditorStorage implements \H5peditorStorage
         $query = DB::table('h5p_libraries');
 
         if ($libraries !== null) {
+            // Callers (H5peditor::getLibraries() parsing $_POST['libraries'])
+            // build these as {uberName, name, majorVersion, minorVersion} —
+            // 'name', not 'machineName' despite the interface docblock's
+            // "$libraries List of library names + version" phrasing.
             $query->where(function ($query) use ($libraries) {
                 foreach ($libraries as $library) {
                     $query->orWhere(function ($query) use ($library) {
-                        $query->where('machine_name', $library->machineName)
+                        $query->where('machine_name', $library->name)
                             ->where('major_version', $library->majorVersion)
                             ->where('minor_version', $library->minorVersion);
                     });
