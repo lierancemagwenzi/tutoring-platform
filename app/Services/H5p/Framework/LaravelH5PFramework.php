@@ -40,6 +40,17 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
             $request = $request->attach($name, file_get_contents($path), basename($path));
         }
 
+        // H5PEditorAjax::callHubEndpoint() (vendor code) calls this with
+        // $method defaulting to 'POST' and $data left null when downloading
+        // a content type package — but h5p.org's Hub API now 403s POST on
+        // that endpoint ("distribution supports only cachable requests",
+        // a CloudFront method restriction). A POST with no body has nothing
+        // to submit anyway, so treat "$method is POST but there's no data"
+        // as the real signal to use GET instead — this doesn't affect the
+        // registration/content-type-cache calls (fetchLibrariesMetadata),
+        // which always pass real $data and still POST correctly.
+        $method = ($method === 'POST' && empty($data)) ? 'GET' : $method;
+
         $response = $method === 'GET'
             ? $request->get($url, $data ?? [])
             : $request->post($url, $data ?? []);
@@ -224,7 +235,14 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
             'preloaded_js' => $this->csvFromPathList($libraryData['preloadedJs'] ?? null),
             'preloaded_css' => $this->csvFromPathList($libraryData['preloadedCss'] ?? null),
             'drop_library_css' => $this->csvFromKeyList($libraryData['dropLibraryCss'] ?? null, 'machineName'),
-            'semantics' => isset($libraryData['semantics']) ? json_encode($libraryData['semantics']) : null,
+            // H5PValidator::getLibraryData() reads semantics.json via
+            // getJsonData($path, true) — already a validated JSON string,
+            // not a decoded array, so it's stored as-is (json_encode()-ing
+            // it here would double-encode it into a JSON string of a JSON
+            // string, which is what happened before this was caught testing
+            // a real installed library's semantics rather than a hand-typed
+            // test fixture).
+            'semantics' => $libraryData['semantics'] ?? null,
             // Already boolified+encoded by H5PStorage before this is called.
             'metadata_settings' => $libraryData['metadataSettings'] ?? null,
             'updated_at' => now(),
