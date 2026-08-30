@@ -58,10 +58,34 @@ class H5pAssetController extends Controller
         return response()->stream(function () use ($real) {
             readfile($real);
         }, 200, [
-            'Content-Type' => mime_content_type($real) ?: 'application/octet-stream',
+            'Content-Type' => $this->mimeType($real),
             'Content-Length' => filesize($real),
             'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
+    }
+
+    /**
+     * mime_content_type() guesses from file *content* (magic bytes), which
+     * can't tell CSS or JS apart from plain text — it was serving both as
+     * text/plain, which browsers silently refuse to apply as a stylesheet
+     * or execute as a module script. Extension-based lookup is what every
+     * static file server actually uses for exactly this reason.
+     */
+    protected function mimeType(string $path): string
+    {
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'css' => 'text/css',
+            'js', 'mjs' => 'text/javascript',
+            'json' => 'application/json',
+            'svg' => 'image/svg+xml',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject',
+            default => mime_content_type($path) ?: 'application/octet-stream',
+        };
     }
 
     protected function root(): string

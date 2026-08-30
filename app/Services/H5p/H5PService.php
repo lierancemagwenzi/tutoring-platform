@@ -280,8 +280,8 @@ class H5PService
             ],
             'saveFreq' => false,
             'core' => [
-                'scripts' => $this->assetUrls($core->url.'/core/', \H5PCore::$scripts),
-                'styles' => $this->assetUrls($core->url.'/core/', \H5PCore::$styles),
+                'scripts' => $this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$scripts),
+                'styles' => $this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$styles),
             ],
             // h5p.js's H5P.t() reads these directly (H5PIntegration.l10n.H5P)
             // with no built-in English fallback — the exact key set every
@@ -383,21 +383,21 @@ class H5PService
             // the editor package's, core first (h5peditor.js depends on it).
             'assets' => [
                 'js' => [
-                    ...$this->assetUrls($core->url.'/core/', \H5PCore::$scripts),
-                    ...$this->assetUrls($core->url.'/editor/', \H5peditor::$scripts),
+                    ...$this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$scripts),
+                    ...$this->assetUrls($core->url.'/editor/', base_path('vendor/h5p/h5p-editor'), \H5peditor::$scripts),
                     // H5PEditor.t('core', ...) reads H5PEditor.language.core,
                     // populated by this static script (`H5PEditor.language.core
                     // = {...}`) — not shipped as one of H5peditor::$scripts.
-                    $core->url.'/editor/language/en.js',
+                    ...$this->assetUrls($core->url.'/editor/', base_path('vendor/h5p/h5p-editor'), ['language/en.js']),
                     // Defines H5PEditor.getAjaxUrl(), which h5peditor-editor.js's
                     // own iframe 'load' handler calls unconditionally — also
                     // not part of H5peditor::$scripts (platforms are expected
                     // to add it themselves).
-                    $core->url.'/editor/scripts/h5peditor-init.js',
+                    ...$this->assetUrls($core->url.'/editor/', base_path('vendor/h5p/h5p-editor'), ['scripts/h5peditor-init.js']),
                 ],
                 'css' => [
-                    ...$this->assetUrls($core->url.'/core/', \H5PCore::$styles),
-                    ...$this->assetUrls($core->url.'/editor/', \H5peditor::$styles),
+                    ...$this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$styles),
+                    ...$this->assetUrls($core->url.'/editor/', base_path('vendor/h5p/h5p-editor'), \H5peditor::$styles),
                 ],
             ],
             'deleteMessage' => 'Are you sure you wish to delete this content?',
@@ -407,11 +407,23 @@ class H5PService
     }
 
     /**
+     * Appends a filemtime()-based cache-busting query param to each URL —
+     * without it, a browser that already cached one of these (e.g. from
+     * before a Content-Type fix like the one that motivated adding this)
+     * has no reason to ever refetch it: these are served with
+     * Cache-Control: immutable, and unlike H5PCore's own library asset URLs
+     * (which already carry a library ?ver=... query string), URLs built
+     * here never changed when the underlying file did.
+     *
      * @param  string[]  $paths
      * @return string[]
      */
-    protected function assetUrls(string $base, array $paths): array
+    protected function assetUrls(string $base, string $diskRoot, array $paths): array
     {
-        return array_map(fn ($path) => $base.$path, $paths);
+        return array_map(function ($path) use ($base, $diskRoot) {
+            $mtime = @filemtime($diskRoot.'/'.$path) ?: null;
+
+            return $base.$path.($mtime ? '?v='.$mtime : '');
+        }, $paths);
     }
 }
