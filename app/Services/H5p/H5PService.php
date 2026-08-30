@@ -133,8 +133,23 @@ class H5PService
                     ],
                 ],
             ],
-            'scripts' => $core->getAssetsUrls($files['scripts']),
-            'styles' => $core->getAssetsUrls($files['styles']),
+            // Core first: H5P.init()/H5P.jQuery/etc have to exist before any
+            // content-dependency script runs. The player renders directly
+            // into the host page (no isolating iframe, unlike the editor),
+            // so it can't rely on something else having already loaded
+            // these — that was true only by accident whenever a page also
+            // happened to load the editor first. H5PCore::$styles are all
+            // properly scoped (no bare body/html/* rules), unlike some of
+            // the editor package's theme CSS, so this is safe to load
+            // directly on the host page.
+            'scripts' => [
+                ...$this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$scripts),
+                ...$core->getAssetsUrls($files['scripts']),
+            ],
+            'styles' => [
+                ...$this->assetUrls($core->url.'/core/', base_path('vendor/h5p/h5p-core'), \H5PCore::$styles),
+                ...$core->getAssetsUrls($files['styles']),
+            ],
         ];
     }
 

@@ -45,11 +45,17 @@ async function mount() {
         Object.assign(window.H5PIntegration, model.integration)
 
         // H5PEditor.Editor renders into its own <iframe> with its own JS
-        // realm, so this asset list (core + editor combined — see
-        // App\Services\H5p\H5PService::editorSettings()) needs loading on
+        // realm, so these scripts (core + editor combined — see
+        // App\Services\H5p\H5PService::editorSettings()) need loading on
         // the parent page too: the Editor constructor itself runs here and
         // reads window.H5P/window.H5PEditor before the iframe exists.
-        await loadH5pAssets(model.integration.editor.assets.js, model.integration.editor.assets.css)
+        // Styles deliberately are NOT loaded here — the iframe already gets
+        // its own copy (written into its own <head> by populateIframe()),
+        // and H5P's own CSS (h5p-theme.css etc) isn't scoped to assume it's
+        // sharing a page with an unrelated app; loading it on the parent
+        // broke the surrounding app's own layout once these files started
+        // being served with the correct Content-Type (see H5pAssetController).
+        await loadH5pAssets(model.integration.editor.assets.js, [])
         configureH5pAjax()
 
         const ns = window.H5PEditor
