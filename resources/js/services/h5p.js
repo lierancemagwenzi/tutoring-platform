@@ -69,8 +69,18 @@ export function configureH5pAjax(win = window) {
  * loading — before we get a chance to call configureH5pAjax() against its
  * window, since that requires H5P.jQuery to already exist there. Prepending
  * this as the very first script in the iframe's asset list (ahead of even
- * jquery.js) patches XMLHttpRequest directly, so the Authorization header
- * is attached from the iframe's first request onward regardless of timing.
+ * jquery.js) patches XMLHttpRequest and fetch directly, so the Authorization
+ * header is attached from the iframe's first request onward regardless of
+ * timing.
+ *
+ * Both are patched, not just XMLHttpRequest: the H5P Hub content-type
+ * gallery (h5p-hub-client.js, a React bundle) makes its own ajax calls via
+ * native fetch() rather than H5P.jQuery, so it doesn't pick up
+ * configureH5pAjax()'s jQuery.ajaxSetup() headers either. Without patching
+ * fetch too, every Hub call (browsing/installing content types) silently
+ * goes out unauthenticated, gets a 401, and — since the Hub client has no
+ * error boundary and doesn't handle a failed request gracefully — crashes
+ * with an uncaught TypeError that blanks the whole gallery.
  */
 export function authBootstrapScriptUrl() {
     const token = localStorage.getItem('auth_token')
@@ -84,6 +94,18 @@ export function authBootstrapScriptUrl() {
                 this.setRequestHeader('Authorization', 'Bearer ${token}');
             }
             return result;
+        };
+
+        var fetch = window.fetch;
+        window.fetch = function (input, init) {
+            var url = typeof input === 'string' ? input : (input && input.url);
+            if (typeof url === 'string' && url.indexOf('/h5p-assets/') !== -1) {
+                init = init || {};
+                var headers = new Headers(init.headers || (input && input.headers) || {});
+                headers.set('Authorization', 'Bearer ${token}');
+                init = Object.assign({}, init, { headers: headers });
+            }
+            return fetch.call(this, input, init);
         };
     })();`
 

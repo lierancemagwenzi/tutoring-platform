@@ -36,7 +36,10 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
     {
         $request = Http::withHeaders($headers);
 
-        foreach ($files as $name => $path) {
+        // H5PCore::updateContentHubMetadataCache() (vendor code) calls this
+        // with $files left as literal null rather than an empty array —
+        // foreach(null) throws in PHP 8.
+        foreach ($files ?? [] as $name => $path) {
             $request = $request->attach($name, file_get_contents($path), basename($path));
         }
 
@@ -666,7 +669,15 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
 
     public function getContentHubMetadataChecked($lang = 'en')
     {
-        return $this->getOption("content_hub_metadata_checked_{$lang}");
+        $timestamp = $this->getOption("content_hub_metadata_checked_{$lang}");
+
+        // H5PCore::getUpdatedContentHubMetadataCache() (vendor code) feeds
+        // this straight into `new DateTime($lastUpdate)` — which parses a
+        // bare Unix timestamp string as a malformed time-of-day string, not
+        // as an epoch value — so this needs to come back in a format
+        // DateTime's constructor understands, not the raw int
+        // setContentHubMetadataChecked() stored.
+        return $timestamp ? '@'.$timestamp : $timestamp;
     }
 
     public function setContentHubMetadataChecked($time, $lang = 'en')
