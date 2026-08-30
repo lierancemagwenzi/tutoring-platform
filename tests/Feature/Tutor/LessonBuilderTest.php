@@ -482,6 +482,102 @@ class LessonBuilderTest extends TestCase
 
         $attach->assertOk();
         $attach->assertJsonPath('block.h5p_content.id', $h5pContentId);
+        $attach->assertJsonPath('block.course_classification.grade.id', $this->grade->id);
+        $attach->assertJsonPath('block.course_classification.subject.id', $this->subject->id);
+        $attach->assertJsonPath('block.course_classification.curriculum.id', $this->curriculum->id);
+    }
+
+    public function test_tutor_cannot_attach_h5p_content_classified_under_a_different_grade(): void
+    {
+        [$tutor, $course] = $this->tutorWithCourse();
+        $lesson = $this->createLesson($this->createChapter($course));
+        $otherGrade = Grade::create(['name' => 'Grade 11', 'level' => 11, 'is_active' => true]);
+        $h5pContentId = (string) $this->seedH5pContent(123, 'Interactive Quiz');
+        $this->seedH5pClassification(123, $tutor->tutorProfile->id, $otherGrade->id, $this->subject->id, $this->curriculum->id);
+
+        Sanctum::actingAs($tutor);
+
+        $create = $this->postJson("/api/tutor/lessons/{$lesson->id}/blocks", [
+            'block_type' => 'h5p',
+            'title' => 'Interactive Activity',
+        ]);
+        $blockId = $create->json('block.id');
+
+        $attach = $this->putJson("/api/tutor/lesson-blocks/{$blockId}", [
+            'block_type' => 'h5p',
+            'status' => 'draft',
+            'h5p_content_id' => $h5pContentId,
+        ]);
+
+        $attach->assertUnprocessable()->assertJsonValidationErrors('h5p_content_id');
+    }
+
+    public function test_tutor_can_create_h5p_content_for_a_lesson_block_even_if_the_subject_is_no_longer_approved(): void
+    {
+        [$tutor, $course] = $this->tutorWithCourse();
+        $lesson = $this->createLesson($this->createChapter($course));
+        $block = $lesson->blocks()->create([
+            'block_type' => 'h5p', 'position' => 0, 'content' => [], 'settings' => [], 'status' => 'draft',
+        ]);
+        $this->seedH5pLibrary();
+
+        // The course was created while this subject/grade was approved, but
+        // that approval was later revoked — the course itself still proves
+        // legitimacy, so content authored for its own lesson block should
+        // still be classifiable to match it (see StoreH5pContentRequest).
+        TutorSubject::where('tutor_profile_id', $tutor->tutorProfile->id)
+            ->where('subject_id', $this->subject->id)
+            ->update(['status' => 'pending']);
+
+        Sanctum::actingAs($tutor);
+
+        $response = $this->postJson('/api/tutor/h5p-content', [
+            'library' => 'H5P.MultiChoice 1.16',
+            'params' => [
+                'params' => ['question' => 'What is 2 + 2?'],
+                'metadata' => ['title' => 'Sample Question'],
+            ],
+            'grade_id' => $this->grade->id,
+            'subject_id' => $this->subject->id,
+            'curriculum_id' => $this->curriculum->id,
+            'lesson_block_id' => $block->id,
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('h5p_content_classifications', [
+            'h5p_content_id' => $response->json('id'),
+            'tutor_profile_id' => $tutor->tutorProfile->id,
+            'grade_id' => $this->grade->id,
+            'subject_id' => $this->subject->id,
+            'curriculum_id' => $this->curriculum->id,
+        ]);
+    }
+
+    public function test_tutor_cannot_create_h5p_content_for_a_lesson_block_with_mismatched_classification(): void
+    {
+        [$tutor, $course] = $this->tutorWithCourse();
+        $lesson = $this->createLesson($this->createChapter($course));
+        $block = $lesson->blocks()->create([
+            'block_type' => 'h5p', 'position' => 0, 'content' => [], 'settings' => [], 'status' => 'draft',
+        ]);
+        $otherGrade = Grade::create(['name' => 'Grade 11', 'level' => 11, 'is_active' => true]);
+        $this->seedH5pLibrary();
+
+        Sanctum::actingAs($tutor);
+
+        $response = $this->postJson('/api/tutor/h5p-content', [
+            'library' => 'H5P.MultiChoice 1.16',
+            'params' => [
+                'params' => ['question' => 'What is 2 + 2?'],
+                'metadata' => ['title' => 'Sample Question'],
+            ],
+            'grade_id' => $otherGrade->id,
+            'subject_id' => $this->subject->id,
+            'curriculum_id' => $this->curriculum->id,
+            'lesson_block_id' => $block->id,
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('grade_id');
     }
 
     public function test_tutor_can_create_an_assignment_block(): void

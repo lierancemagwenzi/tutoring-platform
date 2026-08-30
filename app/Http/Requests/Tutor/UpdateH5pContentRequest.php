@@ -3,11 +3,18 @@
 namespace App\Http\Requests\Tutor;
 
 use App\Enums\TutorSubjectStatus;
+use App\Models\Course;
+use App\Models\LessonBlock;
 use App\Models\TutorSubject;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * See StoreH5pContentRequest's docblock — grade_id/subject_id/curriculum_id
+ * follow the same "lesson_block_id anchors it to that block's Course"
+ * exception to the normal approved-subjects rule.
+ */
 class UpdateH5pContentRequest extends FormRequest
 {
     public function authorize(): bool
@@ -20,6 +27,25 @@ class UpdateH5pContentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $baseRules = [
+            'library' => ['required', 'string'],
+            'params' => ['required', 'array'],
+            'params.params' => ['required'],
+            'params.metadata' => ['required', 'array'],
+            'lesson_block_id' => ['nullable', 'integer'],
+        ];
+
+        $course = $this->ownedLessonBlockCourse();
+
+        if ($course) {
+            return [
+                ...$baseRules,
+                'grade_id' => ['required', Rule::in([$course->grade_id])],
+                'subject_id' => ['required', Rule::in([$course->subject_id])],
+                'curriculum_id' => ['required', Rule::in([$course->curriculum_id])],
+            ];
+        }
+
         $tutorSubjectId = TutorSubject::query()
             ->where('tutor_profile_id', $this->user()->tutorProfile?->id)
             ->where('subject_id', $this->input('subject_id'))
@@ -27,10 +53,7 @@ class UpdateH5pContentRequest extends FormRequest
             ->value('id');
 
         return [
-            'library' => ['required', 'string'],
-            'params' => ['required', 'array'],
-            'params.params' => ['required'],
-            'params.metadata' => ['required', 'array'],
+            ...$baseRules,
             'curriculum_id' => ['required', 'integer', Rule::exists('curricula', 'id')->where('is_active', true)],
             'grade_id' => [
                 'required',
@@ -50,6 +73,18 @@ class UpdateH5pContentRequest extends FormRequest
         ];
     }
 
+    protected function ownedLessonBlockCourse(): ?Course
+    {
+        $lessonBlockId = $this->input('lesson_block_id');
+        if (! $lessonBlockId) {
+            return null;
+        }
+
+        $course = LessonBlock::find($lessonBlockId)?->lesson?->chapter?->course;
+
+        return $course && $course->tutor_profile_id === $this->user()->tutorProfile?->id ? $course : null;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -57,7 +92,10 @@ class UpdateH5pContentRequest extends FormRequest
     {
         return [
             'subject_id.exists' => 'You can only classify content under a subject you teach that has been approved.',
+            'subject_id.in' => "This must match the lesson's course subject.",
             'grade_id.exists' => 'You are only approved to teach this subject for the grades assigned to it.',
+            'grade_id.in' => "This must match the lesson's course grade.",
+            'curriculum_id.in' => "This must match the lesson's course curriculum.",
         ];
     }
 }

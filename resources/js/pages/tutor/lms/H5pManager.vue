@@ -1,8 +1,7 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowDownTrayIcon, EyeIcon, PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/outline'
-import api from '../../../services/api'
 import { useCoursesStore } from '../../../stores/courses'
 import { useH5pContentStore } from '../../../stores/h5pContent'
 import Modal from '../../../components/common/Modal.vue'
@@ -28,33 +27,12 @@ const block = ref(null)
 const library = ref([])
 const browsing = ref(false)
 
-const tutorSubjects = ref([])
-const curricula = ref([])
-const filters = reactive({ subjectId: '', gradeId: '', curriculumId: '' })
-
 const previewOpen = ref(false)
 const previewContentId = ref(null)
 
-const approvedTutorSubjects = computed(() => tutorSubjects.value.filter((entry) => entry.status === 'approved'))
-const subjectOptions = computed(() =>
-    approvedTutorSubjects.value.map((tutorSubject) => ({ value: String(tutorSubject.subject.id), label: tutorSubject.subject.name })),
-)
-const gradeOptions = computed(() => {
-    const tutorSubject = approvedTutorSubjects.value.find((entry) => String(entry.subject.id) === filters.subjectId)
-    return tutorSubject ? tutorSubject.grades.map((grade) => ({ value: String(grade.id), label: grade.name })) : []
-})
-const curriculumOptions = computed(() => curricula.value.map((curriculum) => ({ value: String(curriculum.id), label: curriculum.name })))
-
 async function load() {
     loading.value = true
-    const [block_, subjectsRes, curriculaRes] = await Promise.all([
-        coursesStore.fetchBlock(lessonBlockId.value),
-        api.get('/tutor/subjects'),
-        api.get('/curricula'),
-    ])
-    block.value = block_
-    tutorSubjects.value = subjectsRes.data.subjects
-    curricula.value = curriculaRes.data.curricula
+    block.value = await coursesStore.fetchBlock(lessonBlockId.value)
     browsing.value = !block.value.h5p_content?.id
     if (browsing.value) {
         await loadLibrary()
@@ -64,19 +42,17 @@ async function load() {
 
 onMounted(load)
 
+// Only content classified under this block's ancestor Course's exact
+// Grade/Subject/Curriculum is eligible to attach here (enforced again
+// server-side in H5pBlockHandler::rules()) — the library is scoped to that,
+// not left as an open "browse everything" filter.
 async function loadLibrary() {
+    const classification = block.value.course_classification
     library.value = await h5pStore.fetchLibrary({
-        subject_id: filters.subjectId || undefined,
-        grade_id: filters.gradeId || undefined,
-        curriculum_id: filters.curriculumId || undefined,
+        subject_id: classification.subject.id,
+        grade_id: classification.grade.id,
+        curriculum_id: classification.curriculum.id,
     })
-}
-
-function onSubjectFilterChange(value) {
-    filters.subjectId = value
-    const stillValid = gradeOptions.value.some((option) => option.value === filters.gradeId)
-    if (!stillValid) filters.gradeId = ''
-    loadLibrary()
 }
 
 function browseExisting() {
@@ -249,32 +225,18 @@ function exportUrl(contentId) {
                     <h2 class="text-ink text-lg font-bold">Choose from your library</h2>
                 </div>
 
-                <div class="mb-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
-                    <SelectInput
-                        id="picker-filter-subject"
-                        :model-value="filters.subjectId"
-                        label="Subject"
-                        :options="[{ value: '', label: 'All Subjects' }, ...subjectOptions]"
-                        @update:model-value="onSubjectFilterChange"
-                    />
-                    <SelectInput
-                        id="picker-filter-grade"
-                        :model-value="filters.gradeId"
-                        label="Grade"
-                        :options="[{ value: '', label: 'All Grades' }, ...gradeOptions]"
-                        @update:model-value="(value) => { filters.gradeId = value; loadLibrary() }"
-                    />
-                    <SelectInput
-                        id="picker-filter-curriculum"
-                        :model-value="filters.curriculumId"
-                        label="Curriculum"
-                        :options="[{ value: '', label: 'All Curricula' }, ...curriculumOptions]"
-                        @update:model-value="(value) => { filters.curriculumId = value; loadLibrary() }"
-                    />
-                </div>
+                <p class="mb-6 text-sm text-gray-500">
+                    Showing activities classified under
+                    <span class="font-semibold text-gray-700">{{ block.course_classification.subject.name }}</span> ·
+                    <span class="font-semibold text-gray-700">{{ block.course_classification.grade.name }}</span> ·
+                    <span class="font-semibold text-gray-700">{{ block.course_classification.curriculum.name }}</span>
+                    — this lesson's course.
+                </p>
 
                 <div v-if="library.length === 0 && !loading" class="mt-8 flex flex-col items-center text-center">
-                    <p class="text-gray-500">No H5P activities yet. Create your first one to get started.</p>
+                    <p class="text-gray-500">
+                        No H5P activities match this course's subject, grade, and curriculum yet. Create one to get started.
+                    </p>
                 </div>
 
                 <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -36,6 +36,23 @@ class LessonBlockResource extends JsonResource
                 $this->block_type === LessonBlockType::H5p,
                 fn () => ($content = $this->h5pContent()) ? new H5pContentResource($content) : null,
             ),
+            // The Subject/Grade/Curriculum this block's ancestor Course is
+            // classified under — only H5P content matching all three is
+            // eligible to attach here (see H5pBlockHandler::rules()); the
+            // tutor-facing picker (H5pManager.vue) uses this to scope its
+            // "choose from your library" list instead of showing everything.
+            'course_classification' => $this->when(
+                $this->block_type === LessonBlockType::H5p,
+                function () {
+                    $course = $this->lesson->chapter->course->loadMissing(['grade', 'subject', 'curriculum']);
+
+                    return [
+                        'grade' => ['id' => $course->grade->id, 'name' => $course->grade->name],
+                        'subject' => ['id' => $course->subject->id, 'name' => $course->subject->name],
+                        'curriculum' => ['id' => $course->curriculum->id, 'name' => $course->curriculum->name],
+                    ];
+                },
+            ),
             'learning_activity' => $this->when(
                 in_array($this->block_type, [
                     LessonBlockType::Assignment,

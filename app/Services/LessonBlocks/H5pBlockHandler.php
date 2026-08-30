@@ -15,7 +15,10 @@ class H5pBlockHandler implements LessonBlockHandler
      * content id, which is only meaningful once the block already exists
      * (set via update). Every piece of content belongs to exactly one tutor
      * (see App\Models\H5pContentClassification) — a tutor may only attach
-     * their own content to their own lesson block.
+     * their own content, and only content classified under the exact same
+     * Grade/Subject/Curriculum as this block's ancestor Course (mirroring
+     * LessonBlockResource's course_classification, which the tutor-facing
+     * picker uses to scope what it offers in the first place).
      *
      * @return array<string, mixed>
      */
@@ -25,13 +28,18 @@ class H5pBlockHandler implements LessonBlockHandler
             return [];
         }
 
+        $rule = Rule::exists('h5p_content_classifications', 'h5p_content_id')
+            ->where('tutor_profile_id', auth()->user()?->tutorProfile?->id);
+
+        $course = request()->route('lessonBlock')?->lesson?->chapter?->course;
+        if ($course) {
+            $rule->where('grade_id', $course->grade_id)
+                ->where('subject_id', $course->subject_id)
+                ->where('curriculum_id', $course->curriculum_id);
+        }
+
         return [
-            'h5p_content_id' => [
-                'nullable',
-                'string',
-                Rule::exists('h5p_content_classifications', 'h5p_content_id')
-                    ->where('tutor_profile_id', auth()->user()?->tutorProfile?->id),
-            ],
+            'h5p_content_id' => ['nullable', 'string', $rule],
         ];
     }
 

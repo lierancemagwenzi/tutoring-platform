@@ -7,6 +7,7 @@ const props = defineProps({
     label: { type: String, required: true },
     id: { type: String, required: true },
     options: { type: Array, required: true }, // [{ value, label }]
+    disabled: { type: Boolean, default: false },
 })
 
 defineEmits(['update:modelValue'])
@@ -30,7 +31,8 @@ const floating = computed(() => focused.value || props.modelValue.length > 0)
         <select
             :id="id"
             :value="modelValue"
-            class="w-full appearance-none rounded-xl border bg-white px-4 py-3.5 text-gray-900 outline-none transition-colors"
+            :disabled="disabled"
+            class="w-full appearance-none rounded-xl border bg-white px-4 py-3.5 text-gray-900 outline-none transition-colors disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
             :class="focused ? 'border-accent border-2' : 'border-gray-300'"
             @change="$emit('update:modelValue', $event.target.value)"
             @focus="focused = true"
