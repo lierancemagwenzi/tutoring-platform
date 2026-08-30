@@ -75,6 +75,7 @@ class SelfPacedActivity extends Model
             SelfPacedActivityType::Katex => filled($this->content['latex'] ?? null),
             SelfPacedActivityType::ExternalResource => filled($this->content['url'] ?? null),
             SelfPacedActivityType::Assignment, SelfPacedActivityType::Homework, SelfPacedActivityType::Reading => filled($this->content['instructions'] ?? null),
+            SelfPacedActivityType::H5p => filled($this->content['h5p_content_id'] ?? null),
             default => true,
         };
     }

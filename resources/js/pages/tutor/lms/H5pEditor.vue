@@ -15,6 +15,7 @@ const selfPacedStore = useSelfPacedCoursesStore()
 const contentId = computed(() => route.params.id ?? null)
 const lessonBlockId = computed(() => route.query.lessonBlockId ?? null)
 const isSelfPaced = computed(() => route.query.context === 'self_paced')
+const selfPacedCourseId = computed(() => route.query.selfPacedCourseId ?? null)
 
 const editorWidget = ref(null)
 const saving = ref(false)
@@ -36,8 +37,14 @@ const classification = reactive({ subject_id: '', grade_id: '', curriculum_id: '
 // (e.g. that approval changed after the course was created — see
 // StoreH5pContentRequest), in which case it wouldn't even appear as an
 // option in those dropdowns to select/display in the first place.
+//
+// A Self-Paced course (selfPacedCourseId) locks the same way, but only
+// Subject+Grade — it has no curriculum, so lockedClassification omits
+// `curriculum` in that case and the Curriculum field stays a normal,
+// freely-pickable <select> (see curriculumLocked below).
 const lockedClassification = ref(null)
 const classificationLocked = computed(() => lockedClassification.value !== null)
+const curriculumLocked = computed(() => Boolean(lockedClassification.value?.curriculum))
 
 const approvedTutorSubjects = computed(() => tutorSubjects.value.filter((entry) => entry.status === 'approved'))
 const subjectOptions = computed(() =>
@@ -74,6 +81,11 @@ onMounted(async () => {
         classification.subject_id = String(block.course_classification.subject.id)
         classification.grade_id = String(block.course_classification.grade.id)
         classification.curriculum_id = String(block.course_classification.curriculum.id)
+    } else if (selfPacedCourseId.value) {
+        const course = await selfPacedStore.fetchCourse(selfPacedCourseId.value)
+        lockedClassification.value = { subject: course.subject, grade: course.grade }
+        classification.subject_id = String(course.subject.id)
+        classification.grade_id = String(course.grade.id)
     }
 })
 
@@ -91,14 +103,15 @@ async function save() {
             subject_id: Number(classification.subject_id),
             grade_id: Number(classification.grade_id),
             curriculum_id: Number(classification.curriculum_id),
-            // Tells the backend to validate against this lesson block's
-            // course classification instead of the tutor's current
-            // approved-subjects list (see StoreH5pContentRequest) — the
-            // course may be classified under a subject/grade the tutor isn't
-            // currently approved for if that approval changed since the
-            // course was created, but it's still the correct classification
-            // for content meant to attach to this specific block.
+            // Tells the backend to validate against this lesson block's or
+            // self-paced course's own classification instead of the tutor's
+            // current approved-subjects list (see StoreH5pContentRequest) —
+            // that course may be classified under a subject/grade the tutor
+            // isn't currently approved for if that approval changed since it
+            // was created, but it's still the correct classification for
+            // content meant to attach to this specific block/course.
             lesson_block_id: lessonBlockId.value ? Number(lessonBlockId.value) : undefined,
+            self_paced_course_id: selfPacedCourseId.value ? Number(selfPacedCourseId.value) : undefined,
         })
 
         if (isSelfPaced.value) {
@@ -156,14 +169,19 @@ function onSaveError(detail) {
         <p v-if="actionError" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
         <div v-if="classificationLocked" class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
-            <div v-for="field in [
-                { label: 'Subject', value: lockedClassification.subject.name },
-                { label: 'Grade', value: lockedClassification.grade.name },
-                { label: 'Curriculum', value: lockedClassification.curriculum.name },
-            ]" :key="field.label">
-                <p class="text-xs font-semibold text-gray-500">{{ field.label }}</p>
-                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ field.value }}</p>
+            <div>
+                <p class="text-xs font-semibold text-gray-500">Subject</p>
+                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.subject.name }}</p>
             </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-500">Grade</p>
+                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.grade.name }}</p>
+            </div>
+            <div v-if="curriculumLocked">
+                <p class="text-xs font-semibold text-gray-500">Curriculum</p>
+                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.curriculum.name }}</p>
+            </div>
+            <SelectInput v-else id="classification-curriculum" v-model="classification.curriculum_id" label="Curriculum" :options="curriculumOptions" />
         </div>
         <div v-else class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
             <SelectInput
@@ -177,7 +195,8 @@ function onSaveError(detail) {
             <SelectInput id="classification-curriculum" v-model="classification.curriculum_id" label="Curriculum" :options="curriculumOptions" />
         </div>
         <p v-if="classificationLocked" class="mt-2 text-xs text-gray-500">
-            Locked to match this lesson's course, so the activity stays eligible to attach here.
+            {{ curriculumLocked ? "Locked to match this lesson's course, so the activity stays eligible to attach here."
+                : "Subject and Grade are locked to match this self-paced course; choose a Curriculum for this content." }}
         </p>
 
         <div class="mt-8 overflow-hidden rounded-2xl bg-white shadow-sm">

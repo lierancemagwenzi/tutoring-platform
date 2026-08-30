@@ -153,6 +153,7 @@ async function onReorder() {
         <ActivityEditor
             v-if="editingActivity !== undefined"
             :module-id="module.id"
+            :course-id="module.self_paced_course_id"
             :activity="editingActivity"
             @saved="onActivitySaved"
             @cancelled="editingActivity = undefined"

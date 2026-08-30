@@ -5,6 +5,7 @@ namespace App\Http\Requests\Tutor;
 use App\Enums\TutorSubjectStatus;
 use App\Models\Course;
 use App\Models\LessonBlock;
+use App\Models\SelfPacedCourse;
 use App\Models\TutorSubject;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,8 +13,9 @@ use Illuminate\Validation\Rule;
 
 /**
  * See StoreH5pContentRequest's docblock — grade_id/subject_id/curriculum_id
- * follow the same "lesson_block_id anchors it to that block's Course"
- * exception to the normal approved-subjects rule.
+ * follow the same "lesson_block_id or self_paced_course_id anchors it to
+ * that record's own classification" exception to the normal
+ * approved-subjects rule.
  */
 class UpdateH5pContentRequest extends FormRequest
 {
@@ -33,16 +35,26 @@ class UpdateH5pContentRequest extends FormRequest
             'params.params' => ['required'],
             'params.metadata' => ['required', 'array'],
             'lesson_block_id' => ['nullable', 'integer'],
+            'self_paced_course_id' => ['nullable', 'integer'],
         ];
 
         $course = $this->ownedLessonBlockCourse();
-
         if ($course) {
             return [
                 ...$baseRules,
                 'grade_id' => ['required', Rule::in([$course->grade_id])],
                 'subject_id' => ['required', Rule::in([$course->subject_id])],
                 'curriculum_id' => ['required', Rule::in([$course->curriculum_id])],
+            ];
+        }
+
+        $selfPacedCourse = $this->ownedSelfPacedCourse();
+        if ($selfPacedCourse) {
+            return [
+                ...$baseRules,
+                'grade_id' => ['required', Rule::in([$selfPacedCourse->grade_id])],
+                'subject_id' => ['required', Rule::in([$selfPacedCourse->subject_id])],
+                'curriculum_id' => ['required', 'integer', Rule::exists('curricula', 'id')->where('is_active', true)],
             ];
         }
 
@@ -85,6 +97,18 @@ class UpdateH5pContentRequest extends FormRequest
         return $course && $course->tutor_profile_id === $this->user()->tutorProfile?->id ? $course : null;
     }
 
+    protected function ownedSelfPacedCourse(): ?SelfPacedCourse
+    {
+        $selfPacedCourseId = $this->input('self_paced_course_id');
+        if (! $selfPacedCourseId) {
+            return null;
+        }
+
+        $course = SelfPacedCourse::find($selfPacedCourseId);
+
+        return $course && $course->tutor_profile_id === $this->user()->tutorProfile?->id ? $course : null;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -92,9 +116,9 @@ class UpdateH5pContentRequest extends FormRequest
     {
         return [
             'subject_id.exists' => 'You can only classify content under a subject you teach that has been approved.',
-            'subject_id.in' => "This must match the lesson's course subject.",
+            'subject_id.in' => "This must match the course's subject.",
             'grade_id.exists' => 'You are only approved to teach this subject for the grades assigned to it.',
-            'grade_id.in' => "This must match the lesson's course grade.",
+            'grade_id.in' => "This must match the course's grade.",
             'curriculum_id.in' => "This must match the lesson's course curriculum.",
         ];
     }

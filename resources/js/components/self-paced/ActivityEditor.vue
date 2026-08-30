@@ -1,7 +1,8 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
-import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { computed, reactive, ref, watch } from 'vue'
+import { EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { useSelfPacedCoursesStore } from '../../stores/selfPacedCourses'
+import { useH5pContentStore } from '../../stores/h5pContent'
 import Modal from '../common/Modal.vue'
 import FloatingLabelInput from '../forms/FloatingLabelInput.vue'
 import TextareaInput from '../forms/TextareaInput.vue'
@@ -26,6 +27,7 @@ const TYPE_OPTIONS = [
     { value: 'assignment', label: 'Assignment' },
     { value: 'homework', label: 'Homework' },
     { value: 'reading', label: 'Reading' },
+    { value: 'h5p', label: 'H5P Activity' },
 ]
 
 const ATTACHMENT_TYPES = ['video', 'pdf', 'image_gallery', 'audio', 'document', 'presentation', 'spreadsheet', 'download']
@@ -61,12 +63,14 @@ const MEDIA_TYPE_OPTIONS = {
 
 const props = defineProps({
     moduleId: { type: Number, required: true },
+    courseId: { type: Number, required: true },
     activity: { type: Object, default: null },
 })
 
 const emit = defineEmits(['saved', 'cancelled'])
 
 const store = useSelfPacedCoursesStore()
+const h5pStore = useH5pContentStore()
 const saving = ref(false)
 const error = ref('')
 const current = ref(props.activity)
@@ -86,6 +90,7 @@ const form = reactive({
     latex: props.activity?.content?.latex ?? '',
     url: props.activity?.content?.url ?? '',
     instructions: props.activity?.content?.instructions ?? '',
+    h5pContentId: props.activity?.content?.h5p_content_id ?? '',
 });
 
 const isAttachmentType = computed(() => ATTACHMENT_TYPES.includes(form.type))
@@ -94,6 +99,32 @@ const newAttachmentFile = ref(null)
 const newAttachmentUrl = ref('')
 const newAttachmentInput = ref(null)
 const uploadingAttachment = ref(false)
+
+// Only H5P content classified under this course's exact Subject+Grade is
+// eligible (Self-Paced courses have no curriculum to also match on) —
+// mirrors how the Tutor-Led lesson block picker scopes H5pManager.vue.
+const h5pContents = ref([])
+const h5pContentsLoading = ref(false)
+
+async function loadH5pContents() {
+    h5pContentsLoading.value = true
+    try {
+        const course = await store.fetchCourse(props.courseId)
+        h5pContents.value = await h5pStore.fetchLibrary({ subject_id: course.subject?.id, grade_id: course.grade?.id })
+    } finally {
+        h5pContentsLoading.value = false
+    }
+}
+
+watch(
+    () => form.type,
+    (type) => {
+        if (type === 'h5p' && h5pContents.value.length === 0 && !h5pContentsLoading.value) {
+            loadH5pContents()
+        }
+    },
+    { immediate: true },
+)
 
 function contentPayload() {
     switch (form.type) {
@@ -109,6 +140,8 @@ function contentPayload() {
         case 'homework':
         case 'reading':
             return { instructions: form.instructions };
+        case 'h5p':
+            return { h5p_content_id: form.h5pContentId };
         default:
             return null;
     }
@@ -246,6 +279,38 @@ function previewUrl(attachment) {
                 label="Instructions"
                 :rows="4"
             />
+
+            <div v-else-if="form.type === 'h5p'">
+                <SelectInput
+                    id="activity-h5p-content"
+                    v-model="form.h5pContentId"
+                    label="H5P Content"
+                    :options="h5pContents.map((content) => ({ value: content.id, label: content.title }))"
+                />
+
+                <div v-if="!h5pContentsLoading && h5pContents.length === 0" class="mt-1 text-xs text-gray-400">
+                    No H5P content matches this course's subject and grade yet — create one below.
+                </div>
+
+                <div class="mt-2 flex flex-wrap items-center gap-4">
+                    <router-link
+                        :to="{ name: 'tutor.h5p-content.new', query: { context: 'self_paced', selfPacedCourseId: courseId } }"
+                        class="text-accent flex items-center gap-1 text-sm font-semibold"
+                    >
+                        <PlusIcon class="h-4 w-4" /> Create New H5P Content
+                    </router-link>
+                    <router-link
+                        v-if="form.h5pContentId"
+                        :to="{ name: 'tutor.h5p-content.edit', params: { id: form.h5pContentId }, query: { context: 'self_paced', selfPacedCourseId: courseId } }"
+                        class="text-accent flex items-center gap-1 text-sm font-semibold"
+                    >
+                        <PencilSquareIcon class="h-4 w-4" /> Edit Selected Content
+                    </router-link>
+                </div>
+                <p class="mt-1 text-xs text-gray-400">
+                    Creating content here navigates away from this course editor — you'll return to select it once saved.
+                </p>
+            </div>
 
             <div v-if="isAttachmentType && current" class="space-y-3 rounded-xl border border-gray-200 p-4">
                 <p class="text-sm font-semibold text-gray-700">Attachments</p>

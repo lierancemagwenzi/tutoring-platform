@@ -19,6 +19,7 @@ enum SelfPacedActivityType: string
     case Assignment = 'assignment';
     case Homework = 'homework';
     case Reading = 'reading';
+    case H5p = 'h5p';
 
     /**
      * Whether this activity type is backed by one or more uploaded/linked
