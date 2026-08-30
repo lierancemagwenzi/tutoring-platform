@@ -28,11 +28,30 @@ class H5PService
     public function __construct(protected H5PKernel $kernel) {}
 
     /**
+     * H5P content has no owner of its own (see H5pContentClassification) —
+     * every tutor-authoring listing is scoped to the requesting tutor's own
+     * content, never the platform-wide set. This is the only listContent()
+     * caller (H5pContentController::index()), so the scope is baked in here
+     * rather than left to callers to remember.
+     *
+     * @param  array<string, int>  $filters  Optional subject_id/grade_id/curriculum_id narrowing.
      * @return array<int, array<string, mixed>>
      */
-    public function listContent(): array
+    public function listContent(int $tutorProfileId, array $filters = []): array
     {
-        return $this->contentSummaryQuery()->get()->map($this->toSummary(...))->all();
+        $query = $this->contentSummaryQuery()->where('cl.tutor_profile_id', $tutorProfileId);
+
+        if (! empty($filters['subject_id'])) {
+            $query->where('cl.subject_id', $filters['subject_id']);
+        }
+        if (! empty($filters['grade_id'])) {
+            $query->where('cl.grade_id', $filters['grade_id']);
+        }
+        if (! empty($filters['curriculum_id'])) {
+            $query->where('cl.curriculum_id', $filters['curriculum_id']);
+        }
+
+        return $query->get()->map($this->toSummary(...))->all();
     }
 
     /**
@@ -49,9 +68,23 @@ class H5PService
     {
         // No portable CONCAT across MySQL (prod) and SQLite (tests) via
         // selectRaw — build mainLibrary in PHP instead, see toSummary().
+        // The classification joins are left joins (not inner) so get() —
+        // used by editorModel()/playerModel()/export()/delete(), including
+        // student-facing playback paths — still resolves content that has
+        // no classification row yet (mid-creation) or, in principle, none at
+        // all. listContent() narrows to an owner via a where() on top of this.
         return DB::table('h5p_content as c')
             ->join('h5p_libraries as l', 'l.id', '=', 'c.library_id')
-            ->select('c.id', 'c.metadata_title as title', 'l.machine_name', 'l.major_version', 'l.minor_version', 'c.metadata_default_language as language');
+            ->leftJoin('h5p_content_classifications as cl', 'cl.h5p_content_id', '=', 'c.id')
+            ->leftJoin('grades as g', 'g.id', '=', 'cl.grade_id')
+            ->leftJoin('subjects as s', 's.id', '=', 'cl.subject_id')
+            ->leftJoin('curricula as cu', 'cu.id', '=', 'cl.curriculum_id')
+            ->select(
+                'c.id', 'c.metadata_title as title', 'l.machine_name', 'l.major_version', 'l.minor_version', 'c.metadata_default_language as language',
+                'cl.grade_id', 'g.name as grade_name',
+                'cl.subject_id', 's.name as subject_name',
+                'cl.curriculum_id', 'cu.name as curriculum_name',
+            );
     }
 
     /**
@@ -64,6 +97,9 @@ class H5PService
             'title' => $row->title,
             'mainLibrary' => "{$row->machine_name} {$row->major_version}.{$row->minor_version}",
             'language' => $row->language,
+            'grade' => $row->grade_id ? ['id' => $row->grade_id, 'name' => $row->grade_name] : null,
+            'subject' => $row->subject_id ? ['id' => $row->subject_id, 'name' => $row->subject_name] : null,
+            'curriculum' => $row->curriculum_id ? ['id' => $row->curriculum_id, 'name' => $row->curriculum_name] : null,
         ];
     }
 

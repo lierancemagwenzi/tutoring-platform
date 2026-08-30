@@ -3,8 +3,8 @@ import api from '../services/api'
 
 export const useH5pContentStore = defineStore('h5pContent', {
     actions: {
-        async fetchLibrary() {
-            const { data } = await api.get('/tutor/h5p-content')
+        async fetchLibrary(filters = {}) {
+            const { data } = await api.get('/tutor/h5p-content', { params: filters })
             return data.contents
         },
 

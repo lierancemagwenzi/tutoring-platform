@@ -76,4 +76,27 @@ trait InteractsWithH5pLibrary
 
         return $id;
     }
+
+    /**
+     * Every piece of H5P content requires a classification row — this is
+     * both its ownership record and its Grade/Subject/Curriculum tag (see
+     * App\Models\H5pContentClassification).
+     */
+    protected function seedH5pClassification(
+        int $contentId,
+        int $tutorProfileId,
+        int $gradeId,
+        int $subjectId,
+        int $curriculumId,
+    ): void {
+        DB::table('h5p_content_classifications')->insert([
+            'h5p_content_id' => $contentId,
+            'tutor_profile_id' => $tutorProfileId,
+            'grade_id' => $gradeId,
+            'subject_id' => $subjectId,
+            'curriculum_id' => $curriculumId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
 }

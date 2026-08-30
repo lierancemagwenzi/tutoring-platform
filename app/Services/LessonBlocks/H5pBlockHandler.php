@@ -5,6 +5,7 @@ namespace App\Services\LessonBlocks;
 use App\Contracts\LessonBlockHandler;
 use App\Models\LessonBlock;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class H5pBlockHandler implements LessonBlockHandler
 {
@@ -12,8 +13,9 @@ class H5pBlockHandler implements LessonBlockHandler
      * The H5P content itself is authored/selected through the dedicated H5P
      * server (see App\Services\H5p\H5PService); Laravel only stores its
      * content id, which is only meaningful once the block already exists
-     * (set via update). There's no local table to validate the id against
-     * — the H5P server is the source of truth for whether it exists.
+     * (set via update). Every piece of content belongs to exactly one tutor
+     * (see App\Models\H5pContentClassification) — a tutor may only attach
+     * their own content to their own lesson block.
      *
      * @return array<string, mixed>
      */
@@ -24,7 +26,12 @@ class H5pBlockHandler implements LessonBlockHandler
         }
 
         return [
-            'h5p_content_id' => ['nullable', 'string'],
+            'h5p_content_id' => [
+                'nullable',
+                'string',
+                Rule::exists('h5p_content_classifications', 'h5p_content_id')
+                    ->where('tutor_profile_id', auth()->user()?->tutorProfile?->id),
+            ],
         ];
     }
 

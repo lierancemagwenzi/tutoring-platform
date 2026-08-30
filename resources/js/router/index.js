@@ -61,6 +61,7 @@ import TutorMediaManager from '../pages/tutor/lms/MediaManager.vue'
 import TutorQuizBuilder from '../pages/tutor/lms/QuizBuilder.vue'
 import TutorH5pManager from '../pages/tutor/lms/H5pManager.vue'
 import TutorH5pEditor from '../pages/tutor/lms/H5pEditor.vue'
+import TutorH5pLibrary from '../pages/tutor/lms/H5pLibrary.vue'
 import TutorActivityBuilder from '../pages/tutor/lms/ActivityBuilder.vue'
 import SelfPacedCourseList from '../pages/tutor/self-paced/CourseList.vue'
 import SelfPacedCourseEditor from '../pages/tutor/self-paced/CourseEditor.vue'
@@ -272,6 +273,12 @@ const routes = [
                 path: 'lesson-blocks/:id/h5p',
                 name: 'tutor.lesson-blocks.h5p',
                 component: TutorH5pManager,
+                meta: { requiresTutor: true },
+            },
+            {
+                path: 'h5p-content',
+                name: 'tutor.h5p-content',
+                component: TutorH5pLibrary,
                 meta: { requiresTutor: true },
             },
             {

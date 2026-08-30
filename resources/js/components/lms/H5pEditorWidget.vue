@@ -7,7 +7,7 @@ const props = defineProps({
     contentId: { type: String, default: null },
 })
 
-const emit = defineEmits(['saved', 'save-error'])
+const emit = defineEmits(['saved', 'save-error', 'loaded'])
 
 const store = useH5pContentStore()
 // H5PEditor.Editor replaces `target` in the DOM with its own <iframe> (see
@@ -26,6 +26,7 @@ async function mount() {
 
     try {
         const model = props.contentId ? await store.fetchEditorModel(props.contentId) : await store.fetchNewEditorModel()
+        emit('loaded', model.classification ?? null)
 
         // The editor iframe (see below) makes its first ajax call the
         // instant its own H5P.jQuery is ready — before we'd get a chance to
@@ -95,7 +96,7 @@ async function mount() {
     }
 }
 
-async function save() {
+async function save(classification) {
     if (!editor) return
 
     return new Promise((resolve, reject) => {
@@ -113,6 +114,7 @@ async function save() {
                             params,
                             metadata: { ...metadata, title: content.title },
                         },
+                        ...classification,
                     })
                     emit('saved', result)
                     resolve(result)

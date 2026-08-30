@@ -461,6 +461,7 @@ class LessonBuilderTest extends TestCase
         [$tutor, $course] = $this->tutorWithCourse();
         $lesson = $this->createLesson($this->createChapter($course));
         $h5pContentId = (string) $this->seedH5pContent(123, 'Interactive Quiz');
+        $this->seedH5pClassification(123, $tutor->tutorProfile->id, $this->grade->id, $this->subject->id, $this->curriculum->id);
 
         Sanctum::actingAs($tutor);
 

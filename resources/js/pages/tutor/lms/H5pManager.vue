@@ -1,18 +1,13 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-    ArrowDownTrayIcon,
-    DocumentDuplicateIcon,
-    EyeIcon,
-    PencilSquareIcon,
-    PlusIcon,
-    TrashIcon,
-} from '@heroicons/vue/24/outline'
+import { ArrowDownTrayIcon, EyeIcon, PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/outline'
+import api from '../../../services/api'
 import { useCoursesStore } from '../../../stores/courses'
 import { useH5pContentStore } from '../../../stores/h5pContent'
 import Modal from '../../../components/common/Modal.vue'
 import SelectInput from '../../../components/forms/SelectInput.vue'
+import H5pContentCard from '../../../components/lms/H5pContentCard.vue'
 import H5pPlayerWidget from '../../../components/lms/H5pPlayerWidget.vue'
 
 const STATUS_OPTIONS = [
@@ -33,12 +28,33 @@ const block = ref(null)
 const library = ref([])
 const browsing = ref(false)
 
+const tutorSubjects = ref([])
+const curricula = ref([])
+const filters = reactive({ subjectId: '', gradeId: '', curriculumId: '' })
+
 const previewOpen = ref(false)
 const previewContentId = ref(null)
 
+const approvedTutorSubjects = computed(() => tutorSubjects.value.filter((entry) => entry.status === 'approved'))
+const subjectOptions = computed(() =>
+    approvedTutorSubjects.value.map((tutorSubject) => ({ value: String(tutorSubject.subject.id), label: tutorSubject.subject.name })),
+)
+const gradeOptions = computed(() => {
+    const tutorSubject = approvedTutorSubjects.value.find((entry) => String(entry.subject.id) === filters.subjectId)
+    return tutorSubject ? tutorSubject.grades.map((grade) => ({ value: String(grade.id), label: grade.name })) : []
+})
+const curriculumOptions = computed(() => curricula.value.map((curriculum) => ({ value: String(curriculum.id), label: curriculum.name })))
+
 async function load() {
     loading.value = true
-    block.value = await coursesStore.fetchBlock(lessonBlockId.value)
+    const [block_, subjectsRes, curriculaRes] = await Promise.all([
+        coursesStore.fetchBlock(lessonBlockId.value),
+        api.get('/tutor/subjects'),
+        api.get('/curricula'),
+    ])
+    block.value = block_
+    tutorSubjects.value = subjectsRes.data.subjects
+    curricula.value = curriculaRes.data.curricula
     browsing.value = !block.value.h5p_content?.id
     if (browsing.value) {
         await loadLibrary()
@@ -49,7 +65,18 @@ async function load() {
 onMounted(load)
 
 async function loadLibrary() {
-    library.value = await h5pStore.fetchLibrary()
+    library.value = await h5pStore.fetchLibrary({
+        subject_id: filters.subjectId || undefined,
+        grade_id: filters.gradeId || undefined,
+        curriculum_id: filters.curriculumId || undefined,
+    })
+}
+
+function onSubjectFilterChange(value) {
+    filters.subjectId = value
+    const stillValid = gradeOptions.value.some((option) => option.value === filters.gradeId)
+    if (!stillValid) filters.gradeId = ''
+    loadLibrary()
 }
 
 function browseExisting() {
@@ -61,12 +88,12 @@ function createNew() {
     router.push({ name: 'tutor.h5p-content.new', query: { lessonBlockId: lessonBlockId.value } })
 }
 
-function editContent(contentId) {
-    router.push({ name: 'tutor.h5p-content.edit', params: { id: contentId }, query: { lessonBlockId: lessonBlockId.value } })
+function editContent(item) {
+    router.push({ name: 'tutor.h5p-content.edit', params: { id: item.id }, query: { lessonBlockId: lessonBlockId.value } })
 }
 
-function preview(contentId) {
-    previewContentId.value = contentId
+function preview(item) {
+    previewContentId.value = item.id
     previewOpen.value = true
 }
 
@@ -83,13 +110,13 @@ async function changeStatus(status) {
     }
 }
 
-async function select(contentId) {
+async function select(item) {
     actionError.value = ''
     try {
         block.value = await coursesStore.updateBlock(lessonBlockId.value, {
             block_type: 'h5p',
             status: block.value.status,
-            h5p_content_id: contentId,
+            h5p_content_id: item.id,
         })
         browsing.value = false
     } catch (error) {
@@ -104,9 +131,12 @@ async function duplicate(item) {
         const created = await h5pStore.saveContent(null, {
             library: editorModel.library,
             params: { params: editorModel.params, metadata: { ...editorModel.metadata, title: `${editorModel.metadata.title} (Copy)` } },
+            grade_id: item.grade?.id,
+            subject_id: item.subject?.id,
+            curriculum_id: item.curriculum?.id,
         })
         await loadLibrary()
-        await select(created.id)
+        await select(created)
     } catch (error) {
         actionError.value = error.response?.data?.message ?? 'Could not duplicate this content. Please try again.'
     }
@@ -188,7 +218,7 @@ function exportUrl(contentId) {
                     <button
                         type="button"
                         class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
-                        @click="preview(block.h5p_content.id)"
+                        @click="preview(block.h5p_content)"
                     >
                         <EyeIcon class="h-4 w-4" />
                         Preview
@@ -196,7 +226,7 @@ function exportUrl(contentId) {
                     <button
                         type="button"
                         class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
-                        @click="editContent(block.h5p_content.id)"
+                        @click="editContent(block.h5p_content)"
                     >
                         <PencilSquareIcon class="h-4 w-4" />
                         Edit
@@ -219,30 +249,46 @@ function exportUrl(contentId) {
                     <h2 class="text-ink text-lg font-bold">Choose from your library</h2>
                 </div>
 
+                <div class="mb-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
+                    <SelectInput
+                        id="picker-filter-subject"
+                        :model-value="filters.subjectId"
+                        label="Subject"
+                        :options="[{ value: '', label: 'All Subjects' }, ...subjectOptions]"
+                        @update:model-value="onSubjectFilterChange"
+                    />
+                    <SelectInput
+                        id="picker-filter-grade"
+                        :model-value="filters.gradeId"
+                        label="Grade"
+                        :options="[{ value: '', label: 'All Grades' }, ...gradeOptions]"
+                        @update:model-value="(value) => { filters.gradeId = value; loadLibrary() }"
+                    />
+                    <SelectInput
+                        id="picker-filter-curriculum"
+                        :model-value="filters.curriculumId"
+                        label="Curriculum"
+                        :options="[{ value: '', label: 'All Curricula' }, ...curriculumOptions]"
+                        @update:model-value="(value) => { filters.curriculumId = value; loadLibrary() }"
+                    />
+                </div>
+
                 <div v-if="library.length === 0 && !loading" class="mt-8 flex flex-col items-center text-center">
                     <p class="text-gray-500">No H5P activities yet. Create your first one to get started.</p>
                 </div>
 
                 <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <div v-for="item in library" :key="item.id" class="rounded-2xl bg-white p-5 shadow-sm">
-                        <p class="text-ink truncate font-bold">{{ item.title }}</p>
-                        <p class="mt-0.5 text-sm text-gray-500">{{ item.main_library }}</p>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <button type="button" class="text-accent text-sm font-semibold" @click="select(item.id)">Select</button>
-                            <button type="button" class="text-gray-500 hover:text-gray-700" title="Preview" @click="preview(item.id)">
-                                <EyeIcon class="h-4 w-4" />
-                            </button>
-                            <button type="button" class="text-gray-500 hover:text-gray-700" title="Edit" @click="editContent(item.id)">
-                                <PencilSquareIcon class="h-4 w-4" />
-                            </button>
-                            <button type="button" class="text-gray-500 hover:text-gray-700" title="Duplicate" @click="duplicate(item)">
-                                <DocumentDuplicateIcon class="h-4 w-4" />
-                            </button>
-                            <button type="button" class="text-red-500 hover:text-red-700" title="Delete" @click="remove(item)">
-                                <TrashIcon class="h-4 w-4" />
-                            </button>
-                        </div>
-                    </div>
+                    <H5pContentCard
+                        v-for="item in library"
+                        :key="item.id"
+                        :item="item"
+                        selectable
+                        @select="select"
+                        @preview="preview"
+                        @edit="editContent"
+                        @duplicate="duplicate"
+                        @delete="remove"
+                    />
                 </div>
             </div>
         </template>
