@@ -57,6 +57,11 @@ export const useSelfPacedPlayerStore = defineStore('selfPacedPlayer', {
             return data
         },
 
+        async fetchActivityH5pPlayerModel(courseId, activityId) {
+            const { data } = await api.get(`/student/self-paced-courses/${courseId}/activities/${activityId}/h5p-player-model`)
+            return data
+        },
+
         clear() {
             this.course = null
         },

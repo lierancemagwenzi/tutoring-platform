@@ -16,6 +16,7 @@ import AudioRenderer from '../components/self-paced-player/renderers/AudioRender
 import DocumentRenderer from '../components/self-paced-player/renderers/DocumentRenderer.vue'
 import DownloadRenderer from '../components/self-paced-player/renderers/DownloadRenderer.vue'
 import ExternalResourceRenderer from '../components/self-paced-player/renderers/ExternalResourceRenderer.vue'
+import H5pActivityRenderer from '../components/self-paced-player/renderers/H5pActivityRenderer.vue'
 import ImageGalleryRenderer from '../components/self-paced-player/renderers/ImageGalleryRenderer.vue'
 import InstructionRenderer from '../components/self-paced-player/renderers/InstructionRenderer.vue'
 import KatexActivityRenderer from '../components/self-paced-player/renderers/KatexActivityRenderer.vue'
@@ -48,4 +49,8 @@ export const selfPacedActivityRegistry = {
     assignment: { label: 'Assignment', icon: ClipboardDocumentListIcon, component: InstructionRenderer, autoComplete: false },
     homework: { label: 'Homework', icon: ClipboardDocumentListIcon, component: InstructionRenderer, autoComplete: false },
     reading: { label: 'Reading', icon: BookOpenIcon, component: InstructionRenderer, autoComplete: false },
+    // No score capture yet (unlike the H5P Assessment provider, which parses
+    // xAPI into a scored attempt) — this is a content block, completed the
+    // same explicit way as rich_text/mermaid/katex.
+    h5p: { label: 'Interactive', icon: PuzzlePieceIcon, component: H5pActivityRenderer, autoComplete: false },
 }
