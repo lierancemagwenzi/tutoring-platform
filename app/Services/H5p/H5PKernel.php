@@ -5,17 +5,19 @@ namespace App\Services\H5p;
 use App\Services\H5p\Framework\LaravelH5PEditorAjax;
 use App\Services\H5p\Framework\LaravelH5PEditorStorage;
 use App\Services\H5p\Framework\LaravelH5PFramework;
+use App\Services\H5p\Framework\LaravelH5PStorage;
 
 /**
  * Constructs the H5PCore/H5peditor/H5PValidator/H5PStorage instances the
  * rest of the H5P integration is built on — the PHP equivalent of what the
  * old Node h5p-server's src/h5p.ts createH5P() did.
  *
- * Storage is local disk for now (H5PDefaultStorage, rooted at
- * storage_path('app/h5p')) — swapping this for S3 on Laravel Cloud only
- * means changing storagePath()/the H5PDefaultStorage construction below,
- * everything else in the integration talks to H5PCore, not the filesystem
- * directly.
+ * Storage is local disk, rooted at storage_path('app/h5p'), via
+ * LaravelH5PStorage — an H5PDefaultStorage subclass that additionally
+ * mirrors every write/delete to config('h5p.storage_disk') when set, so
+ * content survives Laravel Cloud's ephemeral per-instance local disk. See
+ * fileStorage() below; H5pAssetController reads the same mirror disk as a
+ * fallback when serving a file that's missing locally.
  */
 class H5PKernel
 {
@@ -24,6 +26,8 @@ class H5PKernel
     protected ?\H5PCore $core = null;
 
     protected ?\H5peditor $editor = null;
+
+    protected ?\H5PFileStorage $fileStorage = null;
 
     public function framework(): \H5PFrameworkInterface
     {
@@ -41,11 +45,16 @@ class H5PKernel
         // on every save.
         return $this->core ??= new \H5PCore(
             $this->framework(),
-            $this->storagePath(),
+            $this->fileStorage(),
             $this->assetBaseUrl(),
             'en',
             false,
         );
+    }
+
+    public function fileStorage(): \H5PFileStorage
+    {
+        return $this->fileStorage ??= new LaravelH5PStorage($this->storagePath());
     }
 
     public function editor(): \H5peditor
