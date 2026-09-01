@@ -33,7 +33,7 @@ const canContinue = computed(() => {
 })
 
 function continueRegistration() {
-    router.push('/register/otp')
+    router.push('/register/password')
 }
 </script>
 
