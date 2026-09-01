@@ -55,6 +55,10 @@ export const useAuthStore = defineStore('auth', {
         async logout() {
             try {
                 await api.post('/logout')
+            } catch {
+                // Session may already be invalid/expired server-side (e.g. a
+                // 401) — that's fine, clearing local state below is what
+                // actually logs the user out; it must not block on this.
             } finally {
                 this.clearSession()
             }
