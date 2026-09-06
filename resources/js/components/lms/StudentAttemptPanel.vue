@@ -55,7 +55,7 @@ function statusLabel(status) {
 }
 
 function statusClasses(status) {
-    return STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-600'
+    return STATUS_CLASSES[status] ?? 'bg-card-alt text-muted'
 }
 
 async function launch() {
@@ -129,8 +129,8 @@ function loadH5pContent() {
 </script>
 
 <template>
-    <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink font-bold">Activity</h2>
+    <div class="mt-6 rounded-2xl bg-card p-6 shadow-elevated">
+        <h2 class="text-body font-bold">Activity</h2>
 
         <p v-if="actionError" class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
@@ -141,7 +141,7 @@ function loadH5pContent() {
         <div v-else-if="!current || (!isLive && !resultReady && current.status !== 'completed')" class="mt-4">
             <button
                 type="button"
-                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 :disabled="launching"
                 @click="launch"
             >
@@ -154,7 +154,7 @@ function loadH5pContent() {
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(current.status)">
                     {{ statusLabel(current.status) }}
                 </span>
-                <span class="text-xs text-gray-500">Attempt {{ current.attempt_number }}</span>
+                <span class="text-xs text-muted">Attempt {{ current.attempt_number }}</span>
             </div>
 
             <div v-if="isLive" class="mt-4">
@@ -165,24 +165,24 @@ function loadH5pContent() {
                     @xapi="onH5pXapi"
                 />
                 <SurveyComponent v-else-if="block.block_type === 'quiz' && surveyModel" :model="surveyModel" />
-                <p v-if="completing" class="mt-4 text-center text-sm text-gray-500">Submitting…</p>
+                <p v-if="completing" class="mt-4 text-center text-sm text-muted">Submitting…</p>
             </div>
 
-            <div v-else class="mt-4 rounded-xl bg-gray-50 p-4">
-                <p class="text-sm font-semibold text-gray-700">
+            <div v-else class="mt-4 rounded-xl bg-card-alt p-4">
+                <p class="text-sm font-semibold text-body">
                     Score: {{ current.raw_score }}<span v-if="current.max_score"> / {{ current.max_score }}</span>
                     <span v-if="current.percentage !== null"> ({{ current.percentage }}%)</span>
                 </p>
                 <p v-if="current.passed !== null" class="mt-1 text-sm font-semibold" :class="current.passed ? 'text-green-700' : 'text-red-700'">
                     {{ current.passed ? 'Passed' : 'Not Passed' }}
                 </p>
-                <p v-if="current.time_taken_seconds" class="mt-1 text-xs text-gray-500">
+                <p v-if="current.time_taken_seconds" class="mt-1 text-xs text-muted">
                     Time taken: {{ Math.round(current.time_taken_seconds / 60) }} min
                 </p>
 
                 <button
                     type="button"
-                    class="mt-4 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                    class="mt-4 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body disabled:opacity-40"
                     :disabled="launching"
                     @click="launch"
                 >
@@ -190,11 +190,11 @@ function loadH5pContent() {
                 </button>
             </div>
 
-            <div v-if="history.length" class="mt-6 border-t border-gray-100 pt-4">
-                <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Previous Attempts</p>
+            <div v-if="history.length" class="mt-6 border-t border-border pt-4">
+                <p class="text-xs font-semibold tracking-wide text-muted uppercase">Previous Attempts</p>
                 <div v-for="past in history" :key="past.id" class="mt-2 flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Attempt {{ past.attempt_number }}</span>
-                    <span v-if="past.percentage !== null" class="text-gray-600">{{ past.percentage }}%</span>
+                    <span class="text-muted">Attempt {{ past.attempt_number }}</span>
+                    <span v-if="past.percentage !== null" class="text-muted">{{ past.percentage }}%</span>
                     <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(past.status)">
                         {{ statusLabel(past.status) }}
                     </span>

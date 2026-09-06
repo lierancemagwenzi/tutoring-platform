@@ -22,8 +22,8 @@ const currentModuleDone = computed(() => {
 </script>
 
 <template>
-    <div class="border-t border-gray-100 bg-white px-4 py-3 sm:px-6">
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
+    <div class="bg-card border-border border-t px-4 py-3 sm:px-6">
+        <div class="text-muted flex flex-wrap items-center justify-between gap-2 text-xs">
             <span>Overall Progress: {{ course.progress.overall_percentage }}%</span>
             <span v-if="currentModule">{{ currentModule.title }}: {{ currentModuleDone }} / {{ currentModuleTotal }}</span>
             <span>{{ course.progress.remaining_chapters }} chapter{{ course.progress.remaining_chapters === 1 ? '' : 's' }} remaining</span>

@@ -21,12 +21,12 @@ const actions = computed(() => [
             v-for="action in actions"
             :key="action.title"
             :to="action.to"
-            class="flex items-center gap-3 rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md"
+            class="bg-card hover:shadow-popover flex items-center gap-3 rounded-2xl p-5 shadow-elevated transition"
         >
             <span class="bg-amber flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white">
                 <component :is="action.icon" class="h-5 w-5" />
             </span>
-            <p class="text-ink font-semibold">{{ action.title }}</p>
+            <p class="text-body font-semibold">{{ action.title }}</p>
         </router-link>
     </div>
 </template>

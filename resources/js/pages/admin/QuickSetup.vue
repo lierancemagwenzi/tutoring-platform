@@ -64,8 +64,8 @@ async function sendTestEmail() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Quick Setup</h1>
-        <p class="mt-1 text-sm text-gray-500">Everything required before the platform is ready to operate.</p>
+        <h1 class="text-body text-2xl font-bold">Quick Setup</h1>
+        <p class="mt-1 text-sm text-muted">Everything required before the platform is ready to operate.</p>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -74,14 +74,14 @@ async function sendTestEmail() {
         </div>
 
         <template v-else>
-            <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
-                <div class="h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
+            <section class="mt-6 rounded-2xl bg-card p-5 shadow-elevated">
+                <div class="h-2.5 w-full overflow-hidden rounded-full bg-card-alt">
                     <div
                         class="bg-amber h-full rounded-full transition-all"
                         :style="{ width: `${(store.progress.completed / Math.max(store.progress.total, 1)) * 100}%` }"
                     />
                 </div>
-                <p class="mt-2 text-sm text-gray-600">{{ store.progress.completed }} / {{ store.progress.total }} completed</p>
+                <p class="mt-2 text-sm text-muted">{{ store.progress.completed }} / {{ store.progress.total }} completed</p>
                 <p class="mt-2 text-sm font-semibold" :class="store.progress.ready_for_production ? 'text-green-700' : 'text-amber-700'">
                     {{
                         store.progress.ready_for_production
@@ -92,13 +92,13 @@ async function sendTestEmail() {
             </section>
 
             <section class="mt-6">
-                <h2 class="text-ink font-bold">Required</h2>
+                <h2 class="text-body font-bold">Required</h2>
                 <div class="mt-3 space-y-3">
-                    <div v-for="item in requiredItems" :key="item.key" class="rounded-2xl bg-white p-5 shadow-sm">
+                    <div v-for="item in requiredItems" :key="item.key" class="rounded-2xl bg-card p-5 shadow-elevated">
                         <div class="flex items-start justify-between gap-4">
                             <div>
-                                <p class="text-ink font-semibold">{{ item.name }}</p>
-                                <p class="mt-1 text-sm text-gray-500">{{ item.description }}</p>
+                                <p class="text-body font-semibold">{{ item.name }}</p>
+                                <p class="mt-1 text-sm text-muted">{{ item.description }}</p>
                             </div>
                             <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(item.status)">
                                 {{ adminStatusLabel(item.status) }}
@@ -109,13 +109,13 @@ async function sendTestEmail() {
                             <router-link v-if="resolveAction(item.action_link)" :to="resolveAction(item.action_link)" class="text-accent text-sm font-semibold">
                                 {{ item.action_label }}
                             </router-link>
-                            <span v-else class="text-sm text-gray-400">{{ item.action_label }}</span>
+                            <span v-else class="text-sm text-muted">{{ item.action_label }}</span>
 
                             <template v-if="item.key === 'email'">
                                 <button
                                     type="button"
                                     :disabled="testEmailSending"
-                                    class="text-sm font-semibold text-gray-700 hover:text-gray-900 disabled:opacity-40"
+                                    class="text-sm font-semibold text-body hover:text-body disabled:opacity-40"
                                     @click="sendTestEmail"
                                 >
                                     {{ testEmailSending ? 'Sending…' : 'Send Test Email' }}
@@ -135,13 +135,13 @@ async function sendTestEmail() {
             </section>
 
             <section class="mt-6">
-                <h2 class="text-ink font-bold">Optional</h2>
+                <h2 class="text-body font-bold">Optional</h2>
                 <div class="mt-3 space-y-3">
-                    <div v-for="item in optionalItems" :key="item.key" class="rounded-2xl bg-white p-5 shadow-sm">
+                    <div v-for="item in optionalItems" :key="item.key" class="rounded-2xl bg-card p-5 shadow-elevated">
                         <div class="flex items-start justify-between gap-4">
                             <div>
-                                <p class="text-ink font-semibold">{{ item.name }}</p>
-                                <p class="mt-1 text-sm text-gray-500">{{ item.description }}</p>
+                                <p class="text-body font-semibold">{{ item.name }}</p>
+                                <p class="mt-1 text-sm text-muted">{{ item.description }}</p>
                             </div>
                             <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(item.status)">
                                 {{ adminStatusLabel(item.status) }}

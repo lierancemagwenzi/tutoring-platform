@@ -25,6 +25,7 @@ class AccountVerificationTest extends TestCase
             'phone' => '0123456789',
             'date_of_birth' => '2000-01-01',
             'is_minor' => false,
+            'terms_accepted' => true,
             'password' => 'Password!123',
             'password_confirmation' => 'Password!123',
         ]);
@@ -52,6 +53,7 @@ class AccountVerificationTest extends TestCase
             'phone' => '0123456789',
             'date_of_birth' => '2000-01-01',
             'is_minor' => false,
+            'terms_accepted' => true,
             'password' => 'Password!123',
             'password_confirmation' => 'Password!123',
         ]);
@@ -195,6 +197,7 @@ class AccountVerificationTest extends TestCase
             'phone' => '0123456789',
             'date_of_birth' => '2000-01-01',
             'is_minor' => false,
+            'terms_accepted' => true,
             'password' => 'Password!123',
             'password_confirmation' => 'Password!123',
         ]);

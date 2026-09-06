@@ -20,16 +20,16 @@ function goToPage(page) {
         <button
             type="button"
             :disabled="meta.current_page <= 1"
-            class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+            class="border-border text-muted flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-40"
             @click="goToPage(meta.current_page - 1)"
         >
             <ChevronLeftIcon class="h-5 w-5" />
         </button>
-        <span class="text-sm text-gray-500">Page {{ meta.current_page }} of {{ meta.last_page }}</span>
+        <span class="text-muted text-sm">Page {{ meta.current_page }} of {{ meta.last_page }}</span>
         <button
             type="button"
             :disabled="meta.current_page >= meta.last_page"
-            class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+            class="border-border text-muted flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-40"
             @click="goToPage(meta.current_page + 1)"
         >
             <ChevronRightIcon class="h-5 w-5" />

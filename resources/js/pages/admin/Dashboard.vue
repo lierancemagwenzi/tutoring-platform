@@ -82,7 +82,7 @@ const STAT_GROUPS = [
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Admin Dashboard</h1>
+        <h1 class="text-body text-2xl font-bold">Admin Dashboard</h1>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -91,8 +91,8 @@ const STAT_GROUPS = [
         </div>
 
         <template v-else-if="dashboard.overview">
-            <section v-if="dashboard.actionRequired.length > 0" class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
-                <h2 class="text-ink font-bold">Action Required</h2>
+            <section v-if="dashboard.actionRequired.length > 0" class="mt-6 rounded-2xl bg-card p-5 shadow-elevated">
+                <h2 class="text-body font-bold">Action Required</h2>
                 <ul class="mt-3 space-y-2">
                     <li v-for="(alert, index) in dashboard.actionRequired" :key="index">
                         <router-link
@@ -105,22 +105,22 @@ const STAT_GROUPS = [
                     </li>
                 </ul>
             </section>
-            <section v-else class="mt-6 rounded-2xl bg-green-50 p-5 text-sm font-medium text-green-700 shadow-sm">
+            <section v-else class="mt-6 rounded-2xl bg-green-50 p-5 text-sm font-medium text-green-700 shadow-elevated">
                 Nothing needs your attention right now.
             </section>
 
-            <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
+            <section class="mt-6 rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-ink font-bold">Quick Setup</h2>
+                    <h2 class="text-body font-bold">Quick Setup</h2>
                     <router-link to="/admin/quick-setup" class="text-accent text-sm font-semibold">View Checklist</router-link>
                 </div>
-                <div class="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
+                <div class="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-card-alt">
                     <div
                         class="bg-amber h-full rounded-full transition-all"
                         :style="{ width: `${(quickSetup.progress.completed / Math.max(quickSetup.progress.total, 1)) * 100}%` }"
                     />
                 </div>
-                <p class="mt-2 text-sm text-gray-600">
+                <p class="mt-2 text-sm text-muted">
                     {{ quickSetup.progress.completed }} / {{ quickSetup.progress.total }} completed &middot;
                     {{ quickSetup.progress.required_completed }} / {{ quickSetup.progress.required_total }} required
                 </p>
@@ -134,28 +134,28 @@ const STAT_GROUPS = [
             </section>
 
             <div class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <section v-for="group in STAT_GROUPS" :key="group.key" class="rounded-2xl bg-white p-5 shadow-sm">
-                    <h2 class="text-ink font-bold">{{ group.title }}</h2>
+                <section v-for="group in STAT_GROUPS" :key="group.key" class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <h2 class="text-body font-bold">{{ group.title }}</h2>
                     <dl class="mt-3 grid grid-cols-2 gap-4">
                         <div v-for="stat in group.stats" :key="stat.key">
-                            <dt class="text-xs text-gray-500">{{ stat.label }}</dt>
-                            <dd class="text-ink text-xl font-bold">{{ dashboard.overview[group.key]?.[stat.key] ?? 0 }}</dd>
+                            <dt class="text-xs text-muted">{{ stat.label }}</dt>
+                            <dd class="text-body text-xl font-bold">{{ dashboard.overview[group.key]?.[stat.key] ?? 0 }}</dd>
                         </div>
                     </dl>
                 </section>
             </div>
 
-            <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
+            <section class="mt-6 rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-ink font-bold">Recent Activity</h2>
+                    <h2 class="text-body font-bold">Recent Activity</h2>
                     <router-link to="/admin/activity-log" class="text-accent text-sm font-semibold">View All</router-link>
                 </div>
-                <p v-if="activityLog.logs.length === 0" class="mt-3 text-sm text-gray-500">No activity recorded yet.</p>
+                <p v-if="activityLog.logs.length === 0" class="mt-3 text-sm text-muted">No activity recorded yet.</p>
                 <ul v-else class="mt-3 space-y-3">
-                    <li v-for="log in activityLog.logs" :key="log.id" class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
-                        <p class="text-ink text-sm">{{ log.description }}</p>
-                        <div class="mt-1 flex flex-wrap gap-x-3 text-xs text-gray-500">
-                            <span v-if="log.actor" class="font-medium text-gray-600">{{ log.actor.name }}</span>
+                    <li v-for="log in activityLog.logs" :key="log.id" class="border-b border-border pb-3 last:border-0 last:pb-0">
+                        <p class="text-body text-sm">{{ log.description }}</p>
+                        <div class="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">
+                            <span v-if="log.actor" class="font-medium text-muted">{{ log.actor.name }}</span>
                             <span>{{ log.created_at.slice(0, 19).replace('T', ' ') }}</span>
                         </div>
                     </li>

@@ -302,8 +302,8 @@ async function onReorderAttachments() {
 
         <template v-else>
             <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back to Lesson Builder</button>
-            <h1 class="text-ink mt-1 text-2xl font-bold">{{ pageTitle }} Configuration</h1>
-            <p class="mt-1 text-gray-500">
+            <h1 class="text-body mt-1 text-2xl font-bold">{{ pageTitle }} Configuration</h1>
+            <p class="mt-1 text-muted">
                 Configure the reusable content for this activity. Availability, completion, attempts, and passing
                 score are configured per session, in Manage Lesson Content.
             </p>
@@ -312,58 +312,58 @@ async function onReorderAttachments() {
             <p v-if="saveSuccess" class="mt-6 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">Saved.</p>
 
             <form class="mt-8 max-w-3xl space-y-6" novalidate @submit.prevent="save">
-                <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">General</h2>
+                <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">General</h2>
                     <FloatingLabelInput id="activity-title" v-model="form.title" label="Title" />
                     <TextareaInput id="activity-description" v-model="form.description" label="Description" />
                     <SelectInput id="activity-status" v-model="form.status" label="Status" :options="STATUS_OPTIONS" />
                 </section>
 
-                <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Instructions</h2>
+                <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Instructions</h2>
                     <RichTextEditor
                         v-model="form.instructionsHtml"
                         @update:json="(json) => (form.instructionsJson = json)"
                     />
                 </section>
 
-                <section v-if="activity.type === 'lab'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Lab Details</h2>
+                <section v-if="activity.type === 'lab'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Lab Details</h2>
                     <TagInput id="lab-equipment" v-model="form.settings.equipment_required" label="Equipment Required (press Enter to add)" />
                     <TagInput id="lab-software" v-model="form.settings.software_required" label="Software Required (press Enter to add)" />
                     <TextareaInput id="lab-safety" v-model="form.settings.safety_instructions" label="Safety Instructions" />
                     <TextareaInput id="lab-notes" v-model="form.settings.practical_notes" label="Practical Notes" />
                 </section>
 
-                <section v-if="activity.type === 'reflection'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Reflection</h2>
+                <section v-if="activity.type === 'reflection'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Reflection</h2>
                     <TextareaInput id="reflection-prompt" v-model="form.settings.reflection_prompt" label="Reflection Prompt" />
                 </section>
 
-                <section v-if="activity.type === 'reading'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Reading Details</h2>
+                <section v-if="activity.type === 'reading'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Reading Details</h2>
                     <FloatingLabelInput
                         id="reading-time"
                         v-model="form.settings.estimated_reading_time_minutes"
                         type="number"
                         label="Estimated Reading Time (minutes)"
                     />
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.settings.required_reading" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Required reading
                     </label>
                 </section>
 
-                <section v-if="activity.type === 'project'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Project Details</h2>
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                <section v-if="activity.type === 'project'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Project Details</h2>
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.settings.is_group_project" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Group project
                     </label>
                 </section>
 
-                <section v-if="activity.type === 'assessment'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Assessment Details</h2>
+                <section v-if="activity.type === 'assessment'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Assessment Details</h2>
                     <FloatingLabelInput
                         id="assessment-time-limit"
                         v-model="form.settings.time_limit_minutes"
@@ -372,23 +372,23 @@ async function onReorderAttachments() {
                     />
                 </section>
 
-                <section v-if="activity.type === 'external_activity'" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">External Activity</h2>
+                <section v-if="activity.type === 'external_activity'" class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">External Activity</h2>
                     <FloatingLabelInput id="external-url" v-model="form.settings.external_url" label="External URL" />
                     <FloatingLabelInput id="external-button-label" v-model="form.settings.button_label" label="Button Label" />
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.settings.open_in_new_tab" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Open in new tab
                     </label>
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.settings.embed_enabled" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Embed activity (optional)
                     </label>
                 </section>
 
-                <section class="rounded-2xl bg-white p-6 shadow-sm">
+                <section class="rounded-2xl bg-card p-6 shadow-elevated">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-ink font-bold">Attachments</h2>
+                        <h2 class="text-body font-bold">Attachments</h2>
                         <button
                             type="button"
                             class="text-accent flex items-center gap-1 text-sm font-semibold"
@@ -399,7 +399,7 @@ async function onReorderAttachments() {
                         </button>
                     </div>
 
-                    <p v-if="attachments.length === 0" class="mt-4 text-sm text-gray-500">No attachments yet.</p>
+                    <p v-if="attachments.length === 0" class="mt-4 text-sm text-muted">No attachments yet.</p>
 
                     <draggable
                         v-else
@@ -410,14 +410,14 @@ async function onReorderAttachments() {
                         @end="onReorderAttachments"
                     >
                         <template #item="{ element: item }">
-                            <div class="flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-3">
-                                <span class="drag-handle cursor-grab text-gray-400">
+                            <div class="flex items-center gap-3 rounded-xl border border-border px-4 py-3">
+                                <span class="drag-handle cursor-grab text-muted">
                                     <Bars3Icon class="h-4 w-4" />
                                 </span>
                                 <component :is="typeMeta(item.media_type).icon" class="text-accent h-4 w-4 shrink-0" />
-                                <span class="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">{{ item.title }}</span>
-                                <span class="shrink-0 text-xs text-gray-500">{{ typeMeta(item.media_type).label }}</span>
-                                <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEditAttachment(item)">
+                                <span class="min-w-0 flex-1 truncate text-sm font-medium text-body">{{ item.title }}</span>
+                                <span class="shrink-0 text-xs text-muted">{{ typeMeta(item.media_type).label }}</span>
+                                <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEditAttachment(item)">
                                     <PencilSquareIcon class="h-4 w-4" />
                                 </button>
                                 <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="removeAttachment(item)">
@@ -428,8 +428,8 @@ async function onReorderAttachments() {
                     </draggable>
                 </section>
 
-                <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Scoring &amp; Submission</h2>
+                <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Scoring &amp; Submission</h2>
                     <SelectInput id="submission-type" v-model="form.submissionType" label="Submission Type" :options="SUBMISSION_TYPE_OPTIONS" />
                     <FloatingLabelInput
                         id="max-score"
@@ -440,13 +440,13 @@ async function onReorderAttachments() {
                 </section>
 
                 <div class="flex justify-end gap-3 pb-4">
-                    <router-link to="/tutor/courses" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700">
+                    <router-link to="/tutor/courses" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body">
                         Done
                     </router-link>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>
@@ -472,13 +472,13 @@ async function onReorderAttachments() {
                 <SelectInput v-if="editingAttachment" id="attachment-status" v-model="attachmentForm.status" label="Status" :options="STATUS_OPTIONS" />
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="attachmentModalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="attachmentModalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="attachmentSaving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ attachmentSaving ? 'Saving…' : 'Save' }}
                     </button>

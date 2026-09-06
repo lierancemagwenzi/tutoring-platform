@@ -111,12 +111,12 @@ async function remove(admin) {
     <div class="p-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-ink text-2xl font-bold">Admins</h1>
-                <p class="mt-1 text-sm text-gray-500">Invite and manage other administrator accounts.</p>
+                <h1 class="text-body text-2xl font-bold">Admins</h1>
+                <p class="mt-1 text-sm text-muted">Invite and manage other administrator accounts.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openInvite"
             >
                 Invite Admin
@@ -129,28 +129,28 @@ async function remove(admin) {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.admins.length === 0" class="mt-16 text-center text-gray-500">No admins yet.</div>
+        <div v-else-if="store.admins.length === 0" class="mt-16 text-center text-muted">No admins yet.</div>
 
         <div v-else class="mt-6 space-y-3">
-            <div v-for="admin in store.admins" :key="admin.id" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="admin in store.admins" :key="admin.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2">
-                            <p class="text-ink font-bold">{{ admin.name }}</p>
+                            <p class="text-body font-bold">{{ admin.name }}</p>
                             <span v-if="admin.is_super_admin" class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700">
                                 Super Admin
                             </span>
-                            <span v-if="admin.id === auth.user?.id" class="text-xs text-gray-400">(you)</span>
+                            <span v-if="admin.id === auth.user?.id" class="text-xs text-muted">(you)</span>
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">{{ admin.email }}</p>
-                        <p class="mt-2 text-xs text-gray-500">Invited {{ admin.invited_at.slice(0, 10) }}</p>
+                        <p class="mt-1 text-sm text-muted">{{ admin.email }}</p>
+                        <p class="mt-2 text-xs text-muted">Invited {{ admin.invited_at.slice(0, 10) }}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(rowStatus(admin))">
                         {{ adminStatusLabel(rowStatus(admin)) }}
                     </span>
                 </div>
 
-                <div v-if="manageable(admin)" class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div v-if="manageable(admin)" class="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-4">
                     <button
                         v-if="admin.is_pending"
                         type="button"
@@ -187,42 +187,42 @@ async function remove(admin) {
                 <p v-if="inviteError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ inviteError }}</p>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="invite-first-name">First Name</label>
+                    <label class="block text-sm font-semibold text-body" for="invite-first-name">First Name</label>
                     <input
                         id="invite-first-name"
                         v-model="inviteForm.first_name"
                         type="text"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="invite-last-name">Last Name</label>
+                    <label class="block text-sm font-semibold text-body" for="invite-last-name">Last Name</label>
                     <input
                         id="invite-last-name"
                         v-model="inviteForm.last_name"
                         type="text"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="invite-email">Email</label>
+                    <label class="block text-sm font-semibold text-body" for="invite-email">Email</label>
                     <input
                         id="invite-email"
                         v-model="inviteForm.email"
                         type="email"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
             </div>
 
             <template #footer>
-                <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700" @click="inviteModalOpen = false">
+                <button type="button" class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body" @click="inviteModalOpen = false">
                     Cancel
                 </button>
                 <button
                     type="button"
                     :disabled="inviting"
-                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:opacity-40"
+                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:opacity-40"
                     @click="submitInvite"
                 >
                     {{ inviting ? 'Sending…' : 'Send Invite' }}

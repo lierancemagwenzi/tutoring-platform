@@ -52,51 +52,51 @@ async function submitReply() {
         </div>
 
         <template v-else-if="store.ticket">
-            <div class="mt-4 rounded-2xl bg-white p-6 shadow-sm">
+            <div class="bg-card shadow-elevated mt-4 rounded-2xl p-6">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink text-lg font-bold">{{ store.ticket.subject }}</p>
-                        <p class="mt-1 text-sm text-gray-500">{{ store.ticket.created_at.slice(0, 10) }}</p>
+                        <p class="text-body text-lg font-bold">{{ store.ticket.subject }}</p>
+                        <p class="text-muted mt-1 text-sm">{{ store.ticket.created_at.slice(0, 10) }}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(store.ticket.status)">
                         {{ adminStatusLabel(store.ticket.status) }}
                     </span>
                 </div>
-                <p class="mt-4 text-sm text-gray-700">{{ store.ticket.message }}</p>
+                <p class="text-body mt-4 text-sm">{{ store.ticket.message }}</p>
             </div>
 
             <section class="mt-6">
-                <h2 class="text-ink font-bold">Conversation</h2>
+                <h2 class="text-body font-bold">Conversation</h2>
 
-                <div v-if="store.comments.length === 0" class="mt-4 text-sm text-gray-500">No replies yet.</div>
+                <div v-if="store.comments.length === 0" class="text-muted mt-4 text-sm">No replies yet.</div>
 
                 <div v-else class="mt-4 space-y-3">
                     <div
                         v-for="comment in store.comments"
                         :key="comment.id"
-                        class="rounded-2xl p-4 shadow-sm"
-                        :class="comment.author.is_admin ? 'bg-indigo-50' : 'bg-white'"
+                        class="shadow-elevated rounded-2xl p-4"
+                        :class="comment.author.is_admin ? 'bg-accent/10' : 'bg-card'"
                     >
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span class="font-semibold text-gray-700">{{ comment.author.name }}{{ comment.author.is_admin ? ' (Admin)' : '' }}</span>
+                        <div class="text-muted flex items-center justify-between text-xs">
+                            <span class="text-body font-semibold">{{ comment.author.name }}{{ comment.author.is_admin ? ' (Admin)' : '' }}</span>
                             <span>{{ comment.created_at.slice(0, 10) }}</span>
                         </div>
-                        <p class="mt-2 text-sm text-gray-700">{{ comment.body }}</p>
+                        <p class="text-body mt-2 text-sm">{{ comment.body }}</p>
                     </div>
                 </div>
 
-                <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
+                <div class="bg-card shadow-elevated mt-5 rounded-2xl p-5">
                     <p v-if="replyError" class="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{{ replyError }}</p>
                     <textarea
                         v-model="replyBody"
                         rows="3"
-                        class="focus:border-accent w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent bg-card text-body border-border w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                         placeholder="Write a reply..."
                     />
                     <button
                         type="button"
                         :disabled="replying || !replyBody.trim()"
-                        class="bg-amber mt-3 rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber shadow-elevated mt-3 rounded-full px-6 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         @click="submitReply"
                     >
                         {{ replying ? 'Sending…' : 'Send Reply' }}

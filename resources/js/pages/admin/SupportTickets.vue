@@ -39,8 +39,8 @@ function selectStatus(status) {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Support Tickets</h1>
-        <p class="mt-1 text-sm text-gray-500">General help requests raised by tutors and students.</p>
+        <h1 class="text-body text-2xl font-bold">Support Tickets</h1>
+        <p class="mt-1 text-sm text-muted">General help requests raised by tutors and students.</p>
 
         <div class="mt-6 flex flex-wrap gap-2">
             <button
@@ -48,7 +48,7 @@ function selectStatus(status) {
                 :key="tab.value"
                 type="button"
                 class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                :class="filters.status === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                :class="filters.status === tab.value ? 'bg-amber text-white' : 'border border-border text-body hover:brightness-95'"
                 @click="selectStatus(tab.value)"
             >
                 {{ tab.label }}
@@ -61,23 +61,23 @@ function selectStatus(status) {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.tickets.length === 0" class="mt-16 text-center text-gray-500">No support tickets found.</div>
+        <div v-else-if="store.tickets.length === 0" class="mt-16 text-center text-muted">No support tickets found.</div>
 
         <div v-else class="mt-6 space-y-3">
             <router-link
                 v-for="ticket in store.tickets"
                 :key="ticket.id"
                 :to="{ name: 'admin.support-tickets.show', params: { id: ticket.id } }"
-                class="block rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md"
+                class="block rounded-2xl bg-card p-5 shadow-elevated transition hover:shadow-popover"
             >
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink font-bold">{{ ticket.subject }}</p>
-                        <p class="mt-1 text-sm text-gray-500">
+                        <p class="text-body font-bold">{{ ticket.subject }}</p>
+                        <p class="mt-1 text-sm text-muted">
                             {{ ticket.user.name }} &middot; <span class="capitalize">{{ ticket.user.role }}</span>
                         </p>
-                        <p class="mt-1 text-sm text-gray-600">{{ ticket.message }}</p>
-                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                        <p class="mt-1 text-sm text-muted">{{ ticket.message }}</p>
+                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
                             <span>{{ ticket.comments_count }} comment{{ ticket.comments_count === 1 ? '' : 's' }}</span>
                             <span>{{ ticket.created_at.slice(0, 10) }}</span>
                         </div>

@@ -138,12 +138,12 @@ function exportUrl(contentId) {
     <div class="p-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-ink text-2xl font-bold">H5P Content</h1>
-                <p class="mt-1 text-gray-500">Your interactive activities, grouped by subject and grade.</p>
+                <h1 class="text-body text-2xl font-bold">H5P Content</h1>
+                <p class="mt-1 text-muted">Your interactive activities, grouped by subject and grade.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="createNew"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -158,7 +158,7 @@ function exportUrl(contentId) {
         </div>
 
         <template v-else>
-            <div class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
+            <div class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-card p-5 shadow-elevated sm:grid-cols-3">
                 <SelectInput
                     id="filter-subject"
                     :model-value="filters.subjectId"
@@ -183,17 +183,17 @@ function exportUrl(contentId) {
             </div>
 
             <div v-if="contents.length === 0" class="mt-16 flex flex-col items-center text-center">
-                <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                <span class="flex h-16 w-16 items-center justify-center rounded-full bg-card-alt text-muted">
                     <PuzzlePieceIcon class="h-8 w-8" />
                 </span>
-                <p class="mt-4 text-gray-500">No H5P activities yet. Create your first one to get started.</p>
+                <p class="mt-4 text-muted">No H5P activities yet. Create your first one to get started.</p>
             </div>
 
             <div v-else class="mt-8 space-y-10">
                 <section v-for="group in groups" :key="group.subjectName">
-                    <h2 class="text-ink text-lg font-bold">{{ group.subjectName }}</h2>
+                    <h2 class="text-body text-lg font-bold">{{ group.subjectName }}</h2>
                     <div v-for="gradeGroup in group.grades" :key="gradeGroup.gradeName" class="mt-4">
-                        <h3 class="text-sm font-semibold text-gray-500">{{ gradeGroup.gradeName }}</h3>
+                        <h3 class="text-sm font-semibold text-muted">{{ gradeGroup.gradeName }}</h3>
                         <div class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             <H5pContentCard
                                 v-for="item in gradeGroup.items"

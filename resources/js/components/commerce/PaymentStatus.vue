@@ -55,11 +55,11 @@ onBeforeUnmount(() => clearTimeout(timer))
             <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
                 <CheckCircleIcon class="h-8 w-8" />
             </span>
-            <h2 class="text-ink mt-4 text-xl font-bold">Payment successful!</h2>
-            <p class="mt-2 text-gray-500">{{ successMessage }}</p>
+            <h2 class="text-body mt-4 text-xl font-bold">Payment successful!</h2>
+            <p class="text-muted mt-2">{{ successMessage }}</p>
             <router-link
                 :to="successRoute"
-                class="bg-amber mt-6 inline-block rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated mt-6 inline-block rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
             >
                 {{ successLabel }}
             </router-link>
@@ -67,23 +67,23 @@ onBeforeUnmount(() => clearTimeout(timer))
 
         <template v-else-if="!settled && attempts < MAX_ATTEMPTS">
             <span class="border-amber mx-auto flex h-16 w-16 animate-spin items-center justify-center rounded-full border-4 border-t-transparent" />
-            <h2 class="text-ink mt-4 text-xl font-bold">Confirming your payment…</h2>
-            <p class="mt-2 text-gray-500">This can take a few seconds after you return from PayFast.</p>
+            <h2 class="text-body mt-4 text-xl font-bold">Confirming your payment…</h2>
+            <p class="text-muted mt-2">This can take a few seconds after you return from PayFast.</p>
         </template>
 
         <template v-else>
-            <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+            <span class="bg-card-alt text-muted mx-auto flex h-16 w-16 items-center justify-center rounded-full">
                 <ClockIcon v-if="!order" class="h-8 w-8" />
                 <XCircleIcon v-else class="h-8 w-8" />
             </span>
-            <h2 class="text-ink mt-4 text-xl font-bold">Payment not confirmed yet</h2>
-            <p class="mt-2 text-gray-500">
+            <h2 class="text-body mt-4 text-xl font-bold">Payment not confirmed yet</h2>
+            <p class="text-muted mt-2">
                 We haven't received confirmation of this payment. If you completed checkout, it may still be processing.
             </p>
             <router-link
                 v-if="order"
                 :to="`/student/orders/${order.id}`"
-                class="bg-amber mt-6 inline-block rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated mt-6 inline-block rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
             >
                 View Order
             </router-link>

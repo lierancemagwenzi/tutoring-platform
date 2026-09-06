@@ -19,13 +19,13 @@ function toggle(moduleId) {
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink text-lg font-bold">Course Curriculum</h2>
-        <p class="mt-1 text-sm text-gray-500">
+    <div class="bg-card shadow-elevated rounded-2xl p-6">
+        <h2 class="text-body text-lg font-bold">Course Curriculum</h2>
+        <p class="text-muted mt-1 text-sm">
             {{ course.modules_count }} modules &middot; {{ course.activities_count }} activities &middot; {{ course.assessments_count }} assessments
         </p>
 
-        <div v-if="course.modules.length === 0" class="mt-4 text-sm text-gray-400 italic">No modules published yet.</div>
+        <div v-if="course.modules.length === 0" class="text-muted mt-4 text-sm italic">No modules published yet.</div>
 
         <div v-else class="mt-4 space-y-2">
             <ModuleAccordion

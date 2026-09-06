@@ -49,28 +49,28 @@ async function decline(booking) {
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
+    <div class="rounded-2xl bg-card p-6 shadow-elevated">
         <div class="flex items-center justify-between">
-            <h2 class="text-ink text-lg font-bold">Booking Requests</h2>
+            <h2 class="text-body text-lg font-bold">Booking Requests</h2>
             <router-link to="/tutor/booking-requests" class="text-accent text-sm font-semibold">View all</router-link>
         </div>
 
         <p v-if="actionError" class="mt-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
         <div v-if="localRequests.length === 0" class="mt-6 flex flex-col items-center py-6 text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-card-alt text-muted">
                 <InboxArrowDownIcon class="h-7 w-7" />
             </span>
-            <p class="mt-3 text-sm text-gray-500">No booking requests to show.</p>
+            <p class="mt-3 text-sm text-muted">No booking requests to show.</p>
         </div>
 
-        <ul v-else class="mt-4 divide-y divide-gray-100">
+        <ul v-else class="mt-4 divide-y divide-border">
             <li v-for="request in localRequests" :key="request.id" class="py-3 first:pt-0 last:pb-0">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-ink font-semibold">{{ request.student.first_name }} {{ request.student.last_name }}</p>
-                        <p class="text-sm text-gray-500">{{ request.service.title }}</p>
-                        <p class="mt-1 text-xs text-gray-400">{{ request.date }} &middot; {{ request.start_time }} - {{ request.end_time }}</p>
+                        <p class="text-body font-semibold">{{ request.student.first_name }} {{ request.student.last_name }}</p>
+                        <p class="text-sm text-muted">{{ request.service.title }}</p>
+                        <p class="mt-1 text-xs text-muted">{{ request.date }} &middot; {{ request.start_time }} - {{ request.end_time }}</p>
                     </div>
                 </div>
                 <div class="mt-2 flex flex-wrap gap-4 text-sm font-semibold">

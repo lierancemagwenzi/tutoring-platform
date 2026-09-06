@@ -22,7 +22,7 @@ function open() {
 <template>
     <button
         type="button"
-        class="flex w-full items-center gap-3 rounded-2xl bg-white p-5 text-left shadow-sm transition hover:bg-gray-50"
+        class="flex w-full items-center gap-3 rounded-2xl bg-card p-5 text-left shadow-elevated transition hover:brightness-95"
         @click="open"
     >
         <span class="bg-accent/10 text-accent flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
@@ -31,12 +31,12 @@ function open() {
 
         <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
-                <p class="text-ink font-bold">{{ block.title || label }}</p>
-                <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">{{ label }}</span>
+                <p class="text-body font-bold">{{ block.title || label }}</p>
+                <span class="rounded-full bg-card-alt px-2.5 py-0.5 text-xs font-semibold text-muted">{{ label }}</span>
             </div>
-            <p v-if="summary" class="mt-1 truncate text-sm text-gray-500">{{ summary }}</p>
+            <p v-if="summary" class="mt-1 truncate text-sm text-muted">{{ summary }}</p>
         </div>
 
-        <ChevronRightIcon class="h-4 w-4 shrink-0 text-gray-400" />
+        <ChevronRightIcon class="h-4 w-4 shrink-0 text-muted" />
     </button>
 </template>

@@ -11,7 +11,7 @@ const heightClass = computed(() => (props.size === 'sm' ? 'h-1.5' : 'h-2.5'))
 </script>
 
 <template>
-    <div class="w-full overflow-hidden rounded-full bg-gray-100" :class="heightClass">
+    <div class="bg-card-alt w-full overflow-hidden rounded-full" :class="heightClass">
         <div
             class="bg-amber h-full rounded-full transition-all duration-300"
             :style="{ width: `${clamped}%` }"

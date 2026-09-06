@@ -31,6 +31,8 @@ class UpdateSettingsRequest extends FormRequest
         'pricing.booking_fee_percentage',
         'pricing.min_tutor_price',
         'pricing.max_tutor_price',
+        'legal.terms_and_conditions',
+        'legal.privacy_policy',
     ];
 
     public function authorize(): bool

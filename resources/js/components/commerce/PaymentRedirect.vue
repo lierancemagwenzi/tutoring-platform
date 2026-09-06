@@ -36,8 +36,8 @@ onMounted(async () => {
 
         <template v-else>
             <div class="border-amber mx-auto h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
-            <p class="text-ink mt-4 font-semibold">Redirecting to PayFast…</p>
-            <p class="mt-1 text-sm text-gray-500">Please wait, you're being taken to a secure payment page.</p>
+            <p class="text-body mt-4 font-semibold">Redirecting to PayFast…</p>
+            <p class="text-muted mt-1 text-sm">Please wait, you're being taken to a secure payment page.</p>
 
             <form ref="formRef" :action="processUrl" method="POST" class="hidden">
                 <input v-for="(value, key) in fields" :key="key" type="hidden" :name="key" :value="value" />

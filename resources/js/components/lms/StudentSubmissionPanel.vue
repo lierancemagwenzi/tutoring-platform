@@ -164,13 +164,13 @@ function statusLabel(status) {
 }
 
 function statusClasses(status) {
-    return STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-600'
+    return STATUS_CLASSES[status] ?? 'bg-card-alt text-muted'
 }
 </script>
 
 <template>
-    <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink font-bold">Your Submission</h2>
+    <div class="mt-6 rounded-2xl bg-card p-6 shadow-elevated">
+        <h2 class="text-body font-bold">Your Submission</h2>
 
         <p v-if="actionError" class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
@@ -179,10 +179,10 @@ function statusClasses(status) {
         </div>
 
         <div v-else-if="!current" class="mt-4">
-            <p class="text-sm text-gray-500">You haven't started this yet.</p>
+            <p class="text-sm text-muted">You haven't started this yet.</p>
             <button
                 type="button"
-                class="bg-amber mt-4 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber mt-4 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="startAttempt"
             >
                 Start Submission
@@ -194,16 +194,16 @@ function statusClasses(status) {
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(current.status)">
                     {{ statusLabel(current.status) }}
                 </span>
-                <span class="text-xs text-gray-500">Attempt {{ current.attempt_number }}</span>
+                <span class="text-xs text-muted">Attempt {{ current.attempt_number }}</span>
             </div>
 
             <div v-if="isDraft" class="mt-4 space-y-4">
                 <RichTextEditor v-if="needsText" v-model="draftText" @update:json="(json) => (draftJson = json)" />
 
                 <div v-if="needsFile" class="space-y-3">
-                    <p v-if="!current.student_attachments?.length" class="text-sm text-gray-500">No files attached yet.</p>
-                    <div v-for="attachment in current.student_attachments ?? []" :key="attachment.id" class="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3">
-                        <span class="truncate text-sm font-medium text-gray-900">{{ attachment.original_name }}</span>
+                    <p v-if="!current.student_attachments?.length" class="text-sm text-muted">No files attached yet.</p>
+                    <div v-for="attachment in current.student_attachments ?? []" :key="attachment.id" class="flex items-center justify-between rounded-xl border border-border px-4 py-3">
+                        <span class="truncate text-sm font-medium text-body">{{ attachment.original_name }}</span>
                         <button type="button" class="text-red-500 hover:text-red-700" @click="removeAttachment(attachment)">
                             <TrashIcon class="h-4 w-4" />
                         </button>
@@ -227,7 +227,7 @@ function statusClasses(status) {
                         </div>
                         <button
                             type="button"
-                            class="rounded-full border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                            class="rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-body disabled:opacity-40"
                             :disabled="!attachmentFile || attachmentUploading"
                             @click="addAttachment"
                         >
@@ -239,7 +239,7 @@ function statusClasses(status) {
                 <div class="flex justify-end gap-3 pt-2">
                     <button
                         type="button"
-                        class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                        class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body disabled:opacity-40"
                         :disabled="saving"
                         @click="saveDraft"
                     >
@@ -247,7 +247,7 @@ function statusClasses(status) {
                     </button>
                     <button
                         type="button"
-                        class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="submitting"
                         @click="submitAttempt"
                     >
@@ -260,7 +260,7 @@ function statusClasses(status) {
                 <div v-if="current.submission_text?.html" class="prose prose-sm max-w-none" v-html="current.submission_text.html" />
 
                 <div v-if="current.student_attachments?.length" class="space-y-1.5">
-                    <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Your Files</p>
+                    <p class="text-xs font-semibold tracking-wide text-muted uppercase">Your Files</p>
                     <a
                         v-for="attachment in current.student_attachments"
                         :key="attachment.id"
@@ -273,8 +273,8 @@ function statusClasses(status) {
                     </a>
                 </div>
 
-                <div v-if="current.is_published" class="rounded-xl bg-gray-50 p-4">
-                    <p class="text-sm font-semibold text-gray-700">
+                <div v-if="current.is_published" class="rounded-xl bg-card-alt p-4">
+                    <p class="text-sm font-semibold text-body">
                         Score: {{ current.score }}<span v-if="current.max_score"> / {{ current.max_score }}</span>
                         <span v-if="current.percentage !== null"> ({{ current.percentage }}%)</span>
                     </p>
@@ -283,7 +283,7 @@ function statusClasses(status) {
                     </p>
                     <div v-if="current.feedback_text?.html" class="prose prose-sm mt-3 max-w-none" v-html="current.feedback_text.html" />
                     <div v-if="current.feedback_attachments?.length" class="mt-3 space-y-1.5">
-                        <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Tutor Files</p>
+                        <p class="text-xs font-semibold tracking-wide text-muted uppercase">Tutor Files</p>
                         <a
                             v-for="attachment in current.feedback_attachments"
                             :key="attachment.id"
@@ -297,23 +297,23 @@ function statusClasses(status) {
                     </div>
                 </div>
 
-                <p v-if="current.status === 'graded'" class="text-sm text-gray-500">
+                <p v-if="current.status === 'graded'" class="text-sm text-muted">
                     This activity has been graded and no longer accepts submissions.
                 </p>
                 <button
                     v-else
                     type="button"
-                    class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                    class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                     @click="startAttempt"
                 >
                     Start New Attempt
                 </button>
             </div>
 
-            <div v-if="history.length" class="mt-6 border-t border-gray-100 pt-4">
-                <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Previous Attempts</p>
+            <div v-if="history.length" class="mt-6 border-t border-border pt-4">
+                <p class="text-xs font-semibold tracking-wide text-muted uppercase">Previous Attempts</p>
                 <div v-for="past in history" :key="past.id" class="mt-2 flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Attempt {{ past.attempt_number }}</span>
+                    <span class="text-muted">Attempt {{ past.attempt_number }}</span>
                     <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(past.status)">
                         {{ statusLabel(past.status) }}
                     </span>

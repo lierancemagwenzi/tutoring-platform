@@ -32,6 +32,7 @@ class TutorRegistrationController extends Controller
             'password' => $data['password'],
             'role' => UserRole::Tutor,
             'status' => UserStatus::Approved,
+            'terms_accepted_at' => now(),
         ]);
 
         $user->tutorProfile()->create([]);

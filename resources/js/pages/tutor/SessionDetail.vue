@@ -38,7 +38,7 @@ async function retryMeeting() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Session Details</h1>
+        <h1 class="text-body text-2xl font-bold">Session Details</h1>
 
         <div v-if="loading" class="flex justify-center py-24">
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
@@ -50,46 +50,46 @@ async function retryMeeting() {
             <div class="mt-6 flex justify-end">
                 <button
                     type="button"
-                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                    class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95"
                     @click="router.push(`/tutor/sessions/${route.params.id}/content`)"
                 >
                     Manage Content
                 </button>
             </div>
 
-            <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Session Information</h2>
+            <div class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
+                <h2 class="text-body font-bold">Session Information</h2>
                 <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                    <dt class="text-gray-500">Service</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.service.title }}</dd>
-                    <dt class="text-gray-500">Subject</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.service.subject.name }}</dd>
-                    <dt class="text-gray-500">Date</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.date }}</dd>
-                    <dt class="text-gray-500">Start Time</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.start_time }}</dd>
-                    <dt class="text-gray-500">End Time</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.end_time }}</dd>
-                    <dt class="text-gray-500">Delivery Format</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.service.session_format.name }}</dd>
-                    <dt class="text-gray-500">Capacity</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.capacity }}</dd>
-                    <dt class="text-gray-500">Current Participants</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.participants_count }}</dd>
-                    <dt class="text-gray-500">Session Status</dt>
-                    <dd class="text-ink font-medium capitalize">{{ store.currentSession.status }}</dd>
+                    <dt class="text-muted">Service</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.service.title }}</dd>
+                    <dt class="text-muted">Subject</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.service.subject.name }}</dd>
+                    <dt class="text-muted">Date</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.date }}</dd>
+                    <dt class="text-muted">Start Time</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.start_time }}</dd>
+                    <dt class="text-muted">End Time</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.end_time }}</dd>
+                    <dt class="text-muted">Delivery Format</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.service.session_format.name }}</dd>
+                    <dt class="text-muted">Capacity</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.capacity }}</dd>
+                    <dt class="text-muted">Current Participants</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.participants_count }}</dd>
+                    <dt class="text-muted">Session Status</dt>
+                    <dd class="text-body font-medium capitalize">{{ store.currentSession.status }}</dd>
                 </dl>
             </div>
 
-            <div v-if="store.currentSession.meeting" class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Meeting Information</h2>
+            <div v-if="store.currentSession.meeting" class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
+                <h2 class="text-body font-bold">Meeting Information</h2>
                 <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                    <dt class="text-gray-500">Provider</dt>
-                    <dd class="text-ink font-medium capitalize">{{ store.currentSession.meeting.provider.replace('_', ' ') }}</dd>
-                    <dt class="text-gray-500">Meeting ID</dt>
-                    <dd class="text-ink font-medium">{{ store.currentSession.meeting.meeting_id }}</dd>
-                    <dt class="text-gray-500">Meeting Status</dt>
-                    <dd class="text-ink font-medium capitalize">{{ store.currentSession.meeting.status }}</dd>
+                    <dt class="text-muted">Provider</dt>
+                    <dd class="text-body font-medium capitalize">{{ store.currentSession.meeting.provider.replace('_', ' ') }}</dd>
+                    <dt class="text-muted">Meeting ID</dt>
+                    <dd class="text-body font-medium">{{ store.currentSession.meeting.meeting_id }}</dd>
+                    <dt class="text-muted">Meeting Status</dt>
+                    <dd class="text-body font-medium capitalize">{{ store.currentSession.meeting.status }}</dd>
                 </dl>
                 <a
                     v-if="store.currentSession.meeting.meeting_url"
@@ -101,13 +101,13 @@ async function retryMeeting() {
                     {{ store.currentSession.meeting.meeting_url }}
                 </a>
 
-                <div v-if="store.currentSession.meeting.status === 'failed'" class="mt-4 border-t border-gray-100 pt-4">
+                <div v-if="store.currentSession.meeting.status === 'failed'" class="border-border mt-4 border-t pt-4">
                     <p class="text-sm text-red-600">Meeting creation failed.</p>
                     <p v-if="retryError" class="mt-1 text-sm text-red-600">{{ retryError }}</p>
                     <button
                         type="button"
                         :disabled="retrying"
-                        class="bg-amber mt-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber shadow-elevated mt-2 rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         @click="retryMeeting"
                     >
                         {{ retrying ? 'Retrying…' : 'Retry' }}
@@ -115,15 +115,15 @@ async function retryMeeting() {
                 </div>
             </div>
 
-            <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Bookings</h2>
-                <ul class="mt-4 divide-y divide-gray-100">
+            <div class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
+                <h2 class="text-body font-bold">Bookings</h2>
+                <ul class="divide-border mt-4 divide-y">
                     <li v-for="booking in store.currentSession.bookings" :key="booking.id" class="flex items-center justify-between py-3">
                         <div>
-                            <p class="text-ink font-semibold">{{ booking.student.first_name }} {{ booking.student.last_name }}</p>
-                            <p v-if="booking.message" class="text-sm text-gray-500">"{{ booking.message }}"</p>
+                            <p class="text-body font-semibold">{{ booking.student.first_name }} {{ booking.student.last_name }}</p>
+                            <p v-if="booking.message" class="text-muted text-sm">"{{ booking.message }}"</p>
                         </div>
-                        <span class="text-sm font-semibold text-gray-600 capitalize">{{ booking.status }}</span>
+                        <span class="text-muted text-sm font-semibold capitalize">{{ booking.status }}</span>
                     </li>
                 </ul>
             </div>

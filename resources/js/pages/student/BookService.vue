@@ -107,33 +107,33 @@ async function submitBooking() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Book This Service</h1>
+        <h1 class="text-body text-2xl font-bold">Book This Service</h1>
 
         <div v-if="loading" class="flex justify-center py-24">
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="submitted" class="mt-8 flex flex-col items-center rounded-2xl bg-white p-10 text-center shadow-sm">
+        <div v-else-if="submitted" class="bg-card shadow-elevated mt-8 flex flex-col items-center rounded-2xl p-10 text-center">
             <span class="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
                 <CheckCircleIcon class="h-8 w-8" />
             </span>
-            <h2 class="text-ink mt-4 text-xl font-bold">Booking request sent!</h2>
-            <p class="mt-2 text-gray-500">
+            <h2 class="text-body mt-4 text-xl font-bold">Booking request sent!</h2>
+            <p class="text-muted mt-2">
                 The tutor will review your request. You'll be able to pay once it's accepted.
             </p>
             <router-link
                 to="/student/bookings"
-                class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated mt-6 rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
             >
                 View My Bookings
             </router-link>
         </div>
 
         <template v-else>
-            <div v-if="service" class="mt-2 rounded-2xl bg-white p-5 shadow-sm">
-                <p class="text-sm text-gray-500">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
-                <p class="text-ink font-bold">{{ service.title }}</p>
-                <p class="mt-1 text-lg font-bold text-gray-900">{{ service.currency }} {{ service.price }}</p>
+            <div v-if="service" class="bg-card shadow-elevated mt-2 rounded-2xl p-5">
+                <p class="text-muted text-sm">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
+                <p class="text-body font-bold">{{ service.title }}</p>
+                <p class="text-body mt-1 text-lg font-bold">{{ service.currency }} {{ service.price }}</p>
             </div>
 
             <p v-if="errorMessage" class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
@@ -149,12 +149,12 @@ async function submitBooking() {
                     @next-month="nextMonth"
                 />
 
-                <div class="rounded-2xl bg-white p-6 shadow-sm">
-                    <div v-if="!selectedDate" class="py-12 text-center text-gray-500">Select a date to see available times.</div>
+                <div class="bg-card shadow-elevated rounded-2xl p-6">
+                    <div v-if="!selectedDate" class="text-muted py-12 text-center">Select a date to see available times.</div>
 
                     <template v-else>
-                        <h2 class="text-ink font-bold">Available Times</h2>
-                        <p v-if="dayTimes.length === 0" class="mt-4 text-gray-500">No times are available on this date.</p>
+                        <h2 class="text-body font-bold">Available Times</h2>
+                        <p v-if="dayTimes.length === 0" class="text-muted mt-4">No times are available on this date.</p>
                         <div v-else class="mt-4 grid grid-cols-3 gap-3">
                             <button
                                 v-for="slot in dayTimes"
@@ -164,7 +164,7 @@ async function submitBooking() {
                                 :class="
                                     selectedSlot?.start_time === slot.start_time
                                         ? 'bg-amber border-amber text-white'
-                                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                                        : 'border-border text-body hover:bg-card-alt'
                                 "
                                 @click="selectSlot(slot)"
                             >
@@ -177,7 +177,7 @@ async function submitBooking() {
                             <button
                                 type="button"
                                 :disabled="submitting"
-                                class="bg-amber mt-4 w-full rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                                class="bg-amber shadow-elevated mt-4 w-full rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                                 @click="submitBooking"
                             >
                                 {{ submitting ? 'Submitting…' : 'Submit Booking Request' }}

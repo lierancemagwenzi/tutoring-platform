@@ -47,7 +47,7 @@ const doodles = [
             </div>
         </div>
 
-        <div class="flex w-full items-center justify-center bg-white px-6 py-12 md:w-1/2">
+        <div class="bg-surface flex w-full items-center justify-center px-6 py-12 md:w-1/2">
             <router-view />
         </div>
     </div>

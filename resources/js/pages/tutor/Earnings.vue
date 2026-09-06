@@ -55,7 +55,7 @@ async function submitTicket() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Earnings</h1>
+        <h1 class="text-body text-2xl font-bold">Earnings</h1>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -65,50 +65,50 @@ async function submitTicket() {
 
         <template v-else-if="store.summary">
             <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">All-Time Earnings</p>
-                    <p class="text-ink text-2xl font-bold">R{{ store.summary.all_time_earnings }}</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-5">
+                    <p class="text-muted text-xs">All-Time Earnings</p>
+                    <p class="text-body text-2xl font-bold">R{{ store.summary.all_time_earnings }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">This Month</p>
-                    <p class="text-ink text-2xl font-bold">R{{ store.summary.this_month_earnings }}</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-5">
+                    <p class="text-muted text-xs">This Month</p>
+                    <p class="text-body text-2xl font-bold">R{{ store.summary.this_month_earnings }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Transactions</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.summary.transactions_count }}</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-5">
+                    <p class="text-muted text-xs">Transactions</p>
+                    <p class="text-body text-2xl font-bold">{{ store.summary.transactions_count }}</p>
                 </div>
             </div>
 
             <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Pending Payout</p>
-                    <p class="text-ink text-2xl font-bold">R{{ store.summary.pending_payout_total }}</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-5">
+                    <p class="text-muted text-xs">Pending Payout</p>
+                    <p class="text-body text-2xl font-bold">R{{ store.summary.pending_payout_total }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Paid Out</p>
-                    <p class="text-ink text-2xl font-bold">R{{ store.summary.paid_total }}</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-5">
+                    <p class="text-muted text-xs">Paid Out</p>
+                    <p class="text-body text-2xl font-bold">R{{ store.summary.paid_total }}</p>
                 </div>
             </div>
 
-            <section class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
-                <h2 class="text-ink font-bold">Your Commission Rate</h2>
-                <p class="mt-1 text-sm text-gray-500">
+            <section class="bg-card shadow-elevated mt-5 rounded-2xl p-5">
+                <h2 class="text-body font-bold">Your Commission Rate</h2>
+                <p class="text-muted mt-1 text-sm">
                     {{ store.summary.applicable_rate.scope === 'global' ? 'Platform default rate.' : 'Your custom rate, set by the platform.' }}
                     Set by the platform — contact support if you believe this is incorrect.
                 </p>
-                <p class="text-ink mt-3 text-lg font-semibold">
+                <p class="text-body mt-3 text-lg font-semibold">
                     {{ store.summary.applicable_rate.percentage }}% + R{{ store.summary.applicable_rate.fixed_fee }} fixed
                 </p>
             </section>
 
             <section class="mt-8">
-                <h2 class="text-ink font-bold">Transaction History</h2>
+                <h2 class="text-body font-bold">Transaction History</h2>
 
-                <div v-if="store.transactions.length === 0" class="mt-8 text-center text-gray-500">No earnings yet.</div>
+                <div v-if="store.transactions.length === 0" class="text-muted mt-8 text-center">No earnings yet.</div>
 
-                <div v-else class="mt-4 overflow-x-auto rounded-2xl bg-white shadow-sm">
+                <div v-else class="bg-card shadow-elevated mt-4 overflow-x-auto rounded-2xl">
                     <table class="w-full text-left text-sm">
-                        <thead class="border-b border-gray-100 text-xs text-gray-500 uppercase">
+                        <thead class="border-border text-muted border-b text-xs uppercase">
                             <tr>
                                 <th class="px-5 py-3 font-semibold">Product</th>
                                 <th class="px-5 py-3 font-semibold">Gross</th>
@@ -118,11 +118,11 @@ async function submitTicket() {
                                 <th class="px-5 py-3 font-semibold"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-border divide-y">
                             <tr v-for="transaction in store.transactions" :key="transaction.id">
-                                <td class="px-5 py-3 text-gray-600 capitalize">{{ transaction.product_type.replace('_', ' ') }}</td>
-                                <td class="px-5 py-3 text-gray-600">{{ transaction.currency }} {{ transaction.gross_amount }}</td>
-                                <td class="text-ink px-5 py-3 font-semibold">{{ transaction.currency }} {{ transaction.tutor_amount }}</td>
+                                <td class="text-muted px-5 py-3 capitalize">{{ transaction.product_type.replace('_', ' ') }}</td>
+                                <td class="text-muted px-5 py-3">{{ transaction.currency }} {{ transaction.gross_amount }}</td>
+                                <td class="text-body px-5 py-3 font-semibold">{{ transaction.currency }} {{ transaction.tutor_amount }}</td>
                                 <td class="px-5 py-3">
                                     <span
                                         class="rounded-full px-2.5 py-1 text-xs font-semibold"
@@ -131,7 +131,7 @@ async function submitTicket() {
                                         {{ adminStatusLabel(transaction.payout_status) }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-3 text-gray-500">{{ transaction.created_at.slice(0, 10) }}</td>
+                                <td class="text-muted px-5 py-3">{{ transaction.created_at.slice(0, 10) }}</td>
                                 <td class="px-5 py-3 text-right">
                                     <button
                                         type="button"
@@ -155,14 +155,14 @@ async function submitTicket() {
                 Your ticket has been submitted. The admin team will review it and respond via the ticket thread.
             </div>
             <div v-else class="space-y-3">
-                <p class="text-sm text-gray-500">
+                <p class="text-muted text-sm">
                     Describe the issue with this transaction (e.g. payment wasn't received). An admin will review and respond.
                 </p>
                 <p v-if="raiseError" class="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{{ raiseError }}</p>
                 <textarea
                     v-model="raiseModal.message"
                     rows="4"
-                    class="focus:border-accent w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                    class="focus:border-accent bg-card text-body border-border w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                     placeholder="I completed this booking but haven't received payment..."
                 />
             </div>
@@ -171,7 +171,7 @@ async function submitTicket() {
                 <button
                     type="button"
                     :disabled="raising || !raiseModal.message.trim()"
-                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber shadow-elevated rounded-full px-6 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="submitTicket"
                 >
                     {{ raising ? 'Submitting…' : 'Submit Ticket' }}
@@ -180,7 +180,7 @@ async function submitTicket() {
             <template v-else #footer>
                 <button
                     type="button"
-                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95"
+                    class="bg-amber shadow-elevated rounded-full px-6 py-2 text-sm font-semibold text-white transition hover:brightness-95"
                     @click="raiseModal.open = false"
                 >
                     Close

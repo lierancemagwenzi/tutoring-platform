@@ -68,8 +68,8 @@ async function submitReason(text) {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Tutor Subject Requests</h1>
-        <p class="mt-1 text-sm text-gray-500">
+        <h1 class="text-body text-2xl font-bold">Tutor Subject Requests</h1>
+        <p class="mt-1 text-sm text-muted">
             Permission for a tutor to teach a specific subject — separate from tutor account approval.
         </p>
 
@@ -79,18 +79,18 @@ async function submitReason(text) {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.requests.length === 0" class="mt-16 text-center text-gray-500">No pending subject requests.</div>
+        <div v-else-if="store.requests.length === 0" class="mt-16 text-center text-muted">No pending subject requests.</div>
 
         <div v-else class="mt-6 space-y-3">
-            <div v-for="request in store.requests" :key="request.id" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="request in store.requests" :key="request.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink font-bold">{{ request.tutor.display_name }}</p>
-                        <p class="text-sm text-gray-500">{{ request.tutor.email }}</p>
-                        <p class="mt-2 text-sm text-gray-700">
+                        <p class="text-body font-bold">{{ request.tutor.display_name }}</p>
+                        <p class="text-sm text-muted">{{ request.tutor.email }}</p>
+                        <p class="mt-2 text-sm text-body">
                             Requesting <span class="font-semibold">{{ request.subject.name }}</span>
                         </p>
-                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
                             <span>Requested {{ request.requested_at?.slice(0, 10) }}</span>
                             <span>Tutor account: {{ adminStatusLabel(request.tutor.profile_status) }}</span>
                         </div>
@@ -100,7 +100,7 @@ async function submitReason(text) {
                     </span>
                 </div>
 
-                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-4">
                     <button
                         type="button"
                         :disabled="actioningId === request.id"
@@ -110,7 +110,7 @@ async function submitReason(text) {
                         Approve
                     </button>
                     <button type="button" class="text-sm font-semibold text-red-600" @click="openReasonModal('reject', request.id)">Reject</button>
-                    <button type="button" class="text-sm font-semibold text-gray-600" @click="openReasonModal('suspend', request.id)">
+                    <button type="button" class="text-sm font-semibold text-muted" @click="openReasonModal('suspend', request.id)">
                         Suspend
                     </button>
                 </div>

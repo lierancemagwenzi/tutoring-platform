@@ -56,16 +56,16 @@ watch(
 </script>
 
 <template>
-    <div v-if="loading" class="flex min-h-screen items-center justify-center bg-white">
+    <div v-if="loading" class="bg-surface flex min-h-screen items-center justify-center">
         <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
     </div>
 
-    <div v-else-if="errorMessage" class="flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-6 text-center">
+    <div v-else-if="errorMessage" class="bg-surface flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
         <p class="text-sm text-red-600">{{ errorMessage }}</p>
         <router-link to="/student/my-courses" class="text-accent text-sm font-semibold underline">Back to My Courses</router-link>
     </div>
 
-    <div v-else-if="course" class="flex h-screen flex-col bg-gray-50">
+    <div v-else-if="course" class="bg-surface flex h-screen flex-col">
         <CoursePlayerHeader :course="course" @toggle-sidebar="sidebarOpen = !sidebarOpen" />
 
         <div class="flex flex-1 overflow-hidden">

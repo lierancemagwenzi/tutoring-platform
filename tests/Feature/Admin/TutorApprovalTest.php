@@ -118,11 +118,26 @@ class TutorApprovalTest extends TestCase
     {
         $this->admin();
         $tutor = $this->pendingTutor();
+        $tutor->tutorProfile->qualifications()->create([
+            'title' => 'BSc Mathematics', 'level' => 'bachelors_degree', 'field_of_study' => 'Mathematics',
+            'institution' => 'University of Cape Town', 'start_year' => 2015, 'completion_year' => 2018,
+        ]);
+        $tutor->tutorProfile->documents()->create([
+            'type' => 'degree', 'path' => 'tutor-documents/degree.pdf', 'original_name' => 'degree.pdf',
+        ]);
+        $tutor->tutorProfile->bankAccount()->create([
+            'bank_name' => 'Test Bank', 'account_holder_name' => 'Pending Tutor',
+            'account_number' => '123456789', 'branch_code' => '000000', 'account_type' => 'savings',
+        ]);
 
         $response = $this->getJson("/api/admin/tutors/{$tutor->id}");
 
         $response->assertOk();
         $response->assertJsonPath('tutor.user.email', $tutor->email);
+        $response->assertJsonPath('tutor.user.phone', $tutor->phone);
         $response->assertJsonPath('tutor.profile.display_name', 'Pending Tutor');
+        $response->assertJsonPath('tutor.profile.qualifications.0.title', 'BSc Mathematics');
+        $response->assertJsonPath('tutor.profile.documents.0.original_name', 'degree.pdf');
+        $response->assertJsonPath('tutor.bank_account.bank_name', 'Test Bank');
     }
 }

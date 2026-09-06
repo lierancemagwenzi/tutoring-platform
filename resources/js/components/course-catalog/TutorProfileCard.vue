@@ -7,8 +7,8 @@ defineProps({
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink mb-3 font-bold">Your Tutor</h2>
+    <div class="bg-card shadow-elevated rounded-2xl p-6">
+        <h2 class="text-body mb-3 font-bold">Your Tutor</h2>
         <div class="flex items-center gap-3">
             <img
                 v-if="tutor.profile_photo"
@@ -20,12 +20,12 @@ defineProps({
                 <UserCircleIcon class="h-9 w-9" />
             </span>
             <div>
-                <p class="text-ink font-semibold">{{ tutor.display_name }}</p>
-                <p v-if="tutor.years_experience" class="text-sm text-gray-500">{{ tutor.years_experience }} yrs experience</p>
+                <p class="text-body font-semibold">{{ tutor.display_name }}</p>
+                <p v-if="tutor.years_experience" class="text-muted text-sm">{{ tutor.years_experience }} yrs experience</p>
             </div>
         </div>
 
-        <p v-if="tutor.bio" class="mt-3 line-clamp-4 text-sm text-gray-600">{{ tutor.bio }}</p>
+        <p v-if="tutor.bio" class="text-muted mt-3 line-clamp-4 text-sm">{{ tutor.bio }}</p>
 
         <div v-if="tutor.subjects?.length" class="mt-3 flex flex-wrap gap-2">
             <span v-for="subject in tutor.subjects" :key="subject.id" class="bg-accent/10 text-accent rounded-full px-3 py-1 text-xs font-medium">
@@ -33,17 +33,17 @@ defineProps({
             </span>
         </div>
 
-        <div v-if="tutor.qualifications?.length" class="mt-4 border-t border-gray-100 pt-3">
-            <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Qualifications</p>
-            <ul class="mt-2 space-y-1.5 text-sm text-gray-600">
+        <div v-if="tutor.qualifications?.length" class="border-border mt-4 border-t pt-3">
+            <p class="text-muted text-xs font-semibold tracking-wide uppercase">Qualifications</p>
+            <ul class="text-muted mt-2 space-y-1.5 text-sm">
                 <li v-for="qualification in tutor.qualifications" :key="qualification.id">
                     {{ qualification.title }}
-                    <span v-if="qualification.institution" class="text-gray-400"> &middot; {{ qualification.institution }}</span>
+                    <span v-if="qualification.institution" class="text-muted"> &middot; {{ qualification.institution }}</span>
                 </li>
             </ul>
         </div>
 
-        <p v-if="tutor.other_published_courses_count" class="mt-3 text-sm text-gray-500">
+        <p v-if="tutor.other_published_courses_count" class="text-muted mt-3 text-sm">
             {{ tutor.other_published_courses_count }} other published course{{ tutor.other_published_courses_count === 1 ? '' : 's' }}
         </p>
 

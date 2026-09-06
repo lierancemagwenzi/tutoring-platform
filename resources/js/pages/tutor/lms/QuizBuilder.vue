@@ -199,7 +199,7 @@ async function publish() {
                 <div>
                     <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back to Lesson Builder</button>
                     <div class="mt-1 flex items-center gap-2">
-                        <h1 class="text-ink text-2xl font-bold">{{ quiz.title }}</h1>
+                        <h1 class="text-body text-2xl font-bold">{{ quiz.title }}</h1>
                         <span
                             class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize"
                             :class="quiz.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
@@ -207,12 +207,12 @@ async function publish() {
                             {{ quiz.status }}
                         </span>
                     </div>
-                    <p class="mt-1 text-gray-500">Build and arrange the quiz's questions.</p>
+                    <p class="mt-1 text-muted">Build and arrange the quiz's questions.</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <button
                         type="button"
-                        class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                        class="flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                         @click="openPreview"
                     >
                         <EyeIcon class="h-4 w-4" />
@@ -221,14 +221,14 @@ async function publish() {
                     <button
                         v-if="quiz.status !== 'published'"
                         type="button"
-                        class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                        class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                         @click="publish"
                     >
                         Publish
                     </button>
                     <button
                         type="button"
-                        class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                        class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                         @click="openCreate"
                     >
                         <PlusIcon class="h-4 w-4" />
@@ -240,7 +240,7 @@ async function publish() {
             <p v-if="actionError" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
             <div v-if="quiz.questions.length === 0" class="mt-16 flex flex-col items-center text-center">
-                <p class="text-gray-500">No questions yet. Add your first question to get started.</p>
+                <p class="text-muted">No questions yet. Add your first question to get started.</p>
             </div>
 
             <draggable
@@ -252,20 +252,20 @@ async function publish() {
                 @end="onReorder"
             >
                 <template #item="{ element: question }">
-                    <div class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                        <span class="drag-handle cursor-grab text-gray-400">
+                    <div class="flex items-center gap-4 rounded-2xl bg-card p-5 shadow-elevated">
+                        <span class="drag-handle cursor-grab text-muted">
                             <Bars3Icon class="h-5 w-5" />
                         </span>
 
                         <div class="min-w-0 flex-1">
-                            <p class="text-ink truncate font-bold">{{ question.text }}</p>
-                            <p class="mt-0.5 text-sm text-gray-500">
+                            <p class="text-body truncate font-bold">{{ question.text }}</p>
+                            <p class="mt-0.5 text-sm text-muted">
                                 {{ QUESTION_TYPE_OPTIONS.find((option) => option.value === question.type)?.label }} &middot;
                                 {{ question.points }} {{ question.points === 1 ? 'point' : 'points' }}
                             </p>
                         </div>
 
-                        <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEdit(question)">
+                        <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEdit(question)">
                             <PencilSquareIcon class="h-4 w-4" />
                         </button>
                         <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="remove(question)">
@@ -284,16 +284,16 @@ async function publish() {
                 <TagInput v-if="hasChoices" id="question-choices" v-model="form.choices" label="Choices (press Enter to add)" />
 
                 <div v-if="form.type === 'radiogroup' && form.choices.length > 0" class="space-y-2">
-                    <p class="font-semibold text-gray-700">Correct Answer</p>
-                    <label v-for="choice in form.choices" :key="choice" class="flex items-center gap-2 text-sm text-gray-700">
+                    <p class="font-semibold text-body">Correct Answer</p>
+                    <label v-for="choice in form.choices" :key="choice" class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.correctSingle" type="radio" :value="choice" class="accent-accent h-4 w-4" />
                         {{ choice }}
                     </label>
                 </div>
 
                 <div v-if="form.type === 'checkbox' && form.choices.length > 0" class="space-y-2">
-                    <p class="font-semibold text-gray-700">Correct Answers</p>
-                    <label v-for="choice in form.choices" :key="choice" class="flex items-center gap-2 text-sm text-gray-700">
+                    <p class="font-semibold text-body">Correct Answers</p>
+                    <label v-for="choice in form.choices" :key="choice" class="flex items-center gap-2 text-sm text-body">
                         <input
                             type="checkbox"
                             class="accent-accent h-4 w-4 rounded"
@@ -309,13 +309,13 @@ async function publish() {
                 <FloatingLabelInput id="question-points" v-model="form.points" type="number" label="Points" />
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="modalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="modalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>

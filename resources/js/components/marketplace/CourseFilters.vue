@@ -42,14 +42,14 @@ defineEmits(['apply', 'clear'])
         <div class="flex gap-3 pt-2">
             <button
                 type="button"
-                class="bg-amber flex-1 rounded-full px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated flex-1 rounded-full px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-95"
                 @click="$emit('apply')"
             >
                 Apply Filters
             </button>
             <button
                 type="button"
-                class="rounded-full border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700"
+                class="border-border text-body rounded-full border px-4 py-2.5 text-sm font-semibold"
                 @click="$emit('clear')"
             >
                 Clear

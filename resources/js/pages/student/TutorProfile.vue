@@ -33,11 +33,11 @@ function continueToBooking(service) {
 <template>
     <div class="p-8">
         <div v-if="loading" class="animate-pulse space-y-6">
-            <div class="flex items-center gap-4 rounded-2xl bg-white p-6 shadow-sm">
-                <div class="h-24 w-24 rounded-full bg-gray-200" />
+            <div class="bg-card shadow-elevated flex items-center gap-4 rounded-2xl p-6">
+                <div class="bg-card-alt h-24 w-24 rounded-full" />
                 <div class="flex-1 space-y-2">
-                    <div class="h-5 w-1/3 rounded bg-gray-200" />
-                    <div class="h-4 w-1/2 rounded bg-gray-200" />
+                    <div class="bg-card-alt h-5 w-1/3 rounded" />
+                    <div class="bg-card-alt h-4 w-1/2 rounded" />
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@ function continueToBooking(service) {
         <p v-else-if="errorMessage" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
         <template v-else-if="store.tutorProfile">
-            <div class="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center">
+            <div class="bg-card shadow-elevated flex flex-col gap-6 rounded-2xl p-6 sm:flex-row sm:items-center">
                 <img
                     v-if="store.tutorProfile.profile_photo"
                     :src="store.tutorProfile.profile_photo"
@@ -57,9 +57,9 @@ function continueToBooking(service) {
                 </span>
 
                 <div>
-                    <h1 class="text-ink text-2xl font-bold">{{ store.tutorProfile.display_name }}</h1>
-                    <p class="mt-1 text-gray-500">{{ store.tutorProfile.years_experience ?? 0 }} years of experience</p>
-                    <p v-if="store.tutorProfile.languages.length" class="mt-1 text-gray-500">
+                    <h1 class="text-body text-2xl font-bold">{{ store.tutorProfile.display_name }}</h1>
+                    <p class="text-muted mt-1">{{ store.tutorProfile.years_experience ?? 0 }} years of experience</p>
+                    <p v-if="store.tutorProfile.languages.length" class="text-muted mt-1">
                         Speaks {{ store.tutorProfile.languages.join(', ') }}
                     </p>
                     <div v-if="store.tutorProfile.subjects.length" class="mt-3 flex flex-wrap gap-2">
@@ -74,17 +74,17 @@ function continueToBooking(service) {
                 </div>
             </div>
 
-            <div v-if="store.tutorProfile.bio" class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">About</h2>
-                <p class="mt-2 text-gray-600">{{ store.tutorProfile.bio }}</p>
+            <div v-if="store.tutorProfile.bio" class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
+                <h2 class="text-body font-bold">About</h2>
+                <p class="text-muted mt-2">{{ store.tutorProfile.bio }}</p>
             </div>
 
-            <div v-if="store.tutorProfile.qualifications.length" class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Qualifications</h2>
-                <ul class="mt-4 divide-y divide-gray-100">
+            <div v-if="store.tutorProfile.qualifications.length" class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
+                <h2 class="text-body font-bold">Qualifications</h2>
+                <ul class="divide-border mt-4 divide-y">
                     <li v-for="qualification in store.tutorProfile.qualifications" :key="qualification.id" class="py-3">
-                        <p class="text-ink font-semibold">{{ qualification.title }}</p>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-body font-semibold">{{ qualification.title }}</p>
+                        <p class="text-muted text-sm">
                             {{ qualification.institution }}
                             <span v-if="qualification.field_of_study"> &middot; {{ qualification.field_of_study }}</span>
                         </p>
@@ -93,9 +93,9 @@ function continueToBooking(service) {
             </div>
 
             <div class="mt-6">
-                <h2 class="text-ink font-bold">Services</h2>
+                <h2 class="text-body font-bold">Services</h2>
 
-                <p v-if="store.tutorProfile.services.length === 0" class="mt-4 text-gray-500">
+                <p v-if="store.tutorProfile.services.length === 0" class="text-muted mt-4">
                     This guide hasn't published any services yet.
                 </p>
 

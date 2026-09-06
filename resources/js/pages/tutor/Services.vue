@@ -26,7 +26,7 @@ function visibilityLabel(visibility) {
 }
 
 function visibilityClasses(visibility) {
-    return VISIBILITY_CLASSES[visibility] ?? 'bg-gray-100 text-gray-600'
+    return VISIBILITY_CLASSES[visibility] ?? 'bg-card-alt text-muted'
 }
 
 async function publish(service) {
@@ -58,10 +58,10 @@ async function pause(service) {
 <template>
     <div class="p-8">
         <div class="flex items-center justify-between">
-            <h1 class="text-ink text-2xl font-bold">Teaching Services</h1>
+            <h1 class="text-body text-2xl font-bold">Teaching Services</h1>
             <router-link
                 to="/tutor/services/create"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
             >
                 <PlusIcon class="h-4 w-4" />
                 Add Service
@@ -75,33 +75,33 @@ async function pause(service) {
         </div>
 
         <div v-else-if="store.services.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-card-alt text-muted">
                 <BriefcaseIcon class="h-8 w-8" />
             </span>
-            <p class="mt-4 text-gray-500">You haven't created any services yet.</p>
+            <p class="mt-4 text-muted">You haven't created any services yet.</p>
             <router-link
                 to="/tutor/services/create"
-                class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-elevated transition hover:brightness-95"
             >
                 Add Service
             </router-link>
         </div>
 
         <div v-else class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div v-for="service in store.services" :key="service.id" class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="service in store.services" :key="service.id" class="flex flex-col rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-2">
                     <div>
-                        <p class="text-sm text-gray-500">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
-                        <p class="text-ink mt-1 font-bold">{{ service.title }}</p>
+                        <p class="text-sm text-muted">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
+                        <p class="text-body mt-1 font-bold">{{ service.title }}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="visibilityClasses(service.visibility)">
                         {{ visibilityLabel(service.visibility) }}
                     </span>
                 </div>
 
-                <p class="mt-3 text-lg font-bold text-gray-900">{{ service.currency }} {{ service.price }}</p>
+                <p class="mt-3 text-lg font-bold text-body">{{ service.currency }} {{ service.price }}</p>
 
-                <dl class="mt-3 space-y-1 text-sm text-gray-500">
+                <dl class="mt-3 space-y-1 text-sm text-muted">
                     <div class="flex justify-between">
                         <dt>Duration</dt>
                         <dd>{{ service.session_duration_minutes }} min</dd>
@@ -116,7 +116,7 @@ async function pause(service) {
                     </div>
                 </dl>
 
-                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-4">
                     <router-link :to="`/tutor/services/${service.id}`" class="text-accent flex items-center gap-1 text-sm font-semibold">
                         <EyeIcon class="h-4 w-4" />
                         View

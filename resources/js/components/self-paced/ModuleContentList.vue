@@ -100,19 +100,19 @@ async function onReorder() {
     <div>
         <p v-if="error" class="mb-3 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{{ error }}</p>
 
-        <div v-if="items.length === 0" class="rounded-xl bg-gray-50 py-8 text-center text-sm text-gray-500">
+        <div v-if="items.length === 0" class="rounded-xl bg-card-alt py-8 text-center text-sm text-muted">
             No content yet. Add a Learning Activity or Assessment below.
         </div>
 
         <draggable v-else v-model="items" item-key="id" handle=".drag-handle" class="space-y-2" @end="onReorder">
             <template #item="{ element: item }">
-                <div class="flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
-                    <span class="drag-handle cursor-grab text-gray-400">
+                <div class="flex items-center gap-3 rounded-xl bg-card-alt px-4 py-3">
+                    <span class="drag-handle cursor-grab text-muted">
                         <Bars3Icon class="h-4 w-4" />
                     </span>
                     <div class="min-w-0 flex-1">
-                        <p class="text-ink truncate text-sm font-semibold">{{ item.title }}</p>
-                        <p class="text-xs text-gray-500 capitalize">
+                        <p class="text-body truncate text-sm font-semibold">{{ item.title }}</p>
+                        <p class="text-xs text-muted capitalize">
                             {{ item.kind === 'activity' ? item.type.replace('_', ' ') : `Assessment · ${item.assessment_type.replace('_', ' ')}` }}
                             <span v-if="!item.required"> · optional</span>
                         </p>
@@ -122,14 +122,14 @@ async function onReorder() {
                         :href="firstAttachmentUrl(item)"
                         target="_blank"
                         rel="noopener"
-                        class="shrink-0 text-gray-400 hover:text-accent"
+                        class="shrink-0 text-muted hover:text-accent"
                         title="Preview attachment"
                     >
                         <EyeIcon class="h-4 w-4" />
                     </a>
                     <button
                         type="button"
-                        class="shrink-0 text-gray-400 hover:text-gray-700"
+                        class="shrink-0 text-muted hover:text-body"
                         @click="item.kind === 'activity' ? editActivity(item) : editAssessment(item)"
                     >
                         <PencilSquareIcon class="h-4 w-4" />

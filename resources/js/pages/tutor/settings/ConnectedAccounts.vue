@@ -86,7 +86,7 @@ const providerCards = computed(() =>
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Settings</h1>
+        <h1 class="text-body text-2xl font-bold">Settings</h1>
 
         <div class="mt-6">
             <SettingsTabs />
@@ -107,18 +107,18 @@ const providerCards = computed(() =>
             </div>
 
             <div v-else class="space-y-4">
-                <div v-for="card in providerCards" :key="card.key" class="rounded-2xl bg-white p-6 shadow-sm">
+                <div v-for="card in providerCards" :key="card.key" class="bg-card shadow-elevated rounded-2xl p-6">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <span class="bg-ink flex h-10 w-10 items-center justify-center rounded-full font-bold text-white">
                                 {{ card.label.charAt(0) }}
                             </span>
                             <div>
-                                <p class="text-ink font-bold">{{ card.label }}</p>
+                                <p class="text-body font-bold">{{ card.label }}</p>
                                 <p v-if="card.account" class="flex items-center gap-1 text-sm text-green-600">
                                     <CheckCircleIcon class="h-4 w-4" /> Connected
                                 </p>
-                                <p v-else class="flex items-center gap-1 text-sm text-gray-500">
+                                <p v-else class="text-muted flex items-center gap-1 text-sm">
                                     <XCircleIcon class="h-4 w-4" /> Not Connected
                                 </p>
                             </div>
@@ -128,7 +128,7 @@ const providerCards = computed(() =>
                             v-if="!card.account"
                             type="button"
                             :disabled="connecting === card.key"
-                            class="bg-amber rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                            class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                             @click="connect(card.key)"
                         >
                             {{ connecting === card.key ? 'Redirecting…' : `Connect ${card.label}` }}
@@ -137,16 +137,16 @@ const providerCards = computed(() =>
                             v-else
                             type="button"
                             :disabled="disconnecting === card.account.id"
-                            class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                            class="border-border text-body hover:bg-card-alt rounded-full border px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
                             @click="disconnect(card.account)"
                         >
                             {{ disconnecting === card.account.id ? 'Disconnecting…' : 'Disconnect' }}
                         </button>
                     </div>
 
-                    <div v-if="card.account" class="mt-4 border-t border-gray-100 pt-4 text-sm text-gray-500">
+                    <div v-if="card.account" class="border-border text-muted mt-4 border-t pt-4 text-sm">
                         <p>{{ card.account.email }}</p>
-                        <p class="mt-1 text-xs text-gray-400">
+                        <p class="text-muted mt-1 text-xs">
                             Connected on {{ new Date(card.account.connected_at).toLocaleDateString() }}
                         </p>
                     </div>

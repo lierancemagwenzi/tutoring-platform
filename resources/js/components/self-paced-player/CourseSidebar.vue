@@ -65,18 +65,18 @@ function isActive(item) {
     <div v-if="open" class="fixed inset-0 z-30 bg-black/40 lg:hidden" @click="emit('close')" />
 
     <aside
-        class="fixed inset-y-0 left-0 z-40 w-80 shrink-0 overflow-y-auto border-r border-gray-100 bg-white transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0"
+        class="bg-card border-border fixed inset-y-0 left-0 z-40 w-80 shrink-0 overflow-y-auto border-r transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0"
         :class="open ? 'translate-x-0' : '-translate-x-full'"
     >
         <div class="p-4">
-            <p class="text-ink px-1 text-sm font-bold">Curriculum</p>
+            <p class="text-body px-1 text-sm font-bold">Curriculum</p>
 
-            <div v-for="module in course.modules" :key="module.id" class="mt-3 rounded-xl border border-gray-100">
+            <div v-for="module in course.modules" :key="module.id" class="border-border mt-3 rounded-xl border">
                 <button type="button" class="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left" @click="toggle(module.id)">
-                    <span class="text-ink truncate text-sm font-semibold">{{ module.title }}</span>
+                    <span class="text-body truncate text-sm font-semibold">{{ module.title }}</span>
                     <span class="flex shrink-0 items-center gap-2">
                         <StatusPill :status="module.state" />
-                        <ChevronDownIcon class="h-4 w-4 text-gray-400 transition-transform" :class="isExpanded(module.id) ? 'rotate-180' : ''" />
+                        <ChevronDownIcon class="text-muted h-4 w-4 transition-transform" :class="isExpanded(module.id) ? 'rotate-180' : ''" />
                     </span>
                 </button>
 
@@ -87,7 +87,7 @@ function isActive(item) {
                             :to="module.state === 'locked' ? undefined : itemRoute(item)"
                             class="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs"
                             :class="[
-                                module.state === 'locked' ? 'cursor-not-allowed text-gray-300' : 'text-gray-600 hover:bg-gray-50',
+                                module.state === 'locked' ? 'text-muted cursor-not-allowed opacity-50' : 'text-body hover:bg-card-alt',
                                 isActive(item) ? 'bg-accent/10 text-accent font-semibold' : '',
                             ]"
                             @click="module.state !== 'locked' && emit('close')"

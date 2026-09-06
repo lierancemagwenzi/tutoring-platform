@@ -36,17 +36,17 @@ const activeBlocks = computed(() => tabs.value.find((tab) => tab.key === activeT
 
 <template>
     <div>
-        <div v-if="tabs.length > 1" class="flex gap-1 border-b border-gray-100">
+        <div v-if="tabs.length > 1" class="border-border flex gap-1 border-b">
             <button
                 v-for="tab in tabs"
                 :key="tab.key"
                 type="button"
                 class="border-b-2 px-4 py-2 text-sm font-semibold transition"
-                :class="activeTab === tab.key ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                :class="activeTab === tab.key ? 'border-accent text-accent' : 'text-muted hover:text-body border-transparent'"
                 @click="activeTab = tab.key"
             >
                 {{ tab.label }}
-                <span class="ml-1 text-xs font-normal text-gray-400">{{ tab.blocks.length }}</span>
+                <span class="text-muted ml-1 text-xs font-normal">{{ tab.blocks.length }}</span>
             </button>
         </div>
 

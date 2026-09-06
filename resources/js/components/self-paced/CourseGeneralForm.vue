@@ -108,12 +108,12 @@ async function uploadThumbnail(event) {
 </script>
 
 <template>
-    <form class="max-w-2xl space-y-4 rounded-2xl bg-white p-6 shadow-sm" novalidate @submit.prevent="save">
+    <form class="max-w-2xl space-y-4 rounded-2xl bg-card p-6 shadow-elevated" novalidate @submit.prevent="save">
         <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
         <p v-if="success" class="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">Saved.</p>
 
         <div>
-            <p class="mb-2 text-sm font-semibold text-gray-700">Thumbnail</p>
+            <p class="mb-2 text-sm font-semibold text-body">Thumbnail</p>
             <div class="flex items-center gap-4">
                 <img
                     v-if="course.thumbnail_path"
@@ -121,13 +121,13 @@ async function uploadThumbnail(event) {
                     class="h-20 w-32 rounded-lg object-cover"
                     alt="Course thumbnail"
                 />
-                <div v-else class="flex h-20 w-32 items-center justify-center rounded-lg bg-gray-100 text-xs text-gray-400">No thumbnail</div>
+                <div v-else class="flex h-20 w-32 items-center justify-center rounded-lg bg-card-alt text-xs text-muted">No thumbnail</div>
                 <div>
                     <input ref="thumbnailInput" type="file" accept="image/*" class="hidden" @change="uploadThumbnail" />
                     <button
                         type="button"
                         :disabled="uploadingThumbnail"
-                        class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                        class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-body disabled:opacity-40"
                         @click="thumbnailInput.click()"
                     >
                         {{ uploadingThumbnail ? 'Uploading…' : 'Upload Thumbnail' }}
@@ -140,11 +140,11 @@ async function uploadThumbnail(event) {
         <FloatingLabelInput id="course-subtitle" v-model="form.subtitle" label="Subtitle" />
 
         <div>
-            <p class="mb-1 text-sm font-semibold text-gray-700">Description</p>
+            <p class="mb-1 text-sm font-semibold text-body">Description</p>
             <RichTextEditor v-model="form.description" />
         </div>
         <div>
-            <p class="mb-1 text-sm font-semibold text-gray-700">Promotional Description</p>
+            <p class="mb-1 text-sm font-semibold text-body">Promotional Description</p>
             <RichTextEditor v-model="form.promo_description" />
         </div>
 
@@ -166,7 +166,7 @@ async function uploadThumbnail(event) {
             <button
                 type="submit"
                 :disabled="saving"
-                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ saving ? 'Saving…' : 'Save Changes' }}
             </button>

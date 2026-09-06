@@ -21,13 +21,13 @@ const cards = computed(() => [
             v-for="card in cards"
             :key="card.label"
             :to="card.to"
-            class="rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md"
+            class="rounded-2xl bg-card p-5 shadow-elevated transition hover:shadow-popover"
         >
             <span class="bg-amber/10 text-amber flex h-9 w-9 items-center justify-center rounded-lg">
                 <component :is="card.icon" class="h-5 w-5" />
             </span>
-            <p class="text-ink mt-3 text-xl font-bold">{{ card.value }}</p>
-            <p class="mt-1 text-xs text-gray-500">{{ card.label }}</p>
+            <p class="text-body mt-3 text-xl font-bold">{{ card.value }}</p>
+            <p class="mt-1 text-xs text-muted">{{ card.label }}</p>
         </router-link>
     </div>
 </template>

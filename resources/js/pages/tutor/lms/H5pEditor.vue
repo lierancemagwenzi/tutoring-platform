@@ -154,12 +154,12 @@ function onSaveError(detail) {
         <div class="flex items-center justify-between">
             <div>
                 <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back</button>
-                <h1 class="text-ink mt-1 text-2xl font-bold">{{ contentId ? 'Edit H5P Activity' : 'Create H5P Activity' }}</h1>
+                <h1 class="text-body mt-1 text-2xl font-bold">{{ contentId ? 'Edit H5P Activity' : 'Create H5P Activity' }}</h1>
             </div>
             <button
                 type="button"
                 :disabled="saving || !classificationComplete"
-                class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 @click="save"
             >
                 {{ saving ? 'Saving…' : 'Save' }}
@@ -168,22 +168,22 @@ function onSaveError(detail) {
 
         <p v-if="actionError" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
-        <div v-if="classificationLocked" class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
+        <div v-if="classificationLocked" class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-card p-5 shadow-elevated sm:grid-cols-3">
             <div>
-                <p class="text-xs font-semibold text-gray-500">Subject</p>
-                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.subject.name }}</p>
+                <p class="text-xs font-semibold text-muted">Subject</p>
+                <p class="mt-1 rounded-xl border border-border bg-card-alt px-4 py-3.5 text-body">{{ lockedClassification.subject.name }}</p>
             </div>
             <div>
-                <p class="text-xs font-semibold text-gray-500">Grade</p>
-                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.grade.name }}</p>
+                <p class="text-xs font-semibold text-muted">Grade</p>
+                <p class="mt-1 rounded-xl border border-border bg-card-alt px-4 py-3.5 text-body">{{ lockedClassification.grade.name }}</p>
             </div>
             <div v-if="curriculumLocked">
-                <p class="text-xs font-semibold text-gray-500">Curriculum</p>
-                <p class="mt-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-700">{{ lockedClassification.curriculum.name }}</p>
+                <p class="text-xs font-semibold text-muted">Curriculum</p>
+                <p class="mt-1 rounded-xl border border-border bg-card-alt px-4 py-3.5 text-body">{{ lockedClassification.curriculum.name }}</p>
             </div>
             <SelectInput v-else id="classification-curriculum" v-model="classification.curriculum_id" label="Curriculum" :options="curriculumOptions" />
         </div>
-        <div v-else class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm sm:grid-cols-3">
+        <div v-else class="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-card p-5 shadow-elevated sm:grid-cols-3">
             <SelectInput
                 id="classification-subject"
                 :model-value="classification.subject_id"
@@ -194,12 +194,12 @@ function onSaveError(detail) {
             <SelectInput id="classification-grade" v-model="classification.grade_id" label="Grade" :options="gradeOptions" />
             <SelectInput id="classification-curriculum" v-model="classification.curriculum_id" label="Curriculum" :options="curriculumOptions" />
         </div>
-        <p v-if="classificationLocked" class="mt-2 text-xs text-gray-500">
+        <p v-if="classificationLocked" class="mt-2 text-xs text-muted">
             {{ curriculumLocked ? "Locked to match this lesson's course, so the activity stays eligible to attach here."
                 : "Subject and Grade are locked to match this self-paced course; choose a Curriculum for this content." }}
         </p>
 
-        <div class="mt-8 overflow-hidden rounded-2xl bg-white shadow-sm">
+        <div class="mt-8 overflow-hidden rounded-2xl bg-card shadow-elevated">
             <H5pEditorWidget ref="editorWidget" :content-id="contentId" class="min-h-[70vh] p-6" @save-error="onSaveError" @loaded="onEditorLoaded" />
         </div>
     </div>

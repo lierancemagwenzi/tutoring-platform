@@ -105,12 +105,12 @@ async function onReorder() {
         <div class="flex items-center justify-between">
             <div>
                 <router-link to="/tutor/courses" class="text-accent text-sm font-semibold">&larr; Back to My Courses</router-link>
-                <h1 class="text-ink mt-1 text-2xl font-bold">{{ course?.title ?? 'Chapters' }}</h1>
-                <p class="mt-1 text-gray-500">Organize your course into chapters. Drag to reorder.</p>
+                <h1 class="text-body mt-1 text-2xl font-bold">{{ course?.title ?? 'Chapters' }}</h1>
+                <p class="mt-1 text-muted">Organize your course into chapters. Drag to reorder.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openCreate"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -125,7 +125,7 @@ async function onReorder() {
         </div>
 
         <div v-else-if="chapters.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <p class="text-gray-500">No chapters yet. Add your first chapter to get started.</p>
+            <p class="text-muted">No chapters yet. Add your first chapter to get started.</p>
         </div>
 
         <draggable
@@ -137,14 +137,14 @@ async function onReorder() {
             @end="onReorder"
         >
             <template #item="{ element: chapter }">
-                <div class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                    <span class="drag-handle cursor-grab text-gray-400">
+                <div class="flex items-center gap-4 rounded-2xl bg-card p-5 shadow-elevated">
+                    <span class="drag-handle cursor-grab text-muted">
                         <Bars3Icon class="h-5 w-5" />
                     </span>
 
                     <div class="min-w-0 flex-1">
-                        <p class="text-ink font-bold">{{ chapter.title }}</p>
-                        <p v-if="chapter.description" class="mt-0.5 truncate text-sm text-gray-500">{{ chapter.description }}</p>
+                        <p class="text-body font-bold">{{ chapter.title }}</p>
+                        <p v-if="chapter.description" class="mt-0.5 truncate text-sm text-muted">{{ chapter.description }}</p>
                     </div>
 
                     <span
@@ -161,7 +161,7 @@ async function onReorder() {
                         <BookOpenIcon class="h-4 w-4" />
                         Lessons
                     </router-link>
-                    <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEdit(chapter)">
+                    <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEdit(chapter)">
                         <PencilSquareIcon class="h-4 w-4" />
                     </button>
                     <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="remove(chapter)">
@@ -177,13 +177,13 @@ async function onReorder() {
                 <TextareaInput id="chapter-description" v-model="form.description" label="Description" />
                 <SelectInput v-if="editingChapter" id="chapter-status" v-model="form.status" label="Status" :options="STATUS_OPTIONS" />
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="modalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="modalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>

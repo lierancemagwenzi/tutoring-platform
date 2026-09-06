@@ -38,6 +38,6 @@ watch(() => props.diagram, render, { immediate: true })
     <div>
         <div v-if="svg" class="overflow-x-auto" v-html="svg" />
         <p v-else-if="error" class="text-sm text-red-600">Invalid diagram: {{ error }}</p>
-        <p v-else class="text-sm text-gray-400">Nothing to preview yet.</p>
+        <p v-else class="text-sm text-muted">Nothing to preview yet.</p>
     </div>
 </template>

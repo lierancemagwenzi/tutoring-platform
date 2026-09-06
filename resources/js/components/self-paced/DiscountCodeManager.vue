@@ -76,9 +76,9 @@ async function remove(code) {
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
+    <div class="rounded-2xl bg-card p-6 shadow-elevated">
         <div class="flex items-center justify-between">
-            <h2 class="text-ink text-lg font-bold">Discount Codes</h2>
+            <h2 class="text-body text-lg font-bold">Discount Codes</h2>
             <button type="button" class="text-accent flex items-center gap-1 text-sm font-semibold" @click="openCreate">
                 <PlusIcon class="h-4 w-4" /> New Code
             </button>
@@ -89,17 +89,17 @@ async function remove(code) {
         </div>
 
         <div v-else-if="codes.length === 0" class="mt-6 flex flex-col items-center py-6 text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-card-alt text-muted">
                 <TicketIcon class="h-7 w-7" />
             </span>
-            <p class="mt-3 text-sm text-gray-500">No discount codes yet.</p>
+            <p class="mt-3 text-sm text-muted">No discount codes yet.</p>
         </div>
 
-        <ul v-else class="mt-4 divide-y divide-gray-100">
+        <ul v-else class="mt-4 divide-y divide-border">
             <li v-for="code in codes" :key="code.id" class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                 <div>
-                    <p class="text-ink font-mono font-semibold">{{ code.code }}</p>
-                    <p class="text-sm text-gray-500">
+                    <p class="text-body font-mono font-semibold">{{ code.code }}</p>
+                    <p class="text-sm text-muted">
                         {{ code.discount_type === 'percentage' ? `${code.discount_value}% off` : `${code.discount_value} off` }}
                         <span v-if="code.max_redemptions"> &middot; {{ code.times_redeemed }}/{{ code.max_redemptions }} used</span>
                     </p>
@@ -107,11 +107,11 @@ async function remove(code) {
                 <div class="flex items-center gap-3">
                     <span
                         class="rounded-full px-3 py-1 text-xs font-semibold"
-                        :class="code.is_valid_now ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
+                        :class="code.is_valid_now ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
                     >
                         {{ code.is_valid_now ? 'Active' : 'Inactive' }}
                     </span>
-                    <button type="button" class="text-gray-400 hover:text-red-600" @click="remove(code)">
+                    <button type="button" class="text-muted hover:text-red-600" @click="remove(code)">
                         <TrashIcon class="h-4 w-4" />
                     </button>
                 </div>
@@ -128,13 +128,13 @@ async function remove(code) {
                 </div>
                 <FloatingLabelInput id="discount-max-redemptions" v-model="form.max_redemptions" type="number" label="Max Redemptions (optional)" />
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="modalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="modalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Creating…' : 'Create Code' }}
                     </button>

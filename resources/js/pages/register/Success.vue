@@ -19,15 +19,15 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex min-h-screen items-center justify-center bg-white px-6">
-        <div class="w-full max-w-md rounded-2xl border border-gray-100 p-12 text-center shadow-lg">
-            <h1 class="text-ink text-2xl font-bold">Your profile is created successfully</h1>
-            <div class="mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100">
+    <div class="bg-surface flex min-h-screen items-center justify-center px-6">
+        <div class="bg-card shadow-popover border-border w-full max-w-md rounded-2xl border p-12 text-center">
+            <h1 class="text-body text-2xl font-bold">Your profile is created successfully</h1>
+            <div class="bg-amber/10 mx-auto mt-6 flex h-16 w-16 items-center justify-center rounded-full">
                 <span class="bg-amber flex h-12 w-12 items-center justify-center rounded-full">
-                    <CheckIcon class="text-ink h-6 w-6" />
+                    <CheckIcon class="text-body h-6 w-6" />
                 </span>
             </div>
-            <p class="mt-6 text-gray-500">Redirecting you to the next step...</p>
+            <p class="text-muted mt-6">Redirecting you to the next step...</p>
         </div>
     </div>
 </template>

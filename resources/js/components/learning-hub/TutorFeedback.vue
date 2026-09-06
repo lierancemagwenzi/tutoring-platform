@@ -8,25 +8,25 @@ defineProps({
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink text-lg font-bold">Tutor Feedback</h2>
+    <div class="bg-card rounded-2xl p-6 shadow-elevated">
+        <h2 class="text-body text-lg font-bold">Tutor Feedback</h2>
 
         <div v-if="feedback.length === 0" class="mt-6 flex flex-col items-center py-6 text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="bg-card-alt text-muted flex h-14 w-14 items-center justify-center rounded-full">
                 <ChatBubbleLeftRightIcon class="h-7 w-7" />
             </span>
-            <p class="mt-3 text-sm text-gray-500">No feedback from your tutors yet.</p>
+            <p class="text-muted mt-3 text-sm">No feedback from your tutors yet.</p>
         </div>
 
-        <ul v-else class="mt-4 divide-y divide-gray-100">
+        <ul v-else class="divide-border mt-4 divide-y">
             <li v-for="(item, index) in feedback" :key="index" class="py-3 first:pt-0 last:pb-0">
                 <component :is="item.url ? 'router-link' : 'div'" :to="item.url" class="block">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-ink font-semibold">{{ item.title }}</p>
-                        <span class="shrink-0 text-xs text-gray-400">{{ formatDate(item.date) }}</span>
+                        <p class="text-body font-semibold">{{ item.title }}</p>
+                        <span class="text-muted shrink-0 text-xs">{{ formatDate(item.date) }}</span>
                     </div>
-                    <p v-if="item.tutor" class="text-sm text-gray-500">{{ item.tutor }}</p>
-                    <div class="prose prose-sm mt-1 max-w-none text-gray-600" v-html="item.feedback" />
+                    <p v-if="item.tutor" class="text-muted text-sm">{{ item.tutor }}</p>
+                    <div class="prose prose-sm text-muted mt-1 max-w-none" v-html="item.feedback" />
                 </component>
             </li>
         </ul>

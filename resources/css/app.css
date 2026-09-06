@@ -16,6 +16,38 @@
     --color-amber: #ffb100;
     --color-panel-start: #0f0247;
     --color-panel-end: #2405a9;
+
+    /* Page/card surfaces — light defaults match the grays already used
+     * throughout the app (gray-100/white/gray-900/gray-500), so switching
+     * components over to these tokens is a no-op in the default theme. */
+    --color-surface: #f3f4f6;
+    --color-card: #ffffff;
+    --color-card-alt: #f3f4f6;
+    --color-border: #f3f4f6;
+    --color-body: #111827;
+    --color-muted: #6b7280;
+}
+
+/*
+ * Card/popover elevation — kept as plain custom properties (not registered
+ * in @theme) so .shadow-card/.shadow-popover below do a live var() lookup
+ * and actually react to the dark override further down. A @theme-registered
+ * shadow token gets its value baked into the utility at build time instead,
+ * which would make the dark override a no-op.
+ */
+:root {
+    --shadow-elevated: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-popover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Named "elevated", not "card" — "shadow-card" would collide with Tailwind's
+ * shadow-{color} tint syntax now that --color-card exists. */
+.shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+}
+
+.shadow-popover {
+    box-shadow: var(--shadow-popover);
 }
 
 /*
@@ -30,4 +62,15 @@
     --color-amber: #a7cba3;
     --color-panel-start: #0f0f0f;
     --color-panel-end: #1a1a1a;
+
+    /* Neutrals from docs/theme.jpg: Deep Black / Charcoal / Soft Black / Soft White. */
+    --color-surface: #0f0f0f;
+    --color-card: #1a1a1a;
+    --color-card-alt: #242424;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-body: #f5f3ee;
+    --color-muted: rgba(245, 243, 238, 0.6);
+
+    --shadow-elevated: 0 4px 16px 0 rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
+    --shadow-popover: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08);
 }

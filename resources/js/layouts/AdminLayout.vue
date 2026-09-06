@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import {
+    AcademicCapIcon,
     BanknotesIcon,
     BookOpenIcon,
     CalendarDaysIcon,
@@ -11,11 +12,14 @@ import {
     ClockIcon,
     Cog6ToothIcon,
     DocumentCheckIcon,
+    DocumentTextIcon,
     HeartIcon,
     LifebuoyIcon,
     PuzzlePieceIcon,
     QuestionMarkCircleIcon,
+    ShieldCheckIcon,
     UserGroupIcon,
+    UsersIcon,
 } from '@heroicons/vue/24/outline'
 import SidebarShell from '../components/navigation/SidebarShell.vue'
 import { useAuthStore } from '../stores/auth'
@@ -27,6 +31,16 @@ const BASE_ADMIN_GROUPS = [
         items: [
             { to: '/admin/subjects', label: 'Subjects', icon: BookOpenIcon },
             { to: '/admin/faqs', label: 'FAQs', icon: QuestionMarkCircleIcon },
+            { to: '/admin/terms-and-conditions', label: 'Terms & Conditions', icon: DocumentTextIcon },
+            { to: '/admin/privacy-policy', label: 'Privacy Policy', icon: ShieldCheckIcon },
+        ],
+    },
+    {
+        key: 'users',
+        label: 'Users',
+        items: [
+            { to: '/admin/tutors', label: 'Tutors', icon: AcademicCapIcon },
+            { to: '/admin/students', label: 'Students', icon: UsersIcon },
         ],
     },
     {

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 const STORAGE_KEY = 'theme'
 const THEMES = ['default', 'dark']
-const ENV_DEFAULT = THEMES.includes(import.meta.env.VITE_THEME) ? import.meta.env.VITE_THEME : 'default'
+const ENV_DEFAULT = THEMES.includes(import.meta.env.VITE_THEME) ? import.meta.env.VITE_THEME : 'dark'
 
 function applyTheme(theme) {
     document.documentElement.dataset.theme = theme

@@ -70,17 +70,17 @@ onBeforeUnmount(() => {
         <p v-else-if="errorMessage" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
         <template v-else-if="certificate">
-            <div v-if="justCompleted" class="mb-6 rounded-2xl bg-green-50 p-6 text-center">
+            <div v-if="justCompleted" class="mb-6 rounded-2xl bg-green-500/10 p-6 text-center">
                 <TrophyIcon class="mx-auto h-10 w-10 text-green-600" />
-                <h1 class="text-ink mt-3 text-2xl font-bold">Congratulations!</h1>
-                <p class="mt-1 text-sm text-gray-600">You've completed <strong>{{ courseTitle }}</strong>. Your certificate is ready.</p>
+                <h1 class="text-body mt-3 text-2xl font-bold">Congratulations!</h1>
+                <p class="text-muted mt-1 text-sm">You've completed <strong>{{ courseTitle }}</strong>. Your certificate is ready.</p>
             </div>
 
             <div class="flex items-center justify-between">
-                <h2 class="text-ink text-lg font-bold">Your Certificate</h2>
+                <h2 class="text-body text-lg font-bold">Your Certificate</h2>
                 <button
                     type="button"
-                    class="bg-amber inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber shadow-elevated inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     :disabled="downloading"
                     @click="download"
                 >
@@ -89,22 +89,22 @@ onBeforeUnmount(() => {
                 </button>
             </div>
 
-            <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
+            <div class="border-border shadow-elevated mt-4 overflow-hidden rounded-2xl border">
                 <iframe v-if="pdfObjectUrl" :src="pdfObjectUrl" title="Certificate of Completion" class="h-[70vh] w-full" />
             </div>
 
             <dl class="mt-6 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                 <div>
-                    <dt class="text-xs text-gray-400">Certificate No.</dt>
-                    <dd class="text-ink font-semibold">{{ certificate.certificate_number }}</dd>
+                    <dt class="text-muted text-xs">Certificate No.</dt>
+                    <dd class="text-body font-semibold">{{ certificate.certificate_number }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs text-gray-400">Issued</dt>
-                    <dd class="text-ink font-semibold">{{ new Date(certificate.issued_at).toLocaleDateString() }}</dd>
+                    <dt class="text-muted text-xs">Issued</dt>
+                    <dd class="text-body font-semibold">{{ new Date(certificate.issued_at).toLocaleDateString() }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs text-gray-400">Instructor</dt>
-                    <dd class="text-ink font-semibold">{{ certificate.tutor_name }}</dd>
+                    <dt class="text-muted text-xs">Instructor</dt>
+                    <dd class="text-body font-semibold">{{ certificate.tutor_name }}</dd>
                 </div>
             </dl>
         </template>

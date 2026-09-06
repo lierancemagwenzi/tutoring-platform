@@ -71,13 +71,13 @@ async function save() {
         <SelectInput v-if="block" id="rich-text-status" v-model="form.status" label="Status" :options="STATUS_OPTIONS" />
 
         <div class="flex justify-end gap-3 pt-2">
-            <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="$emit('cancelled')">
+            <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="$emit('cancelled')">
                 Cancel
             </button>
             <button
                 type="submit"
                 :disabled="saving"
-                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ saving ? 'Saving…' : 'Save' }}
             </button>

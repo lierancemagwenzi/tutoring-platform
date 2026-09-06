@@ -8,13 +8,13 @@ const TABS = [
 </script>
 
 <template>
-    <nav class="flex gap-2 border-b border-gray-200">
+    <nav class="border-border flex gap-2 border-b">
         <router-link
             v-for="tab in TABS"
             :key="tab.to"
             :to="tab.to"
-            class="border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-gray-500 hover:text-gray-700"
-            active-class="border-amber text-ink"
+            class="text-muted hover:text-body border-b-2 border-transparent px-4 py-3 text-sm font-semibold"
+            active-class="border-amber text-body"
         >
             {{ tab.label }}
         </router-link>

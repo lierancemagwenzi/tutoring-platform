@@ -124,37 +124,37 @@ async function onReorder() {
         <div class="flex items-center justify-between">
             <div>
                 <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back to Lessons</button>
-                <h1 class="text-ink mt-1 text-2xl font-bold">Lesson Builder</h1>
-                <p class="mt-1 text-gray-500">Add and arrange content blocks. Students will see them in this order.</p>
+                <h1 class="text-body mt-1 text-2xl font-bold">Lesson Builder</h1>
+                <p class="mt-1 text-muted">Add and arrange content blocks. Students will see them in this order.</p>
             </div>
             <div class="relative">
                 <button
                     type="button"
-                    class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                    class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                     @click="pickerOpen = !pickerOpen"
                 >
                     <PlusIcon class="h-4 w-4" />
                     Add Block
                 </button>
-                <div v-if="pickerOpen" class="absolute top-full right-0 z-10 mt-2 max-h-96 w-56 overflow-y-auto rounded-xl bg-white py-1 shadow-lg">
+                <div v-if="pickerOpen" class="shadow-popover absolute top-full right-0 z-10 mt-2 max-h-96 w-56 overflow-y-auto rounded-xl bg-card py-1">
                     <button
                         v-for="option in ungroupedBlockTypes"
                         :key="option.type"
                         type="button"
-                        class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:bg-gray-50"
+                        class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:brightness-95"
                         @click="openCreate(option.type)"
                     >
                         <component :is="option.icon" class="text-accent h-4 w-4" />
                         {{ option.label }}
                     </button>
 
-                    <div v-for="group in groupedBlockTypes" :key="group.name" class="border-t border-gray-100 py-1 first:border-t-0">
-                        <p class="px-4 pt-1.5 pb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">{{ group.name }}</p>
+                    <div v-for="group in groupedBlockTypes" :key="group.name" class="border-t border-border py-1 first:border-t-0">
+                        <p class="px-4 pt-1.5 pb-1 text-xs font-semibold tracking-wide text-muted uppercase">{{ group.name }}</p>
                         <button
                             v-for="option in group.options"
                             :key="option.type"
                             type="button"
-                            class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:bg-gray-50"
+                            class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:brightness-95"
                             @click="openCreate(option.type)"
                         >
                             <component :is="option.icon" class="text-accent h-4 w-4" />
@@ -172,7 +172,7 @@ async function onReorder() {
         </div>
 
         <div v-else-if="blocks.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <p class="text-gray-500">No content blocks yet. Add your first block to get started.</p>
+            <p class="text-muted">No content blocks yet. Add your first block to get started.</p>
         </div>
 
         <draggable
@@ -184,8 +184,8 @@ async function onReorder() {
             @end="onReorder"
         >
             <template #item="{ element: block }">
-                <div class="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                    <span class="drag-handle mt-1 cursor-grab text-gray-400">
+                <div class="flex items-start gap-4 rounded-2xl bg-card p-5 shadow-elevated">
+                    <span class="drag-handle mt-1 cursor-grab text-muted">
                         <Bars3Icon class="h-5 w-5" />
                     </span>
 
@@ -195,7 +195,7 @@ async function onReorder() {
 
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
-                            <p class="text-ink font-bold">{{ block.title || blockRegistry[block.block_type]?.label }}</p>
+                            <p class="text-body font-bold">{{ block.title || blockRegistry[block.block_type]?.label }}</p>
                             <span
                                 class="rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize"
                                 :class="block.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
@@ -203,13 +203,13 @@ async function onReorder() {
                                 {{ block.status }}
                             </span>
                         </div>
-                        <p class="mt-1 truncate text-sm text-gray-500">{{ blockRegistry[block.block_type]?.summary(block) }}</p>
+                        <p class="mt-1 truncate text-sm text-muted">{{ blockRegistry[block.block_type]?.summary(block) }}</p>
                     </div>
 
-                    <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEdit(block)">
+                    <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEdit(block)">
                         <PencilSquareIcon class="h-4 w-4" />
                     </button>
-                    <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="duplicate(block)">
+                    <button type="button" class="shrink-0 text-muted hover:text-body" @click="duplicate(block)">
                         <DocumentDuplicateIcon class="h-4 w-4" />
                     </button>
                     <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="remove(block)">

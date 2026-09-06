@@ -12,13 +12,13 @@ defineEmits(['update:modelValue'])
 </script>
 
 <template>
-    <div class="flex gap-2 border-b border-gray-200">
+    <div class="border-border flex gap-2 border-b">
         <button
             v-for="tab in TABS"
             :key="tab.value"
             type="button"
             class="border-b-2 px-4 py-2.5 text-sm font-semibold transition"
-            :class="modelValue === tab.value ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-700'"
+            :class="modelValue === tab.value ? 'border-accent text-accent' : 'text-muted hover:text-body border-transparent'"
             @click="$emit('update:modelValue', tab.value)"
         >
             {{ tab.label }}

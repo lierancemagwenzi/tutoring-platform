@@ -74,8 +74,8 @@ async function send() {
 </script>
 
 <template>
-    <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
-        <h2 class="text-ink font-bold">Chat</h2>
+    <section class="bg-card shadow-elevated mt-6 rounded-2xl p-5">
+        <h2 class="text-body font-bold">Chat</h2>
 
         <p v-if="errorMessage" class="mt-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -84,8 +84,8 @@ async function send() {
         </div>
 
         <template v-else>
-            <div ref="listEl" class="mt-3 max-h-96 space-y-3 overflow-y-auto rounded-xl bg-gray-50 p-4">
-                <p v-if="store.messages.length === 0" class="text-center text-sm text-gray-500">No messages yet.</p>
+            <div ref="listEl" class="bg-card-alt mt-3 max-h-96 space-y-3 overflow-y-auto rounded-xl p-4">
+                <p v-if="store.messages.length === 0" class="text-muted text-center text-sm">No messages yet.</p>
 
                 <div
                     v-for="message in store.messages"
@@ -95,9 +95,9 @@ async function send() {
                 >
                     <div
                         class="max-w-xs rounded-2xl px-4 py-2 text-sm sm:max-w-sm"
-                        :class="message.sender.id === auth.user?.id ? 'bg-amber text-white' : 'bg-white text-gray-700 shadow-sm'"
+                        :class="message.sender.id === auth.user?.id ? 'bg-amber text-white' : 'bg-card shadow-elevated text-body'"
                     >
-                        <p v-if="message.sender.id !== auth.user?.id" class="mb-0.5 text-xs font-semibold text-gray-500">
+                        <p v-if="message.sender.id !== auth.user?.id" class="text-muted mb-0.5 text-xs font-semibold">
                             {{ message.sender.name }}
                         </p>
                         <p>{{ message.body }}</p>
@@ -112,20 +112,20 @@ async function send() {
                         v-model="body"
                         type="text"
                         placeholder="Write a message..."
-                        class="focus:border-accent flex-1 rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent bg-card text-body border-border flex-1 rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                         @keyup.enter="send"
                     />
                     <button
                         type="button"
                         :disabled="sending || !body.trim()"
-                        class="bg-amber rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         @click="send"
                     >
                         Send
                     </button>
                 </div>
             </div>
-            <p v-else class="mt-4 rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-500">
+            <p v-else class="bg-card-alt text-muted mt-4 rounded-lg px-4 py-3 text-sm">
                 This chat is closed because the booking is no longer active.
             </p>
         </template>

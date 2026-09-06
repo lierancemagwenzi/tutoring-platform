@@ -33,44 +33,44 @@ onMounted(async () => {
 
         <template v-else-if="store.current">
             <div class="mt-4 flex items-center justify-between">
-                <h1 class="text-ink text-2xl font-bold">{{ store.current.name }}</h1>
+                <h1 class="text-body text-2xl font-bold">{{ store.current.name }}</h1>
                 <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(store.current.status)">
                     {{ adminStatusLabel(store.current.status) }}
                 </span>
             </div>
 
             <div class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Approved Tutors</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.current.approved_tutors_count }}</p>
+                <div class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <p class="text-xs text-muted">Approved Tutors</p>
+                    <p class="text-body text-2xl font-bold">{{ store.current.approved_tutors_count }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Pending Requests</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.current.pending_requests_count }}</p>
+                <div class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <p class="text-xs text-muted">Pending Requests</p>
+                    <p class="text-body text-2xl font-bold">{{ store.current.pending_requests_count }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Services</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.current.services_count }}</p>
+                <div class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <p class="text-xs text-muted">Services</p>
+                    <p class="text-body text-2xl font-bold">{{ store.current.services_count }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Self-Paced Courses</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.current.self_paced_courses_count }}</p>
+                <div class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <p class="text-xs text-muted">Self-Paced Courses</p>
+                    <p class="text-body text-2xl font-bold">{{ store.current.self_paced_courses_count }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-5 shadow-sm">
-                    <p class="text-xs text-gray-500">Active Offerings</p>
-                    <p class="text-ink text-2xl font-bold">{{ store.current.active_offerings_count }}</p>
+                <div class="rounded-2xl bg-card p-5 shadow-elevated">
+                    <p class="text-xs text-muted">Active Offerings</p>
+                    <p class="text-body text-2xl font-bold">{{ store.current.active_offerings_count }}</p>
                 </div>
             </div>
 
-            <section class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
-                <h2 class="text-ink font-bold">Approved Tutors</h2>
-                <p v-if="store.current.approved_tutors.length === 0" class="mt-3 text-sm text-gray-500">
+            <section class="mt-6 rounded-2xl bg-card p-5 shadow-elevated">
+                <h2 class="text-body font-bold">Approved Tutors</h2>
+                <p v-if="store.current.approved_tutors.length === 0" class="mt-3 text-sm text-muted">
                     No tutors are approved to teach this subject yet.
                 </p>
-                <ul v-else class="mt-3 divide-y divide-gray-100">
+                <ul v-else class="mt-3 divide-y divide-border">
                     <li v-for="tutor in store.current.approved_tutors" :key="tutor.tutor_profile_id" class="flex items-center justify-between py-2.5">
-                        <span class="text-ink text-sm font-medium">{{ tutor.display_name }}</span>
-                        <span class="text-sm text-gray-500">{{ tutor.email }}</span>
+                        <span class="text-body text-sm font-medium">{{ tutor.display_name }}</span>
+                        <span class="text-sm text-muted">{{ tutor.email }}</span>
                     </li>
                 </ul>
             </section>

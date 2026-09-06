@@ -74,11 +74,11 @@ async function submitReply() {
         </div>
 
         <template v-else-if="store.ticket">
-            <div class="mt-4 rounded-2xl bg-white p-6 shadow-sm">
+            <div class="mt-4 rounded-2xl bg-card p-6 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink text-lg font-bold">{{ store.ticket.subject }}</p>
-                        <p class="mt-1 text-sm text-gray-500">
+                        <p class="text-body text-lg font-bold">{{ store.ticket.subject }}</p>
+                        <p class="mt-1 text-sm text-muted">
                             {{ store.ticket.user.name }} &middot; <span class="capitalize">{{ store.ticket.user.role }}</span> &middot;
                             {{ store.ticket.created_at.slice(0, 10) }}
                         </p>
@@ -87,15 +87,15 @@ async function submitReply() {
                         {{ adminStatusLabel(store.ticket.status) }}
                     </span>
                 </div>
-                <p class="mt-4 text-sm text-gray-700">{{ store.ticket.message }}</p>
+                <p class="mt-4 text-sm text-body">{{ store.ticket.message }}</p>
 
-                <div class="mt-5 flex flex-wrap items-end gap-3 border-t border-gray-100 pt-5">
+                <div class="mt-5 flex flex-wrap items-end gap-3 border-t border-border pt-5">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500" for="status">Status</label>
+                        <label class="block text-xs font-semibold text-muted" for="status">Status</label>
                         <select
                             id="status"
                             v-model="selectedStatus"
-                            class="focus:border-accent mt-1.5 rounded-xl border border-gray-300 px-3.5 py-2 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 rounded-xl border border-border px-3.5 py-2 text-sm text-body outline-none"
                         >
                             <option v-for="option in STATUS_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
                         </select>
@@ -103,7 +103,7 @@ async function submitReply() {
                     <button
                         type="button"
                         :disabled="updatingStatus || selectedStatus === store.ticket.status"
-                        class="bg-amber rounded-full px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-5 py-2 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         @click="updateStatus"
                     >
                         {{ updatingStatus ? 'Updating…' : 'Update Status' }}
@@ -113,37 +113,37 @@ async function submitReply() {
             </div>
 
             <section class="mt-6">
-                <h2 class="text-ink font-bold">Conversation</h2>
+                <h2 class="text-body font-bold">Conversation</h2>
 
-                <div v-if="store.comments.length === 0" class="mt-4 text-sm text-gray-500">No replies yet.</div>
+                <div v-if="store.comments.length === 0" class="mt-4 text-sm text-muted">No replies yet.</div>
 
                 <div v-else class="mt-4 space-y-3">
                     <div
                         v-for="comment in store.comments"
                         :key="comment.id"
-                        class="rounded-2xl p-4 shadow-sm"
-                        :class="comment.author.is_admin ? 'bg-indigo-50' : 'bg-white'"
+                        class="rounded-2xl p-4 shadow-elevated"
+                        :class="comment.author.is_admin ? 'bg-accent/10' : 'bg-card'"
                     >
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span class="font-semibold text-gray-700">{{ comment.author.name }}{{ comment.author.is_admin ? ' (Admin)' : '' }}</span>
+                        <div class="flex items-center justify-between text-xs text-muted">
+                            <span class="font-semibold text-body">{{ comment.author.name }}{{ comment.author.is_admin ? ' (Admin)' : '' }}</span>
                             <span>{{ comment.created_at.slice(0, 10) }}</span>
                         </div>
-                        <p class="mt-2 text-sm text-gray-700">{{ comment.body }}</p>
+                        <p class="mt-2 text-sm text-body">{{ comment.body }}</p>
                     </div>
                 </div>
 
-                <div class="mt-5 rounded-2xl bg-white p-5 shadow-sm">
+                <div class="mt-5 rounded-2xl bg-card p-5 shadow-elevated">
                     <p v-if="replyError" class="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{{ replyError }}</p>
                     <textarea
                         v-model="replyBody"
                         rows="3"
-                        class="focus:border-accent w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         placeholder="Write a reply..."
                     />
                     <button
                         type="button"
                         :disabled="replying || !replyBody.trim()"
-                        class="bg-amber mt-3 rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber mt-3 rounded-full px-6 py-2 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                         @click="submitReply"
                     >
                         {{ replying ? 'Sending…' : 'Send Reply' }}

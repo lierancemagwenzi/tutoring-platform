@@ -31,8 +31,8 @@ class TutorManagementTest extends TestCase
     public function test_admin_can_view_tutor_detail_with_subjects_grouped_by_status(): void
     {
         $admin = User::factory()->admin()->create();
-        $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorUser = User::factory()->tutor()->create(['phone' => '0821234567']);
+        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor', 'bio' => 'Loves teaching.']);
         $approvedSubject = Subject::create(['name' => 'Mathematics']);
         $pendingSubject = Subject::create(['name' => 'Physics']);
         TutorSubject::create(['tutor_profile_id' => $tutor->id, 'subject_id' => $approvedSubject->id, 'status' => TutorSubjectStatus::Approved]);
@@ -46,6 +46,8 @@ class TutorManagementTest extends TestCase
         $response->assertJsonCount(1, 'tutor.pending_subjects');
         $response->assertJsonPath('tutor.approved_subjects.0.subject', 'Mathematics');
         $response->assertJsonPath('tutor.pending_subjects.0.subject', 'Physics');
+        $response->assertJsonPath('tutor.user.phone', '0821234567');
+        $response->assertJsonPath('tutor.profile.bio', 'Loves teaching.');
     }
 
     public function test_tutor_detail_never_exposes_connected_account_tokens(): void

@@ -143,7 +143,7 @@ defineExpose({ save })
 
 <template>
     <div>
-        <p v-if="loading" class="text-sm text-gray-400">Loading H5P editor…</p>
+        <p v-if="loading" class="text-sm text-muted">Loading H5P editor…</p>
         <p v-if="error" class="mb-2 text-sm text-red-600">{{ error }}</p>
         <div ref="wrapper">
             <div ref="target"></div>

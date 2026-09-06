@@ -59,15 +59,15 @@ async function save() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Settings</h1>
+        <h1 class="text-body text-2xl font-bold">Settings</h1>
 
         <div class="mt-6">
             <SettingsTabs />
         </div>
 
-        <div class="mt-6 max-w-xl rounded-2xl bg-white p-6 shadow-sm">
-            <h2 class="text-ink font-bold">Banking Details</h2>
-            <p class="mt-1 text-sm text-gray-500">
+        <div class="bg-card shadow-elevated mt-6 max-w-xl rounded-2xl p-6">
+            <h2 class="text-body font-bold">Banking Details</h2>
+            <p class="text-muted mt-1 text-sm">
                 Used by the platform to pay out your earnings. You can't create a service or self-paced course, or be
                 approved as a tutor, without these on file.
             </p>
@@ -82,48 +82,48 @@ async function save() {
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700" for="bank_name">Bank Name</label>
+                        <label class="text-body block text-sm font-semibold" for="bank_name">Bank Name</label>
                         <input
                             id="bank_name"
                             v-model="form.bank_name"
                             type="text"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent bg-card text-body border-border mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700" for="account_holder_name">Account Holder Name</label>
+                        <label class="text-body block text-sm font-semibold" for="account_holder_name">Account Holder Name</label>
                         <input
                             id="account_holder_name"
                             v-model="form.account_holder_name"
                             type="text"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent bg-card text-body border-border mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700" for="account_number">Account Number</label>
+                        <label class="text-body block text-sm font-semibold" for="account_number">Account Number</label>
                         <input
                             id="account_number"
                             v-model="form.account_number"
                             type="text"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent bg-card text-body border-border mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                         />
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700" for="branch_code">Branch Code</label>
+                            <label class="text-body block text-sm font-semibold" for="branch_code">Branch Code</label>
                             <input
                                 id="branch_code"
                                 v-model="form.branch_code"
                                 type="text"
-                                class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                                class="focus:border-accent bg-card text-body border-border mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                             />
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700" for="account_type">Account Type</label>
+                            <label class="text-body block text-sm font-semibold" for="account_type">Account Type</label>
                             <select
                                 id="account_type"
                                 v-model="form.account_type"
-                                class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                                class="focus:border-accent bg-card text-body border-border mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none"
                             >
                                 <option v-for="type in ACCOUNT_TYPES" :key="type.value" :value="type.value">{{ type.label }}</option>
                             </select>
@@ -134,7 +134,7 @@ async function save() {
                 <button
                     type="button"
                     :disabled="saving"
-                    class="bg-amber mt-6 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber shadow-elevated mt-6 rounded-full px-6 py-2.5 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="save"
                 >
                     {{ saving ? 'Saving…' : 'Save Banking Details' }}

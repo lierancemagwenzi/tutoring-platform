@@ -49,8 +49,8 @@ async function save() {
 </script>
 
 <template>
-    <form class="max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-sm" novalidate @submit.prevent="save">
-        <h2 class="text-ink text-lg font-bold">Pricing</h2>
+    <form class="max-w-md space-y-4 rounded-2xl bg-card p-6 shadow-elevated" novalidate @submit.prevent="save">
+        <h2 class="text-body text-lg font-bold">Pricing</h2>
 
         <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
         <p v-if="success" class="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">Saved.</p>
@@ -59,13 +59,13 @@ async function save() {
             <FloatingLabelInput id="course-price" v-model="form.price" type="number" label="Price" />
             <SelectInput id="course-currency" v-model="form.currency" label="Currency" :options="CURRENCY_OPTIONS" />
         </div>
-        <p class="text-xs text-gray-400">A price and currency must be set before this course can be published.</p>
+        <p class="text-xs text-muted">A price and currency must be set before this course can be published.</p>
 
         <div class="flex justify-end pt-2">
             <button
                 type="submit"
                 :disabled="saving"
-                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ saving ? 'Saving…' : 'Save Pricing' }}
             </button>

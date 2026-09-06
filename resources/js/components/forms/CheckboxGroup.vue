@@ -18,20 +18,20 @@ function toggle(value) {
 
 <template>
     <div>
-        <p :id="id" class="mb-2 font-semibold text-gray-700">{{ label }}</p>
+        <p :id="id" class="text-body mb-2 font-semibold">{{ label }}</p>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <label
                 v-for="option in options"
                 :key="option.value"
-                class="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-300 px-3 py-2.5 has-[:checked]:border-accent"
+                class="border-border has-[:checked]:border-accent flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5"
             >
                 <input
                     type="checkbox"
-                    class="accent-accent h-4 w-4 rounded border-gray-300"
+                    class="accent-accent border-border h-4 w-4 rounded"
                     :checked="modelValue.includes(option.value)"
                     @change="toggle(option.value)"
                 />
-                <span class="text-sm text-gray-900">{{ option.label }}</span>
+                <span class="text-body text-sm">{{ option.label }}</span>
             </label>
         </div>
     </div>

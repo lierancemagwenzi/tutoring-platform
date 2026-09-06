@@ -21,8 +21,8 @@ onMounted(async () => {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Integrations</h1>
-        <p class="mt-1 text-sm text-gray-500">Status is derived from actual configuration — secrets are never shown here.</p>
+        <h1 class="text-body text-2xl font-bold">Integrations</h1>
+        <p class="mt-1 text-sm text-muted">Status is derived from actual configuration — secrets are never shown here.</p>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -31,9 +31,9 @@ onMounted(async () => {
         </div>
 
         <div v-else class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div v-for="(integration, key) in store.integrations" :key="key" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="(integration, key) in store.integrations" :key="key" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-center justify-between">
-                    <p class="text-ink font-bold">{{ integration.name }}</p>
+                    <p class="text-body font-bold">{{ integration.name }}</p>
                     <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(integration.status)">
                         {{ adminStatusLabel(integration.status) }}
                     </span>

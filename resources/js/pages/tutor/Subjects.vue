@@ -33,7 +33,7 @@ function statusLabel(status) {
 }
 
 function statusClasses(status) {
-    return STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-600'
+    return STATUS_CLASSES[status] ?? 'bg-card-alt text-muted'
 }
 
 const subjectOptions = computed(() => store.subjects.map((subject) => ({ value: String(subject.id), label: subject.name })))
@@ -117,10 +117,10 @@ async function removeSubject() {
 <template>
     <div class="p-8">
         <div class="flex items-center justify-between">
-            <h1 class="text-ink text-2xl font-bold">My Subjects</h1>
+            <h1 class="text-body text-2xl font-bold">My Subjects</h1>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openAddModal"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -133,13 +133,13 @@ async function removeSubject() {
         </div>
 
         <div v-else-if="store.tutorSubjects.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-card-alt text-muted">
                 <BookOpenIcon class="h-8 w-8" />
             </span>
-            <p class="mt-4 text-gray-500">You haven't added any subjects yet.</p>
+            <p class="mt-4 text-muted">You haven't added any subjects yet.</p>
             <button
                 type="button"
-                class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-elevated transition hover:brightness-95"
                 @click="openAddModal"
             >
                 Add Subject
@@ -150,15 +150,15 @@ async function removeSubject() {
             <div
                 v-for="tutorSubject in store.tutorSubjects"
                 :key="tutorSubject.id"
-                class="rounded-2xl bg-white p-5 shadow-sm"
+                class="rounded-2xl bg-card p-5 shadow-elevated"
             >
                 <div class="flex items-start justify-between gap-2">
-                    <p class="text-ink font-bold">{{ tutorSubject.subject.name }}</p>
+                    <p class="text-body font-bold">{{ tutorSubject.subject.name }}</p>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="statusClasses(tutorSubject.status)">
                         {{ statusLabel(tutorSubject.status) }}
                     </span>
                 </div>
-                <p class="mt-1 text-sm text-gray-500">Grades {{ gradesLabel(tutorSubject) }}</p>
+                <p class="mt-1 text-sm text-muted">Grades {{ gradesLabel(tutorSubject) }}</p>
                 <p v-if="tutorSubject.status === 'rejected'" class="mt-2 text-sm text-red-600">
                     This subject wasn't approved. You can remove it and add it again for review.
                 </p>
@@ -179,7 +179,7 @@ async function removeSubject() {
             <form class="space-y-6" novalidate @submit.prevent="saveSubject">
                 <p v-if="formError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ formError }}</p>
 
-                <p v-if="isEditing" class="text-ink font-semibold">{{ editingSubjectName }}</p>
+                <p v-if="isEditing" class="text-body font-semibold">{{ editingSubjectName }}</p>
                 <SelectInput
                     v-else
                     id="subject-id"
@@ -189,20 +189,20 @@ async function removeSubject() {
                 />
 
                 <div>
-                    <p class="mb-2 font-semibold text-gray-700">Grades</p>
+                    <p class="mb-2 font-semibold text-body">Grades</p>
                     <div class="grid grid-cols-3 gap-3">
                         <label
                             v-for="grade in store.grades"
                             :key="grade.id"
-                            class="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-300 px-3 py-2.5 has-[:checked]:border-accent"
+                            class="flex cursor-pointer items-center gap-2 rounded-xl border border-border px-3 py-2.5 has-[:checked]:border-accent"
                         >
                             <input
                                 type="checkbox"
-                                class="accent-accent h-4 w-4 rounded border-gray-300"
+                                class="accent-accent h-4 w-4 rounded border-border"
                                 :checked="form.gradeIds.includes(grade.id)"
                                 @change="toggleGrade(grade.id)"
                             />
-                            <span class="text-sm text-gray-900">{{ grade.name }}</span>
+                            <span class="text-sm text-body">{{ grade.name }}</span>
                         </label>
                     </div>
                 </div>
@@ -210,7 +210,7 @@ async function removeSubject() {
                 <div class="flex justify-end gap-3">
                     <button
                         type="button"
-                        class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                        class="rounded-full border border-border px-5 py-2.5 font-semibold text-body"
                         @click="showFormModal = false"
                     >
                         Cancel
@@ -218,7 +218,7 @@ async function removeSubject() {
                     <button
                         type="submit"
                         :disabled="saving || form.gradeIds.length === 0 || (!isEditing && !form.subjectId)"
-                        class="bg-amber rounded-full px-5 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-5 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>
@@ -227,11 +227,11 @@ async function removeSubject() {
         </Modal>
 
         <Modal :model-value="deleteTarget !== null" :title="`Remove ${deleteTarget?.subject.name}?`" @update:model-value="deleteTarget = null">
-            <p class="text-gray-600">This subject will no longer appear on your profile.</p>
+            <p class="text-muted">This subject will no longer appear on your profile.</p>
             <template #footer>
                 <button
                     type="button"
-                    class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                    class="rounded-full border border-border px-5 py-2.5 font-semibold text-body"
                     @click="deleteTarget = null"
                 >
                     Cancel
@@ -239,7 +239,7 @@ async function removeSubject() {
                 <button
                     type="button"
                     :disabled="deleting"
-                    class="rounded-full bg-red-600 px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="rounded-full bg-red-600 px-5 py-2.5 font-semibold text-white shadow-elevated transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="removeSubject"
                 >
                     {{ deleting ? 'Removing…' : 'Remove' }}

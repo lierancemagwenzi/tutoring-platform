@@ -33,6 +33,7 @@ class StudentRegistrationController extends Controller
             'password' => $data['password'],
             'role' => UserRole::Student,
             'status' => UserStatus::Pending,
+            'terms_accepted_at' => now(),
         ]);
 
         if ($request->isMinor()) {

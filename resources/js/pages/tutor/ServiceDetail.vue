@@ -33,7 +33,7 @@ function visibilityLabel(visibility) {
 }
 
 function visibilityClasses(visibility) {
-    return VISIBILITY_CLASSES[visibility] ?? 'bg-gray-100 text-gray-600'
+    return VISIBILITY_CLASSES[visibility] ?? 'bg-card-alt text-muted'
 }
 
 function resourceNames(list) {
@@ -58,8 +58,8 @@ function backToServices() {
         <template v-else-if="service">
             <div class="mt-4 flex items-start justify-between gap-2">
                 <div>
-                    <p class="text-sm text-gray-500">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
-                    <h1 class="text-ink mt-1 text-2xl font-bold">{{ service.title }}</h1>
+                    <p class="text-sm text-muted">{{ service.subject.name }} &middot; {{ service.category.name }}</p>
+                    <h1 class="text-body mt-1 text-2xl font-bold">{{ service.title }}</h1>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="visibilityClasses(service.visibility)">
                     {{ visibilityLabel(service.visibility) }}
@@ -73,39 +73,39 @@ function backToServices() {
                 Edit Service
             </router-link>
 
-            <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <p class="text-sm text-gray-600">{{ service.description }}</p>
+            <div class="mt-6 rounded-2xl bg-card p-6 shadow-elevated">
+                <p class="text-sm text-muted">{{ service.description }}</p>
 
                 <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                    <dt class="text-gray-500">Subject</dt>
-                    <dd class="text-ink font-medium">{{ service.subject.name }}</dd>
-                    <dt class="text-gray-500">Category</dt>
-                    <dd class="text-ink font-medium">{{ service.category.name }}</dd>
-                    <dt class="text-gray-500">Format</dt>
-                    <dd class="text-ink font-medium">{{ service.session_format.name }}</dd>
-                    <dt class="text-gray-500">Price</dt>
-                    <dd class="text-ink font-medium">{{ service.currency }} {{ service.price }}</dd>
-                    <dt class="text-gray-500">Duration</dt>
-                    <dd class="text-ink font-medium">{{ service.session_duration_minutes }} minutes</dd>
-                    <dt class="text-gray-500">Sessions included</dt>
-                    <dd class="text-ink font-medium">{{ service.sessions_included }}</dd>
-                    <dt class="text-gray-500">Validity period</dt>
-                    <dd class="text-ink font-medium">{{ service.validity_period_days }} days</dd>
-                    <dt class="text-gray-500">Max students</dt>
-                    <dd class="text-ink font-medium">{{ service.max_students_per_session }}</dd>
+                    <dt class="text-muted">Subject</dt>
+                    <dd class="text-body font-medium">{{ service.subject.name }}</dd>
+                    <dt class="text-muted">Category</dt>
+                    <dd class="text-body font-medium">{{ service.category.name }}</dd>
+                    <dt class="text-muted">Format</dt>
+                    <dd class="text-body font-medium">{{ service.session_format.name }}</dd>
+                    <dt class="text-muted">Price</dt>
+                    <dd class="text-body font-medium">{{ service.currency }} {{ service.price }}</dd>
+                    <dt class="text-muted">Duration</dt>
+                    <dd class="text-body font-medium">{{ service.session_duration_minutes }} minutes</dd>
+                    <dt class="text-muted">Sessions included</dt>
+                    <dd class="text-body font-medium">{{ service.sessions_included }}</dd>
+                    <dt class="text-muted">Validity period</dt>
+                    <dd class="text-body font-medium">{{ service.validity_period_days }} days</dd>
+                    <dt class="text-muted">Max students</dt>
+                    <dd class="text-body font-medium">{{ service.max_students_per_session }}</dd>
                 </dl>
 
-                <div v-if="service.learning_resources.length" class="mt-4 border-t border-gray-100 pt-4">
-                    <p class="font-semibold text-gray-700">Learning resources</p>
-                    <p class="mt-1 text-gray-500">{{ resourceNames(service.learning_resources) }}</p>
+                <div v-if="service.learning_resources.length" class="mt-4 border-t border-border pt-4">
+                    <p class="font-semibold text-body">Learning resources</p>
+                    <p class="mt-1 text-muted">{{ resourceNames(service.learning_resources) }}</p>
                 </div>
-                <div v-if="service.assessment_types.length" class="mt-4 border-t border-gray-100 pt-4">
-                    <p class="font-semibold text-gray-700">Assessments</p>
-                    <p class="mt-1 text-gray-500">{{ resourceNames(service.assessment_types) }}</p>
+                <div v-if="service.assessment_types.length" class="mt-4 border-t border-border pt-4">
+                    <p class="font-semibold text-body">Assessments</p>
+                    <p class="mt-1 text-muted">{{ resourceNames(service.assessment_types) }}</p>
                 </div>
-                <div v-if="service.curricula.length" class="mt-4 border-t border-gray-100 pt-4">
-                    <p class="font-semibold text-gray-700">Curriculum</p>
-                    <p class="mt-1 text-gray-500">{{ resourceNames(service.curricula) }}</p>
+                <div v-if="service.curricula.length" class="mt-4 border-t border-border pt-4">
+                    <p class="font-semibold text-body">Curriculum</p>
+                    <p class="mt-1 text-muted">{{ resourceNames(service.curricula) }}</p>
                 </div>
             </div>
         </template>

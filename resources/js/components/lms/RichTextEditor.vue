@@ -73,13 +73,13 @@ function insertTable() {
 </script>
 
 <template>
-    <div v-if="editor" class="rounded-xl border border-gray-300">
-        <div class="flex flex-wrap gap-1 border-b border-gray-200 p-2">
+    <div v-if="editor" class="rounded-xl border border-border">
+        <div class="flex flex-wrap gap-1 border-b border-border p-2">
             <button
                 type="button"
                 aria-label="Bold"
                 class="rounded-lg px-2.5 py-1.5 text-sm font-bold"
-                :class="editor.isActive('bold') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('bold') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleBold().run()"
             >
                 B
@@ -88,7 +88,7 @@ function insertTable() {
                 type="button"
                 aria-label="Italic"
                 class="rounded-lg px-2.5 py-1.5 text-sm italic"
-                :class="editor.isActive('italic') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('italic') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleItalic().run()"
             >
                 I
@@ -97,27 +97,27 @@ function insertTable() {
                 type="button"
                 aria-label="Underline"
                 class="rounded-lg px-2.5 py-1.5 text-sm underline"
-                :class="editor.isActive('underline') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('underline') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleUnderline().run()"
             >
                 U
             </button>
-            <span class="mx-1 w-px bg-gray-200" />
+            <span class="mx-1 w-px bg-border" />
             <button
                 v-for="level in [1, 2, 3]"
                 :key="level"
                 type="button"
                 class="rounded-lg px-2.5 py-1.5 text-sm font-semibold"
-                :class="editor.isActive('heading', { level }) ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('heading', { level }) ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleHeading({ level }).run()"
             >
                 H{{ level }}
             </button>
-            <span class="mx-1 w-px bg-gray-200" />
+            <span class="mx-1 w-px bg-border" />
             <button
                 type="button"
                 class="rounded-lg px-2.5 py-1.5 text-sm"
-                :class="editor.isActive('bulletList') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('bulletList') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleBulletList().run()"
             >
                 • List
@@ -125,7 +125,7 @@ function insertTable() {
             <button
                 type="button"
                 class="rounded-lg px-2.5 py-1.5 text-sm"
-                :class="editor.isActive('orderedList') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('orderedList') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleOrderedList().run()"
             >
                 1. List
@@ -133,7 +133,7 @@ function insertTable() {
             <button
                 type="button"
                 class="rounded-lg px-2.5 py-1.5 text-sm"
-                :class="editor.isActive('blockquote') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('blockquote') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleBlockquote().run()"
             >
                 Quote
@@ -141,15 +141,15 @@ function insertTable() {
             <button
                 type="button"
                 class="rounded-lg px-2.5 py-1.5 font-mono text-sm"
-                :class="editor.isActive('codeBlock') ? 'bg-accent/10 text-accent' : 'text-gray-600 hover:bg-gray-100'"
+                :class="editor.isActive('codeBlock') ? 'bg-accent/10 text-accent' : 'text-muted hover:brightness-95'"
                 @click="editor.chain().focus().toggleCodeBlock().run()"
             >
                 &lt;/&gt;
             </button>
-            <span class="mx-1 w-px bg-gray-200" />
-            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100" @click="addLink">Link</button>
-            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100" @click="addImage">Image</button>
-            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100" @click="insertTable">Table</button>
+            <span class="mx-1 w-px bg-border" />
+            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-muted hover:brightness-95" @click="addLink">Link</button>
+            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-muted hover:brightness-95" @click="addImage">Image</button>
+            <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-muted hover:brightness-95" @click="insertTable">Table</button>
         </div>
 
         <EditorContent :editor="editor" class="prose prose-sm max-w-none px-4 py-3" />

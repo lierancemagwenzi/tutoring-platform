@@ -144,7 +144,7 @@ async function retryMeeting(session) {
         <button type="button" class="text-accent text-sm font-semibold" @click="router.push('/tutor/booking-requests')">
             &larr; Back to Bookings
         </button>
-        <h1 class="text-ink mt-1 text-2xl font-bold">Booking</h1>
+        <h1 class="text-body mt-1 text-2xl font-bold">Booking</h1>
 
         <div v-if="loading" class="flex justify-center py-24">
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
@@ -153,46 +153,46 @@ async function retryMeeting(session) {
         <p v-else-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
         <template v-else-if="store.currentBooking">
-            <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+            <div class="bg-card shadow-elevated mt-6 rounded-2xl p-6">
                 <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                    <dt class="text-gray-500">Student</dt>
-                    <dd class="text-ink font-medium">
+                    <dt class="text-muted">Student</dt>
+                    <dd class="text-body font-medium">
                         {{ store.currentBooking.student.first_name }} {{ store.currentBooking.student.last_name }}
                     </dd>
-                    <dt class="text-gray-500">Service</dt>
-                    <dd class="text-ink font-medium">{{ store.currentBooking.service.title }}</dd>
+                    <dt class="text-muted">Service</dt>
+                    <dd class="text-body font-medium">{{ store.currentBooking.service.title }}</dd>
                 </dl>
             </div>
 
             <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
-                <div class="rounded-2xl bg-white p-4 text-center shadow-sm">
-                    <p class="text-ink text-2xl font-bold">{{ store.bookingProgress.purchased_sessions }}</p>
-                    <p class="mt-1 text-xs text-gray-500">Purchased</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-4 text-center">
+                    <p class="text-body text-2xl font-bold">{{ store.bookingProgress.purchased_sessions }}</p>
+                    <p class="text-muted mt-1 text-xs">Purchased</p>
                 </div>
-                <div class="rounded-2xl bg-white p-4 text-center shadow-sm">
-                    <p class="text-ink text-2xl font-bold">{{ store.bookingProgress.scheduled_sessions }}</p>
-                    <p class="mt-1 text-xs text-gray-500">Scheduled</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-4 text-center">
+                    <p class="text-body text-2xl font-bold">{{ store.bookingProgress.scheduled_sessions }}</p>
+                    <p class="text-muted mt-1 text-xs">Scheduled</p>
                 </div>
-                <div class="rounded-2xl bg-white p-4 text-center shadow-sm">
-                    <p class="text-ink text-2xl font-bold">{{ store.bookingProgress.completed_sessions }}</p>
-                    <p class="mt-1 text-xs text-gray-500">Completed</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-4 text-center">
+                    <p class="text-body text-2xl font-bold">{{ store.bookingProgress.completed_sessions }}</p>
+                    <p class="text-muted mt-1 text-xs">Completed</p>
                 </div>
-                <div class="rounded-2xl bg-white p-4 text-center shadow-sm">
-                    <p class="text-ink text-2xl font-bold">{{ store.bookingProgress.upcoming_sessions }}</p>
-                    <p class="mt-1 text-xs text-gray-500">Upcoming</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-4 text-center">
+                    <p class="text-body text-2xl font-bold">{{ store.bookingProgress.upcoming_sessions }}</p>
+                    <p class="text-muted mt-1 text-xs">Upcoming</p>
                 </div>
-                <div class="rounded-2xl bg-white p-4 text-center shadow-sm">
-                    <p class="text-ink text-2xl font-bold">{{ store.bookingProgress.remaining_sessions }}</p>
-                    <p class="mt-1 text-xs text-gray-500">Remaining</p>
+                <div class="bg-card shadow-elevated rounded-2xl p-4 text-center">
+                    <p class="text-body text-2xl font-bold">{{ store.bookingProgress.remaining_sessions }}</p>
+                    <p class="text-muted mt-1 text-xs">Remaining</p>
                 </div>
             </div>
 
             <div class="mt-6 flex items-center justify-between">
-                <h2 class="text-ink font-bold">Sessions</h2>
+                <h2 class="text-body font-bold">Sessions</h2>
                 <button
                     v-if="canScheduleAnother"
                     type="button"
-                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                    class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95"
                     @click="openForm"
                 >
                     Schedule Session
@@ -201,30 +201,30 @@ async function retryMeeting(session) {
 
             <p v-if="actionError" class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ actionError }}</p>
 
-            <p v-if="store.bookingSessions.length === 0" class="mt-6 text-sm text-gray-500">No sessions scheduled yet.</p>
+            <p v-if="store.bookingSessions.length === 0" class="text-muted mt-6 text-sm">No sessions scheduled yet.</p>
 
             <ul v-else class="mt-4 space-y-3">
                 <li
                     v-for="(session, index) in store.bookingSessions"
                     :key="session.id"
-                    class="rounded-2xl bg-white p-5 shadow-sm"
+                    class="bg-card shadow-elevated rounded-2xl p-5"
                 >
                     <div class="flex items-start justify-between gap-3">
                         <div>
-                            <p class="text-ink font-bold">Session {{ index + 1 }}</p>
-                            <p class="mt-1 text-sm text-gray-500">{{ session.date }} &middot; {{ session.start_time }} - {{ session.end_time }}</p>
-                            <p v-if="session.lessons?.length" class="mt-1 text-xs text-gray-400">{{ session.lessons.join(', ') }}</p>
+                            <p class="text-body font-bold">Session {{ index + 1 }}</p>
+                            <p class="text-muted mt-1 text-sm">{{ session.date }} &middot; {{ session.start_time }} - {{ session.end_time }}</p>
+                            <p v-if="session.lessons?.length" class="text-muted mt-1 text-xs">{{ session.lessons.join(', ') }}</p>
                         </div>
                         <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="statusClasses(session.status)">
                             {{ session.status.replace('_', ' ') }}
                         </span>
                     </div>
 
-                    <div v-if="session.meeting && !session.meeting.meeting_url" class="mt-4 border-t border-gray-100 pt-4">
+                    <div v-if="session.meeting && !session.meeting.meeting_url" class="border-border mt-4 border-t pt-4">
                         <p v-if="session.meeting.status === 'failed'" class="text-sm text-red-600">
                             We couldn't create the meeting link for this session.
                         </p>
-                        <p v-else class="text-sm text-gray-500">Setting up the meeting link…</p>
+                        <p v-else class="text-muted text-sm">Setting up the meeting link…</p>
                         <p v-if="retryError" class="mt-1 text-sm text-red-600">{{ retryError }}</p>
                         <button
                             v-if="session.meeting.status === 'failed'"
@@ -237,7 +237,7 @@ async function retryMeeting(session) {
                         </button>
                     </div>
 
-                    <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                    <div class="border-border mt-4 flex flex-wrap items-center gap-4 border-t pt-4">
                         <a
                             v-if="session.meeting?.meeting_url"
                             :href="session.meeting.meeting_url"
@@ -281,10 +281,10 @@ async function retryMeeting(session) {
                 <p v-if="formError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ formError }}</p>
 
                 <div>
-                    <p class="mb-1 text-sm font-medium text-gray-700">Lesson (optional)</p>
+                    <p class="text-body mb-1 text-sm font-medium">Lesson (optional)</p>
                     <button
                         type="button"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50"
+                        class="bg-card text-body border-border hover:bg-card-alt w-full rounded-xl border px-4 py-3 text-left text-sm"
                         @click="pickerOpen = true"
                     >
                         {{ selectedLesson ? selectedLesson.title : 'Choose a lesson…' }}
@@ -298,8 +298,8 @@ async function retryMeeting(session) {
                 </div>
 
                 <div>
-                    <p class="mb-1 text-sm font-medium text-gray-700">Meeting Provider</p>
-                    <p class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 capitalize">
+                    <p class="text-body mb-1 text-sm font-medium">Meeting Provider</p>
+                    <p class="bg-card-alt text-muted border-border rounded-xl border px-4 py-3 text-sm capitalize">
                         {{ settings.meetingProvider.selected ?? 'None selected' }}
                     </p>
                 </div>
@@ -308,13 +308,13 @@ async function retryMeeting(session) {
             </div>
 
             <template #footer>
-                <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700" @click="formOpen = false">
+                <button type="button" class="border-border text-body rounded-full border px-5 py-2.5 text-sm font-semibold" @click="formOpen = false">
                     Cancel
                 </button>
                 <button
                     type="button"
                     :disabled="submitting"
-                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:opacity-40"
+                    class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95 disabled:opacity-40"
                     @click="submitForm"
                 >
                     {{ submitting ? 'Scheduling…' : 'Schedule' }}

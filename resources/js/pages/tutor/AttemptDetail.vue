@@ -44,7 +44,7 @@ function statusLabel(status) {
 }
 
 function statusClasses(status) {
-    return STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-600'
+    return STATUS_CLASSES[status] ?? 'bg-card-alt text-muted'
 }
 
 function formatTime(seconds) {
@@ -67,47 +67,47 @@ function formatTime(seconds) {
 
         <template v-else-if="attempt">
             <div class="mt-4 flex items-center gap-3">
-                <h1 class="text-ink text-2xl font-bold">{{ attempt.student.first_name }} {{ attempt.student.last_name }}</h1>
+                <h1 class="text-body text-2xl font-bold">{{ attempt.student.first_name }} {{ attempt.student.last_name }}</h1>
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(attempt.status)">
                     {{ statusLabel(attempt.status) }}
                 </span>
             </div>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-muted">
                 Attempt {{ attempt.attempt_number }} &middot; {{ attempt.provider }} &middot; Started {{ new Date(attempt.started_at).toLocaleString() }}
             </p>
 
             <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <section class="rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Result</h2>
+                <section class="rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Result</h2>
                     <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                        <dt class="text-gray-500">Score</dt>
-                        <dd class="text-ink font-medium">
+                        <dt class="text-muted">Score</dt>
+                        <dd class="text-body font-medium">
                             <span v-if="attempt.raw_score !== null">{{ attempt.raw_score }} / {{ attempt.max_score }}</span>
                             <span v-else>—</span>
                         </dd>
-                        <dt class="text-gray-500">Percentage</dt>
-                        <dd class="text-ink font-medium">{{ attempt.percentage !== null ? `${attempt.percentage}%` : '—' }}</dd>
-                        <dt class="text-gray-500">Pass/Fail</dt>
-                        <dd class="text-ink font-medium">
+                        <dt class="text-muted">Percentage</dt>
+                        <dd class="text-body font-medium">{{ attempt.percentage !== null ? `${attempt.percentage}%` : '—' }}</dd>
+                        <dt class="text-muted">Pass/Fail</dt>
+                        <dd class="text-body font-medium">
                             <span v-if="attempt.passed === true" class="text-green-700">Passed</span>
                             <span v-else-if="attempt.passed === false" class="text-red-700">Failed</span>
                             <span v-else>—</span>
                         </dd>
-                        <dt class="text-gray-500">Time Taken</dt>
-                        <dd class="text-ink font-medium">{{ formatTime(attempt.time_taken_seconds) }}</dd>
-                        <dt class="text-gray-500">Completed At</dt>
-                        <dd class="text-ink font-medium">{{ attempt.completed_at ? new Date(attempt.completed_at).toLocaleString() : '—' }}</dd>
+                        <dt class="text-muted">Time Taken</dt>
+                        <dd class="text-body font-medium">{{ formatTime(attempt.time_taken_seconds) }}</dd>
+                        <dt class="text-muted">Completed At</dt>
+                        <dd class="text-body font-medium">{{ attempt.completed_at ? new Date(attempt.completed_at).toLocaleString() : '—' }}</dd>
                     </dl>
                 </section>
 
-                <section class="rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Provider Metadata</h2>
-                    <pre class="mt-4 overflow-x-auto rounded-xl bg-gray-50 p-4 text-xs text-gray-700">{{ JSON.stringify(attempt.provider_metadata, null, 2) }}</pre>
+                <section class="rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Provider Metadata</h2>
+                    <pre class="mt-4 overflow-x-auto rounded-xl bg-card-alt p-4 text-xs text-body">{{ JSON.stringify(attempt.provider_metadata, null, 2) }}</pre>
                 </section>
 
-                <section class="rounded-2xl bg-white p-6 shadow-sm lg:col-span-2">
-                    <h2 class="text-ink font-bold">Raw Provider Result</h2>
-                    <pre class="mt-4 overflow-x-auto rounded-xl bg-gray-50 p-4 text-xs text-gray-700">{{ JSON.stringify(attempt.raw_provider_response, null, 2) }}</pre>
+                <section class="rounded-2xl bg-card p-6 shadow-elevated lg:col-span-2">
+                    <h2 class="text-body font-bold">Raw Provider Result</h2>
+                    <pre class="mt-4 overflow-x-auto rounded-xl bg-card-alt p-4 text-xs text-body">{{ JSON.stringify(attempt.raw_provider_response, null, 2) }}</pre>
                 </section>
             </div>
         </template>

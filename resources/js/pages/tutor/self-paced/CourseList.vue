@@ -52,12 +52,12 @@ async function create() {
     <div class="p-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-ink text-2xl font-bold">Self-Paced Courses</h1>
-                <p class="mt-1 text-gray-500">Structured, self-paced learning products — independent of your tutoring services.</p>
+                <h1 class="text-body text-2xl font-bold">Self-Paced Courses</h1>
+                <p class="mt-1 text-muted">Structured, self-paced learning products — independent of your tutoring services.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="createOpen = true"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -70,10 +70,10 @@ async function create() {
         </div>
 
         <div v-else-if="courses.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-card-alt text-muted">
                 <RectangleStackIcon class="h-8 w-8" />
             </span>
-            <p class="mt-4 text-gray-500">No self-paced courses yet. Create your first one to get started.</p>
+            <p class="mt-4 text-muted">No self-paced courses yet. Create your first one to get started.</p>
         </div>
 
         <div v-else class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -81,19 +81,19 @@ async function create() {
                 v-for="course in courses"
                 :key="course.id"
                 :to="`/tutor/self-paced-courses/${course.id}`"
-                class="flex flex-col rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md"
+                class="flex flex-col rounded-2xl bg-card p-5 shadow-elevated transition hover:shadow-popover"
             >
                 <div class="flex items-start justify-between gap-2">
-                    <p class="text-ink font-bold">{{ course.title }}</p>
+                    <p class="text-body font-bold">{{ course.title }}</p>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="STATUS_CLASSES[course.status]">
                         {{ course.status }}
                     </span>
                 </div>
-                <p v-if="course.subtitle" class="mt-1 text-sm text-gray-500">{{ course.subtitle }}</p>
-                <div class="mt-3 flex items-center justify-between text-sm text-gray-500">
+                <p v-if="course.subtitle" class="mt-1 text-sm text-muted">{{ course.subtitle }}</p>
+                <div class="mt-3 flex items-center justify-between text-sm text-muted">
                     <span>{{ course.modules_count ?? 0 }} module{{ course.modules_count === 1 ? '' : 's' }}</span>
                     <span v-if="course.price !== null">{{ course.currency }} {{ course.price }}</span>
-                    <span v-else class="text-gray-400 italic">No price set</span>
+                    <span v-else class="text-muted italic">No price set</span>
                 </div>
             </router-link>
         </div>
@@ -103,13 +103,13 @@ async function create() {
                 <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
                 <FloatingLabelInput id="new-course-title" v-model="title" label="Course Title" />
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="createOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="createOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="creating || !title"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ creating ? 'Creating…' : 'Create Course' }}
                     </button>

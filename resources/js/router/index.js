@@ -80,10 +80,16 @@ import AdminDashboard from '../pages/admin/Dashboard.vue'
 import AdminQuickSetup from '../pages/admin/QuickSetup.vue'
 import AdminSubjects from '../pages/admin/Subjects.vue'
 import AdminFaqs from '../pages/admin/Faqs.vue'
+import AdminTutors from '../pages/admin/Tutors.vue'
+import AdminTutorDetail from '../pages/admin/TutorDetail.vue'
+import AdminStudents from '../pages/admin/Students.vue'
+import AdminStudentDetail from '../pages/admin/StudentDetail.vue'
 import AdminSubjectDetail from '../pages/admin/SubjectDetail.vue'
 import AdminTutorApprovals from '../pages/admin/TutorApprovals.vue'
+import AdminTutorApprovalDetail from '../pages/admin/TutorApprovalDetail.vue'
 import AdminTutorSubjectRequests from '../pages/admin/TutorSubjectRequests.vue'
 import AdminSettings from '../pages/admin/Settings.vue'
+import AdminLegalDocumentEditor from '../pages/admin/LegalDocumentEditor.vue'
 import AdminIntegrations from '../pages/admin/Integrations.vue'
 import AdminSystemHealth from '../pages/admin/SystemHealth.vue'
 import AdminActivityLog from '../pages/admin/ActivityLog.vue'
@@ -103,6 +109,7 @@ import HelpTicketDetail from '../components/support/HelpTicketDetail.vue'
 import TutorPaymentTicketDetail from '../pages/tutor/PaymentTicketDetail.vue'
 import { TUTOR_APPLICATION_STEP_ROUTES } from './tutorApplicationSteps'
 import { DASHBOARD_BY_ROLE } from './dashboardByRole'
+import LegalDocument from '../pages/legal/LegalDocument.vue'
 
 const routes = [
     {
@@ -132,6 +139,18 @@ const routes = [
             { path: 'password', name: 'register.password', component: CreatePassword, meta: { step: 2 } },
             { path: 'otp', name: 'register.otp', component: Otp, meta: { step: 3, afterVerify: 'success' } },
         ],
+    },
+    {
+        path: '/terms',
+        name: 'legal.terms',
+        component: LegalDocument,
+        props: { type: 'terms' },
+    },
+    {
+        path: '/privacy',
+        name: 'legal.privacy',
+        component: LegalDocument,
+        props: { type: 'privacy' },
     },
     {
         path: '/register/success',
@@ -393,10 +412,27 @@ const routes = [
             { path: 'quick-setup', name: 'admin.quick-setup', component: AdminQuickSetup },
             { path: 'subjects', name: 'admin.subjects', component: AdminSubjects },
             { path: 'faqs', name: 'admin.faqs', component: AdminFaqs },
+            { path: 'tutors', name: 'admin.tutors', component: AdminTutors },
+            { path: 'tutors/:id', name: 'admin.tutors.show', component: AdminTutorDetail },
+            { path: 'students', name: 'admin.students', component: AdminStudents },
+            { path: 'students/:id', name: 'admin.students.show', component: AdminStudentDetail },
             { path: 'subjects/:id', name: 'admin.subjects.show', component: AdminSubjectDetail },
             { path: 'tutor-approvals', name: 'admin.tutor-approvals', component: AdminTutorApprovals },
+            { path: 'tutor-approvals/:id', name: 'admin.tutor-approvals.show', component: AdminTutorApprovalDetail },
             { path: 'tutor-subject-requests', name: 'admin.tutor-subject-requests', component: AdminTutorSubjectRequests },
             { path: 'settings', name: 'admin.settings', component: AdminSettings },
+            {
+                path: 'terms-and-conditions',
+                name: 'admin.terms-and-conditions',
+                component: AdminLegalDocumentEditor,
+                props: { type: 'terms' },
+            },
+            {
+                path: 'privacy-policy',
+                name: 'admin.privacy-policy',
+                component: AdminLegalDocumentEditor,
+                props: { type: 'privacy' },
+            },
             { path: 'financial-rules', name: 'admin.financial-rules', component: AdminFinancialRules },
             { path: 'financial-transactions', name: 'admin.financial-transactions', component: AdminFinancialTransactions },
             { path: 'bookings', name: 'admin.bookings', component: AdminBookingManagement },

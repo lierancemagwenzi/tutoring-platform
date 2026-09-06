@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Http\Resources\TutorApplicationResource;
 use App\Models\User;
 use App\Notifications\UserNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -37,25 +38,31 @@ class TutorApprovalService
     public function detail(User $tutor): array
     {
         $profile = $tutor->tutorProfile;
-        $profile->loadMissing(['tutorSubjects.subject', 'tutorSubjects.grades', 'services', 'selfPacedCourses', 'bankAccount']);
+        $profile->loadMissing([
+            'tutorSubjects.subject',
+            'tutorSubjects.grades',
+            'services',
+            'selfPacedCourses',
+            'bankAccount',
+            'qualifications',
+            'documents',
+        ]);
 
         return [
             'user' => [
                 'id' => $tutor->id,
                 'name' => trim("{$tutor->first_name} {$tutor->last_name}"),
                 'email' => $tutor->email,
+                'phone' => $tutor->phone,
                 'email_verified' => $tutor->hasVerifiedEmail(),
                 'status' => $tutor->status->value,
                 'registered_at' => $tutor->created_at->toIso8601String(),
             ],
-            'profile' => [
-                'display_name' => $profile->display_name,
-                'bio' => $profile->bio,
-                'years_experience' => $profile->years_experience,
-                'occupation' => $profile->occupation,
-                'onboarding_complete' => $profile->onboarding_complete,
+            // The full application — bio, languages, teaching style,
+            // government ID, qualifications, supporting documents — the same
+            // shape the tutor itself sees while filling it out.
+            'profile' => (new TutorApplicationResource($profile))->resolve() + [
                 'admin_note' => $profile->admin_note,
-                'missing_requirements' => $profile->missingSubmissionRequirements(),
             ],
             'requested_subjects' => $profile->tutorSubjects->map(fn ($ts) => [
                 'id' => $ts->id,

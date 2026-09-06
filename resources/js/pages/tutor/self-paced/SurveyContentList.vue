@@ -86,12 +86,12 @@ async function remove(surveyContent) {
     <div class="p-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-ink text-2xl font-bold">Survey Question Banks</h1>
-                <p class="mt-1 text-gray-500">Reusable SurveyJS question banks for your self-paced course Assessments.</p>
+                <h1 class="text-body text-2xl font-bold">Survey Question Banks</h1>
+                <p class="mt-1 text-muted">Reusable SurveyJS question banks for your self-paced course Assessments.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openCreate"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -104,20 +104,20 @@ async function remove(surveyContent) {
         </div>
 
         <div v-else-if="surveyContents.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-card-alt text-muted">
                 <QuestionMarkCircleIcon class="h-8 w-8" />
             </span>
-            <p class="mt-4 text-gray-500">No survey question banks yet. Create your first one to get started.</p>
+            <p class="mt-4 text-muted">No survey question banks yet. Create your first one to get started.</p>
         </div>
 
         <div v-else class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div v-for="surveyContent in surveyContents" :key="surveyContent.id" class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="surveyContent in surveyContents" :key="surveyContent.id" class="flex flex-col rounded-2xl bg-card p-5 shadow-elevated">
                 <router-link :to="`/tutor/self-paced-survey-contents/${surveyContent.id}`" class="flex-1">
-                    <p class="text-ink font-bold">{{ surveyContent.title }}</p>
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="text-body font-bold">{{ surveyContent.title }}</p>
+                    <p class="mt-1 text-sm text-muted">
                         {{ surveyContent.grade?.name }} &middot; {{ surveyContent.subject?.name }} &middot; {{ surveyContent.curriculum?.name }}
                     </p>
-                    <p class="mt-2 text-xs text-gray-400">
+                    <p class="mt-2 text-xs text-muted">
                         {{ surveyContent.questions_count }} question{{ surveyContent.questions_count === 1 ? '' : 's' }}
                     </p>
                 </router-link>
@@ -154,13 +154,13 @@ async function remove(surveyContent) {
                     :options="curricula.map((curriculum) => ({ value: String(curriculum.id), label: curriculum.name }))"
                 />
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="createOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="createOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="creating || !form.title || !form.grade_id || !form.subject_id || !form.curriculum_id"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ creating ? 'Creating…' : 'Create' }}
                     </button>

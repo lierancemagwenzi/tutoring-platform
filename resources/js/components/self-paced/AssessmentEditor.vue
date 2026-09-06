@@ -92,7 +92,7 @@ async function save() {
             <FloatingLabelInput id="assessment-title" v-model="form.title" label="Title" />
             <TextareaInput id="assessment-description" v-model="form.description" label="Description (optional)" :rows="2" />
 
-            <label class="flex items-center gap-2 text-sm text-gray-700">
+            <label class="flex items-center gap-2 text-sm text-body">
                 <input v-model="form.required" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                 Required for module completion
             </label>
@@ -112,22 +112,22 @@ async function save() {
             </div>
 
             <div class="space-y-2">
-                <label class="flex items-center gap-2 text-sm text-gray-700">
+                <label class="flex items-center gap-2 text-sm text-body">
                     <input v-model="form.randomize_questions" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                     Randomize questions
                 </label>
-                <label class="flex items-center gap-2 text-sm text-gray-700">
+                <label class="flex items-center gap-2 text-sm text-body">
                     <input v-model="form.show_results" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                     Show results to students
                 </label>
-                <label class="flex items-center gap-2 text-sm text-gray-700">
+                <label class="flex items-center gap-2 text-sm text-body">
                     <input v-model="form.show_correct_answers" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                     Show correct answers
                 </label>
             </div>
 
-            <div class="rounded-xl border border-gray-200 p-4">
-                <p class="mb-2 text-sm font-semibold text-gray-700">Provider</p>
+            <div class="rounded-xl border border-border p-4">
+                <p class="mb-2 text-sm font-semibold text-body">Provider</p>
                 <AssessmentProviderSelector
                     v-model:provider="form.provider"
                     v-model:provider-config="form.provider_config"
@@ -135,13 +135,13 @@ async function save() {
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
-                <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="$emit('cancelled')">
+                <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="$emit('cancelled')">
                     Cancel
                 </button>
                 <button
                     type="submit"
                     :disabled="saving"
-                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {{ saving ? 'Saving…' : 'Save' }}
                 </button>

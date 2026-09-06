@@ -125,8 +125,8 @@ async function save() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">{{ isEditing ? 'Edit Service' : 'Add Service' }}</h1>
-        <p class="mt-1 text-gray-500">Define what you're offering, how it's delivered, and what students get.</p>
+        <h1 class="text-body text-2xl font-bold">{{ isEditing ? 'Edit Service' : 'Add Service' }}</h1>
+        <p class="mt-1 text-muted">Define what you're offering, how it's delivered, and what students get.</p>
 
         <div v-if="loading" class="flex justify-center py-24">
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
@@ -135,22 +135,22 @@ async function save() {
         <form v-else class="mt-8 max-w-3xl space-y-6" novalidate @submit.prevent="save">
             <p v-if="formError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ formError }}</p>
 
-            <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Basic Information</h2>
+            <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                <h2 class="text-body font-bold">Basic Information</h2>
                 <SelectInput id="subject" v-model="form.subjectId" label="Subject" :options="subjectOptions" />
                 <SelectInput id="category" v-model="form.serviceCategoryId" label="Service Category" :options="categoryOptions" />
                 <FloatingLabelInput id="title" v-model="form.title" label="Service Title" />
                 <TextareaInput id="description" v-model="form.description" label="Description" />
             </section>
 
-            <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Pricing</h2>
+            <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                <h2 class="text-body font-bold">Pricing</h2>
                 <FloatingLabelInput id="price" v-model="form.price" type="number" label="Price" />
                 <SelectInput id="currency" v-model="form.currency" label="Currency" :options="CURRENCY_OPTIONS" />
             </section>
 
-            <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Lesson Configuration</h2>
+            <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                <h2 class="text-body font-bold">Lesson Configuration</h2>
                 <FloatingLabelInput id="duration" v-model="form.sessionDurationMinutes" type="number" label="Session Duration (minutes)" />
                 <FloatingLabelInput id="sessions" v-model="form.sessionsIncluded" type="number" label="Number of Sessions Included" />
                 <FloatingLabelInput id="validity" v-model="form.validityPeriodDays" type="number" label="Validity Period (days)" />
@@ -163,7 +163,7 @@ async function save() {
                 <SelectInput id="session-format" v-model="form.sessionFormatId" label="Session Format" :options="sessionFormatOptions" />
             </section>
 
-            <section class="rounded-2xl bg-white p-6 shadow-sm">
+            <section class="rounded-2xl bg-card p-6 shadow-elevated">
                 <CheckboxGroup
                     id="learning-resources"
                     v-model="form.learningResourceIds"
@@ -172,27 +172,27 @@ async function save() {
                 />
             </section>
 
-            <section class="rounded-2xl bg-white p-6 shadow-sm">
+            <section class="rounded-2xl bg-card p-6 shadow-elevated">
                 <CheckboxGroup id="assessments" v-model="form.assessmentTypeIds" label="Assessments" :options="assessmentTypeOptions" />
             </section>
 
-            <section class="rounded-2xl bg-white p-6 shadow-sm">
+            <section class="rounded-2xl bg-card p-6 shadow-elevated">
                 <CheckboxGroup id="curriculum" v-model="form.curriculumIds" label="Curriculum" :options="curriculumOptions" />
             </section>
 
-            <section class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Visibility</h2>
+            <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
+                <h2 class="text-body font-bold">Visibility</h2>
                 <SelectInput id="visibility" v-model="form.visibility" label="Visibility" :options="VISIBILITY_OPTIONS" />
             </section>
 
             <div class="flex justify-end gap-3 pb-4">
-                <router-link to="/tutor/services" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700">
+                <router-link to="/tutor/services" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body">
                     Cancel
                 </router-link>
                 <button
                     type="submit"
                     :disabled="saving"
-                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {{ saving ? 'Saving…' : 'Save' }}
                 </button>

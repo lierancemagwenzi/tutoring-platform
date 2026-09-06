@@ -33,6 +33,7 @@ class StudentRegistrationRequest extends FormRequest
             'phone' => ['required', 'string', 'max:20'],
             'date_of_birth' => ['nullable', 'date'],
             'is_minor' => ['required', 'boolean'],
+            'terms_accepted' => ['required', 'accepted'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
             'guardian_first_name' => [Rule::requiredIf($isMinor), 'string', 'max:255'],
             'guardian_last_name' => [Rule::requiredIf($isMinor), 'string', 'max:255'],

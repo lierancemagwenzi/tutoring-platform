@@ -20,10 +20,10 @@ const floating = computed(() => focused.value || props.modelValue.length > 0)
     <div class="relative">
         <label
             :for="id"
-            class="pointer-events-none absolute left-3 bg-white px-1 transition-all duration-150"
+            class="bg-card pointer-events-none absolute left-3 px-1 transition-all duration-150"
             :class="[
                 floating ? '-top-2.5 text-xs' : 'top-1/2 -translate-y-1/2 text-base',
-                focused ? 'text-accent font-medium' : floating ? 'text-gray-600' : 'text-gray-500',
+                focused ? 'text-accent font-medium' : 'text-muted',
             ]"
         >
             {{ label }}
@@ -32,8 +32,8 @@ const floating = computed(() => focused.value || props.modelValue.length > 0)
             :id="id"
             :value="modelValue"
             :disabled="disabled"
-            class="w-full appearance-none rounded-xl border bg-white px-4 py-3.5 text-gray-900 outline-none transition-colors disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
-            :class="focused ? 'border-accent border-2' : 'border-gray-300'"
+            class="bg-card text-body disabled:bg-card-alt disabled:text-muted w-full appearance-none rounded-xl border px-4 py-3.5 outline-none transition-colors disabled:cursor-not-allowed"
+            :class="focused ? 'border-accent border-2' : 'border-border'"
             @change="$emit('update:modelValue', $event.target.value)"
             @focus="focused = true"
             @blur="focused = false"
@@ -43,7 +43,7 @@ const floating = computed(() => focused.value || props.modelValue.length > 0)
         </select>
         <ChevronDownIcon
             class="pointer-events-none absolute top-1/2 right-3.5 h-5 w-5 -translate-y-1/2"
-            :class="focused ? 'text-accent' : 'text-gray-500'"
+            :class="focused ? 'text-accent' : 'text-muted'"
         />
     </div>
 </template>

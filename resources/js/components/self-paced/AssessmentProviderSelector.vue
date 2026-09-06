@@ -64,7 +64,7 @@ watch(surveyContentId, (value) => {
                 "
             />
 
-            <div v-if="surveyContents.length === 0" class="mt-1 text-xs text-gray-400">
+            <div v-if="surveyContents.length === 0" class="mt-1 text-xs text-muted">
                 No survey question banks yet — create one below.
             </div>
 
@@ -80,7 +80,7 @@ watch(surveyContentId, (value) => {
                     <PencilSquareIcon class="h-4 w-4" /> Edit Selected Bank
                 </router-link>
             </div>
-            <p class="mt-1 text-xs text-gray-400">
+            <p class="mt-1 text-xs text-muted">
                 Managing survey banks navigates away from this course editor — you'll return to select one once saved.
             </p>
         </div>
@@ -93,7 +93,7 @@ watch(surveyContentId, (value) => {
                 :options="h5pContents.map((content) => ({ value: content.h5p_content_id, label: content.title ?? `Content #${content.h5p_content_id}` }))"
             />
 
-            <div v-if="h5pContents.length === 0" class="mt-1 text-xs text-gray-400">
+            <div v-if="h5pContents.length === 0" class="mt-1 text-xs text-muted">
                 No H5P content tagged for self-paced courses yet — create one below.
             </div>
 
@@ -112,7 +112,7 @@ watch(surveyContentId, (value) => {
                     <PencilSquareIcon class="h-4 w-4" /> Edit Selected Content
                 </router-link>
             </div>
-            <p class="mt-1 text-xs text-gray-400">
+            <p class="mt-1 text-xs text-muted">
                 Creating content here navigates away from this course editor — you'll return to select it once saved.
             </p>
         </div>

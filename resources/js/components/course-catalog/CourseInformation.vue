@@ -20,12 +20,12 @@ const rows = computed(() => [
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink text-lg font-bold">Course Information</h2>
+    <div class="bg-card shadow-elevated rounded-2xl p-6">
+        <h2 class="text-body text-lg font-bold">Course Information</h2>
         <dl class="mt-3 space-y-2 text-sm">
             <div v-for="row in rows" :key="row.label" class="flex justify-between">
-                <dt class="text-gray-500">{{ row.label }}</dt>
-                <dd class="text-ink font-semibold" :class="row.capitalize ? 'capitalize' : ''">{{ row.value }}</dd>
+                <dt class="text-muted">{{ row.label }}</dt>
+                <dd class="text-body font-semibold" :class="row.capitalize ? 'capitalize' : ''">{{ row.value }}</dd>
             </div>
         </dl>
     </div>

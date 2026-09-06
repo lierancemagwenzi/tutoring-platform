@@ -103,15 +103,15 @@ async function save() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Settings</h1>
+        <h1 class="text-body text-2xl font-bold">Settings</h1>
 
-        <div class="mt-6 flex gap-1 overflow-x-auto border-b border-gray-200">
+        <div class="mt-6 flex gap-1 overflow-x-auto border-b border-border">
             <button
                 v-for="tab in TABS"
                 :key="tab.key"
                 type="button"
                 class="shrink-0 border-b-2 px-4 py-2 text-sm font-semibold whitespace-nowrap transition"
-                :class="activeTab === tab.key ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                :class="activeTab === tab.key ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-body'"
                 @click="activeTab = tab.key; success = false; errorMessage = ''"
             >
                 {{ tab.label }}
@@ -122,13 +122,13 @@ async function save() {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else class="mt-6 max-w-xl rounded-2xl bg-white p-6 shadow-sm">
+        <div v-else class="mt-6 max-w-xl rounded-2xl bg-card p-6 shadow-elevated">
             <p v-if="errorMessage" class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
             <p v-if="success" class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">Saved.</p>
 
             <div class="space-y-4">
                 <div v-for="field in currentTab.fields" :key="field.key">
-                    <label v-if="field.type !== 'boolean'" class="block text-sm font-semibold text-gray-700" :for="field.key">
+                    <label v-if="field.type !== 'boolean'" class="block text-sm font-semibold text-body" :for="field.key">
                         {{ field.label }}
                     </label>
 
@@ -137,17 +137,17 @@ async function save() {
                         :id="field.key"
                         v-model="form[field.key]"
                         rows="3"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                     <input
                         v-else-if="field.type === 'number'"
                         :id="field.key"
                         v-model.number="form[field.key]"
                         type="number"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
-                    <label v-else-if="field.type === 'boolean'" class="flex items-center gap-3 text-sm font-medium text-gray-700">
-                        <input :id="field.key" v-model="form[field.key]" type="checkbox" class="text-accent h-4 w-4 rounded border-gray-300" />
+                    <label v-else-if="field.type === 'boolean'" class="flex items-center gap-3 text-sm font-medium text-body">
+                        <input :id="field.key" v-model="form[field.key]" type="checkbox" class="text-accent h-4 w-4 rounded border-border" />
                         {{ field.label }}
                     </label>
                     <input
@@ -155,7 +155,7 @@ async function save() {
                         :id="field.key"
                         v-model="form[field.key]"
                         type="text"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
             </div>
@@ -163,7 +163,7 @@ async function save() {
             <button
                 type="button"
                 :disabled="saving"
-                class="bg-amber mt-6 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber mt-6 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 @click="save"
             >
                 {{ saving ? 'Saving…' : 'Save Changes' }}

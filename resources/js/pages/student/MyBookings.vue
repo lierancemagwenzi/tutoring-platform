@@ -84,7 +84,7 @@ async function cancelBooking() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">My Bookings</h1>
+        <h1 class="text-body text-2xl font-bold">My Bookings</h1>
 
         <div class="mt-6 flex flex-wrap gap-2">
             <button
@@ -92,7 +92,7 @@ async function cancelBooking() {
                 :key="tab.value"
                 type="button"
                 class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                :class="activeStatus === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                :class="activeStatus === tab.value ? 'bg-amber text-white' : 'border-border text-body hover:bg-card-alt border'"
                 @click="selectStatus(tab.value)"
             >
                 {{ tab.label }}
@@ -105,30 +105,30 @@ async function cancelBooking() {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.myBookings.length === 0" class="mt-16 text-center text-gray-500">No bookings to show.</div>
+        <div v-else-if="store.myBookings.length === 0" class="text-muted mt-16 text-center">No bookings to show.</div>
 
         <div v-else class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div v-for="booking in store.myBookings" :key="booking.id" class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="booking in store.myBookings" :key="booking.id" class="bg-card shadow-elevated flex flex-col rounded-2xl p-5">
                 <div class="flex items-start justify-between gap-2">
                     <div>
-                        <p class="text-ink font-bold">{{ booking.tutor.display_name }}</p>
-                        <p class="text-sm text-gray-500">{{ booking.service.title }}</p>
+                        <p class="text-body font-bold">{{ booking.tutor.display_name }}</p>
+                        <p class="text-muted text-sm">{{ booking.service.title }}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="statusClasses(booking.status)">
                         {{ booking.status }}
                     </span>
                 </div>
 
-                <div class="mt-3 space-y-1 text-sm text-gray-500">
+                <div class="text-muted mt-3 space-y-1 text-sm">
                     <p>{{ booking.date }} &middot; {{ booking.start_time }} - {{ booking.end_time }}</p>
                     <p v-if="Number(booking.platform_booking_fee) > 0">
                         {{ booking.currency }} {{ booking.total_payable }}
-                        <span class="text-xs text-gray-400">(incl. booking fee)</span>
+                        <span class="text-xs">(incl. booking fee)</span>
                     </p>
                     <p v-else>{{ booking.currency }} {{ booking.price }}</p>
                 </div>
 
-                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div class="border-border mt-4 flex flex-wrap items-center gap-4 border-t pt-4">
                     <button type="button" class="text-accent text-sm font-semibold" @click="viewBooking(booking)">View</button>
                     <button
                         v-if="booking.status === 'awaiting_payment'"
@@ -151,11 +151,11 @@ async function cancelBooking() {
         </div>
 
         <Modal :model-value="cancelTarget !== null" title="Cancel this booking?" @update:model-value="cancelTarget = null">
-            <p class="text-gray-600">This will cancel your booking request. You can submit a new request later if you change your mind.</p>
+            <p class="text-muted">This will cancel your booking request. You can submit a new request later if you change your mind.</p>
             <template #footer>
                 <button
                     type="button"
-                    class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                    class="border-border text-body rounded-full border px-5 py-2.5 font-semibold"
                     @click="cancelTarget = null"
                 >
                     Keep Booking
@@ -163,7 +163,7 @@ async function cancelBooking() {
                 <button
                     type="button"
                     :disabled="cancelling"
-                    class="rounded-full bg-red-600 px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="shadow-elevated rounded-full bg-red-600 px-5 py-2.5 font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="cancelBooking"
                 >
                     {{ cancelling ? 'Cancelling…' : 'Cancel Booking' }}

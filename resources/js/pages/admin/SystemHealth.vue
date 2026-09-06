@@ -21,7 +21,7 @@ onMounted(async () => {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">System Health</h1>
+        <h1 class="text-body text-2xl font-bold">System Health</h1>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -30,14 +30,14 @@ onMounted(async () => {
         </div>
 
         <div v-else class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div v-for="(check, key) in store.checks" :key="key" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="(check, key) in store.checks" :key="key" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-center justify-between">
-                    <p class="text-ink font-bold capitalize">{{ key.replace('_', ' ') }}</p>
+                    <p class="text-body font-bold capitalize">{{ key.replace('_', ' ') }}</p>
                     <span class="rounded-full px-3 py-1 text-xs font-semibold" :class="adminStatusBadge(check.status)">
                         {{ adminStatusLabel(check.status) }}
                     </span>
                 </div>
-                <p class="mt-2 text-sm text-gray-500">{{ check.message }}</p>
+                <p class="mt-2 text-sm text-muted">{{ check.message }}</p>
             </div>
         </div>
     </div>

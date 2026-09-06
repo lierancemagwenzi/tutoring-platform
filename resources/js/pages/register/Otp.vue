@@ -106,8 +106,8 @@ onBeforeUnmount(() => clearInterval(timer))
 <template>
     <div class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Verify your account</h1>
-            <p class="mt-2 text-gray-500">We sent a 6-digit code to <strong>{{ maskedEmail }}</strong>.</p>
+            <h1 class="text-body text-3xl font-bold">Verify your account</h1>
+            <p class="text-muted mt-2">We sent a 6-digit code to <strong>{{ maskedEmail }}</strong>.</p>
         </div>
 
         <form class="mt-10" novalidate @submit.prevent="verify">
@@ -122,13 +122,13 @@ onBeforeUnmount(() => clearInterval(timer))
                     type="text"
                     inputmode="numeric"
                     maxlength="1"
-                    class="focus:border-accent h-16 w-12 rounded-xl border border-gray-300 text-center text-2xl text-gray-900 outline-none"
+                    class="focus:border-accent bg-surface text-body h-16 w-12 rounded-xl border border-border text-center text-2xl outline-none"
                     @input="handleInput(index, $event)"
                     @keydown="handleKeydown(index, $event)"
                 />
             </div>
 
-            <p class="mt-4 text-center text-gray-900">
+            <p class="text-body mt-4 text-center">
                 Didn't receive the code?
                 <button
                     type="button"
@@ -140,7 +140,7 @@ onBeforeUnmount(() => clearInterval(timer))
                 </button>
             </p>
 
-            <div class="mt-8 flex items-center justify-center gap-2 text-sm text-gray-500">
+            <div class="text-muted mt-8 flex items-center justify-center gap-2 text-sm">
                 <ShieldCheckIcon class="h-5 w-5" />
                 Your information is confidential and secure
             </div>
@@ -148,7 +148,7 @@ onBeforeUnmount(() => clearInterval(timer))
             <button
                 type="submit"
                 :disabled="!canContinue"
-                class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ verifying ? 'Verifying…' : 'Continue' }}
             </button>

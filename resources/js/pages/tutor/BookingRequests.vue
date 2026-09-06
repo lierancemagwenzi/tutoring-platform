@@ -84,7 +84,7 @@ function openView(booking) {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Booking Requests</h1>
+        <h1 class="text-body text-2xl font-bold">Booking Requests</h1>
 
         <div class="mt-6 flex flex-wrap gap-2">
             <button
@@ -92,7 +92,7 @@ function openView(booking) {
                 :key="tab.value"
                 type="button"
                 class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                :class="activeStatus === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                :class="activeStatus === tab.value ? 'bg-amber text-white' : 'border-border text-body hover:bg-card-alt border'"
                 @click="selectStatus(tab.value)"
             >
                 {{ tab.label }}
@@ -105,24 +105,24 @@ function openView(booking) {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.requests.length === 0" class="mt-16 text-center text-gray-500">No booking requests to show.</div>
+        <div v-else-if="store.requests.length === 0" class="text-muted mt-16 text-center">No booking requests to show.</div>
 
         <div v-else class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            <div v-for="booking in store.requests" :key="booking.id" class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="booking in store.requests" :key="booking.id" class="bg-card shadow-elevated flex flex-col rounded-2xl p-5">
                 <div class="flex items-start justify-between gap-2">
                     <div>
-                        <p class="text-ink font-bold">{{ booking.student.first_name }} {{ booking.student.last_name }}</p>
-                        <p class="text-sm text-gray-500">{{ booking.service.title }}</p>
+                        <p class="text-body font-bold">{{ booking.student.first_name }} {{ booking.student.last_name }}</p>
+                        <p class="text-muted text-sm">{{ booking.service.title }}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="statusClasses(booking.status)">
                         {{ booking.status }}
                     </span>
                 </div>
 
-                <p class="mt-3 text-sm text-gray-500">{{ booking.date }} &middot; {{ booking.start_time }} - {{ booking.end_time }}</p>
-                <p v-if="booking.message" class="mt-2 line-clamp-2 text-sm text-gray-600">"{{ booking.message }}"</p>
+                <p class="text-muted mt-3 text-sm">{{ booking.date }} &middot; {{ booking.start_time }} - {{ booking.end_time }}</p>
+                <p v-if="booking.message" class="text-muted mt-2 line-clamp-2 text-sm">"{{ booking.message }}"</p>
 
-                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div class="border-border mt-4 flex flex-wrap items-center gap-4 border-t pt-4">
                     <button type="button" class="text-accent text-sm font-semibold" @click="openView(booking)">View Details</button>
                     <router-link
                         v-if="booking.status === 'confirmed'"
@@ -156,20 +156,20 @@ function openView(booking) {
         <Modal :model-value="viewTarget !== null" :title="viewTarget?.service.title ?? ''" @update:model-value="viewTarget = null">
             <div v-if="viewTarget" class="space-y-3 text-sm">
                 <dl class="grid grid-cols-2 gap-x-4 gap-y-2">
-                    <dt class="text-gray-500">Student</dt>
-                    <dd class="text-ink font-medium">{{ viewTarget.student.first_name }} {{ viewTarget.student.last_name }}</dd>
-                    <dt class="text-gray-500">Date</dt>
-                    <dd class="text-ink font-medium">{{ viewTarget.date }}</dd>
-                    <dt class="text-gray-500">Time</dt>
-                    <dd class="text-ink font-medium">{{ viewTarget.start_time }} - {{ viewTarget.end_time }}</dd>
-                    <dt class="text-gray-500">Status</dt>
-                    <dd class="text-ink font-medium capitalize">{{ viewTarget.status }}</dd>
-                    <dt class="text-gray-500">Price</dt>
-                    <dd class="text-ink font-medium">{{ viewTarget.currency }} {{ viewTarget.price }}</dd>
+                    <dt class="text-muted">Student</dt>
+                    <dd class="text-body font-medium">{{ viewTarget.student.first_name }} {{ viewTarget.student.last_name }}</dd>
+                    <dt class="text-muted">Date</dt>
+                    <dd class="text-body font-medium">{{ viewTarget.date }}</dd>
+                    <dt class="text-muted">Time</dt>
+                    <dd class="text-body font-medium">{{ viewTarget.start_time }} - {{ viewTarget.end_time }}</dd>
+                    <dt class="text-muted">Status</dt>
+                    <dd class="text-body font-medium capitalize">{{ viewTarget.status }}</dd>
+                    <dt class="text-muted">Price</dt>
+                    <dd class="text-body font-medium">{{ viewTarget.currency }} {{ viewTarget.price }}</dd>
                 </dl>
                 <div v-if="viewTarget.message">
-                    <p class="font-semibold text-gray-700">Message</p>
-                    <p class="mt-1 text-gray-600">{{ viewTarget.message }}</p>
+                    <p class="text-body font-semibold">Message</p>
+                    <p class="text-muted mt-1">{{ viewTarget.message }}</p>
                 </div>
             </div>
         </Modal>

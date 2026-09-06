@@ -55,19 +55,19 @@ function onCourseUpdated(updated) {
             <router-link to="/tutor/self-paced-courses" class="text-accent text-sm font-semibold">&larr; Back to My Courses</router-link>
 
             <div class="mt-1 flex items-center gap-3">
-                <h1 class="text-ink text-2xl font-bold">{{ course.title }}</h1>
+                <h1 class="text-body text-2xl font-bold">{{ course.title }}</h1>
                 <span class="rounded-full px-3 py-1 text-xs font-semibold capitalize" :class="STATUS_CLASSES[course.status]">
                     {{ course.status }}
                 </span>
             </div>
 
-            <div class="mt-6 flex gap-1 overflow-x-auto border-b border-gray-200">
+            <div class="mt-6 flex gap-1 overflow-x-auto border-b border-border">
                 <button
                     v-for="tab in TABS"
                     :key="tab.key"
                     type="button"
                     class="shrink-0 border-b-2 px-4 py-2 text-sm font-semibold whitespace-nowrap transition"
-                    :class="activeTab === tab.key ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    :class="activeTab === tab.key ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-body'"
                     @click="activeTab = tab.key"
                 >
                     {{ tab.label }}

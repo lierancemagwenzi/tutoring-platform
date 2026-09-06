@@ -193,8 +193,8 @@ onMounted(async () => {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Marketplace</h1>
-        <p class="mt-1 text-gray-500">Browse guides and tutoring services, or explore self-paced courses.</p>
+        <h1 class="text-body text-2xl font-bold">Marketplace</h1>
+        <p class="text-muted mt-1">Browse guides and tutoring services, or explore self-paced courses.</p>
 
         <MarketplaceTabs v-model="activeTab" class="mt-6" @update:model-value="selectTab" />
 
@@ -211,7 +211,7 @@ onMounted(async () => {
                 <SelectInput id="sort" v-model="filters.sort" label="Sort by" :options="SORT_OPTIONS" class="sm:w-56" />
                 <button
                     type="button"
-                    class="bg-amber flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                    class="bg-amber shadow-elevated flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
                     @click="applyFilters(1)"
                 >
                     <MagnifyingGlassIcon class="h-5 w-5" />
@@ -219,7 +219,7 @@ onMounted(async () => {
                 </button>
                 <button
                     type="button"
-                    class="flex items-center justify-center gap-2 rounded-full border border-gray-300 px-6 py-3 font-semibold text-gray-700 lg:hidden"
+                    class="border-border text-body flex items-center justify-center gap-2 rounded-full border px-6 py-3 font-semibold lg:hidden"
                     @click="showMobileFilters = true"
                 >
                     <FunnelIcon class="h-5 w-5" />
@@ -228,8 +228,8 @@ onMounted(async () => {
             </div>
 
             <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-4">
-                <div class="hidden rounded-2xl bg-white p-6 shadow-sm lg:col-span-1 lg:block">
-                    <h2 class="text-ink mb-4 font-bold">Filters</h2>
+                <div class="bg-card shadow-elevated hidden rounded-2xl p-6 lg:col-span-1 lg:block">
+                    <h2 class="text-body mb-4 font-bold">Filters</h2>
                     <FilterPanel
                         :filters="filters"
                         :subject-options="subjectOptions"
@@ -246,29 +246,29 @@ onMounted(async () => {
                     <p v-if="errorMessage" class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
                     <div v-if="loading" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                        <div v-for="n in 6" :key="n" class="animate-pulse rounded-2xl bg-white p-5 shadow-sm">
+                        <div v-for="n in 6" :key="n" class="bg-card shadow-elevated animate-pulse rounded-2xl p-5">
                             <div class="flex items-center gap-4">
-                                <div class="h-16 w-16 rounded-full bg-gray-200" />
+                                <div class="bg-card-alt h-16 w-16 rounded-full" />
                                 <div class="flex-1 space-y-2">
-                                    <div class="h-4 w-2/3 rounded bg-gray-200" />
-                                    <div class="h-3 w-1/3 rounded bg-gray-200" />
+                                    <div class="bg-card-alt h-4 w-2/3 rounded" />
+                                    <div class="bg-card-alt h-3 w-1/3 rounded" />
                                 </div>
                             </div>
                             <div class="mt-4 space-y-2">
-                                <div class="h-3 w-full rounded bg-gray-200" />
-                                <div class="h-3 w-5/6 rounded bg-gray-200" />
+                                <div class="bg-card-alt h-3 w-full rounded" />
+                                <div class="bg-card-alt h-3 w-5/6 rounded" />
                             </div>
                         </div>
                     </div>
 
-                    <div v-else-if="store.tutors.length === 0" class="flex flex-col items-center rounded-2xl bg-white py-24 text-center shadow-sm">
-                        <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                    <div v-else-if="store.tutors.length === 0" class="bg-card shadow-elevated flex flex-col items-center rounded-2xl py-24 text-center">
+                        <span class="bg-card-alt text-muted flex h-16 w-16 items-center justify-center rounded-full">
                             <BuildingStorefrontIcon class="h-8 w-8" />
                         </span>
-                        <p class="mt-4 text-gray-500">No tutors match your search.</p>
+                        <p class="text-muted mt-4">No tutors match your search.</p>
                         <button
                             type="button"
-                            class="bg-amber mt-6 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+                            class="bg-amber shadow-elevated mt-6 rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
                             @click="clearFilters"
                         >
                             Clear Filters
@@ -284,16 +284,16 @@ onMounted(async () => {
                             <button
                                 type="button"
                                 :disabled="store.meta.current_page <= 1"
-                                class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                class="border-border text-muted flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-40"
                                 @click="goToPage(store.meta.current_page - 1)"
                             >
                                 <ChevronLeftIcon class="h-5 w-5" />
                             </button>
-                            <span class="text-sm text-gray-500">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
+                            <span class="text-muted text-sm">Page {{ store.meta.current_page }} of {{ store.meta.last_page }}</span>
                             <button
                                 type="button"
                                 :disabled="store.meta.current_page >= store.meta.last_page"
-                                class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                class="border-border text-muted flex h-10 w-10 items-center justify-center rounded-full border disabled:cursor-not-allowed disabled:opacity-40"
                                 @click="goToPage(store.meta.current_page + 1)"
                             >
                                 <ChevronRightIcon class="h-5 w-5" />
@@ -328,7 +328,7 @@ onMounted(async () => {
                 />
                 <button
                     type="button"
-                    class="flex items-center justify-center gap-2 rounded-full border border-gray-300 px-6 py-3 font-semibold text-gray-700 lg:hidden"
+                    class="border-border text-body flex items-center justify-center gap-2 rounded-full border px-6 py-3 font-semibold lg:hidden"
                     @click="showMobileCourseFilters = true"
                 >
                     <FunnelIcon class="h-5 w-5" />
@@ -337,8 +337,8 @@ onMounted(async () => {
             </div>
 
             <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-4">
-                <div class="hidden rounded-2xl bg-white p-6 shadow-sm lg:col-span-1 lg:block">
-                    <h2 class="text-ink mb-4 font-bold">Filters</h2>
+                <div class="bg-card shadow-elevated hidden rounded-2xl p-6 lg:col-span-1 lg:block">
+                    <h2 class="text-body mb-4 font-bold">Filters</h2>
                     <CourseFilters
                         :filters="courseFilters"
                         :subject-options="courseSubjectOptions"

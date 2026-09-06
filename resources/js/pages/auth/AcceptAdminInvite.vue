@@ -65,8 +65,8 @@ async function handleSubmit() {
 <template>
     <div class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Set your admin password</h1>
-            <p class="mt-2 text-gray-500">Enter the code emailed to you and choose a password to accept your admin invite.</p>
+            <h1 class="text-body text-3xl font-bold">Set your admin password</h1>
+            <p class="text-muted mt-2">Enter the code emailed to you and choose a password to accept your admin invite.</p>
         </div>
 
         <form class="mt-10 space-y-6" novalidate @submit.prevent="handleSubmit">
@@ -106,18 +106,18 @@ async function handleSubmit() {
                 <li v-for="rule in rules" :key="rule.label" class="flex items-center gap-3">
                     <span
                         class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                        :class="rule.met ? 'bg-accent text-white' : 'bg-gray-200 text-transparent'"
+                        :class="rule.met ? 'bg-accent text-white' : 'bg-card-alt text-transparent'"
                     >
                         <CheckIcon class="h-3.5 w-3.5" />
                     </span>
-                    <span class="text-ink">{{ rule.label }}</span>
+                    <span class="text-body">{{ rule.label }}</span>
                 </li>
             </ul>
 
             <button
                 type="submit"
                 :disabled="submitting || !canContinue"
-                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ submitting ? 'Setting up…' : 'Accept invite' }}
             </button>

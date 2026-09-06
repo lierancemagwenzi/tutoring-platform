@@ -7,7 +7,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+    <div class="bg-card shadow-elevated flex flex-col rounded-2xl p-5">
         <div class="flex items-center gap-4">
             <img
                 v-if="tutor.profile_photo"
@@ -19,12 +19,12 @@ defineProps({
                 <UserCircleIcon class="h-10 w-10" />
             </span>
             <div class="min-w-0">
-                <p class="text-ink truncate font-bold">{{ tutor.display_name }}</p>
-                <p class="text-sm text-gray-500">{{ tutor.years_experience ?? 0 }} yrs experience</p>
+                <p class="text-body truncate font-bold">{{ tutor.display_name }}</p>
+                <p class="text-muted text-sm">{{ tutor.years_experience ?? 0 }} yrs experience</p>
             </div>
         </div>
 
-        <p v-if="tutor.bio" class="mt-3 line-clamp-3 text-sm text-gray-600">{{ tutor.bio }}</p>
+        <p v-if="tutor.bio" class="text-muted mt-3 line-clamp-3 text-sm">{{ tutor.bio }}</p>
 
         <div v-if="tutor.subjects.length || tutor.grades?.length" class="mt-3 flex flex-wrap gap-2">
             <span
@@ -37,27 +37,27 @@ defineProps({
             <span
                 v-for="grade in tutor.grades"
                 :key="`grade-${grade.id}`"
-                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700"
+                class="bg-card-alt text-body rounded-full px-3 py-1 text-xs font-medium"
             >
                 {{ grade.name }}
             </span>
         </div>
 
-        <p v-if="tutor.languages.length" class="mt-3 text-sm text-gray-500">Speaks {{ tutor.languages.join(', ') }}</p>
+        <p v-if="tutor.languages.length" class="text-muted mt-3 text-sm">Speaks {{ tutor.languages.join(', ') }}</p>
 
-        <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
+        <div class="border-border mt-4 flex items-center justify-between border-t pt-4">
             <div>
-                <p class="text-ink font-bold">
+                <p class="text-body font-bold">
                     <span v-if="tutor.starting_price">{{ tutor.currency }} {{ tutor.starting_price }}</span>
-                    <span v-else class="text-gray-500">Price on request</span>
+                    <span v-else class="text-muted">Price on request</span>
                 </p>
-                <p class="text-xs text-gray-500">
+                <p class="text-muted text-xs">
                     {{ tutor.published_services_count }} service{{ tutor.published_services_count === 1 ? '' : 's' }}
                 </p>
             </div>
             <router-link
                 :to="`/student/marketplace/tutors/${tutor.id}`"
-                class="bg-amber rounded-full px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated rounded-full px-4 py-2 text-sm font-bold text-white transition hover:brightness-95"
             >
                 View Profile
             </router-link>

@@ -241,31 +241,31 @@ function previewUrl(attachment) {
                 label="Activity Type"
                 :options="TYPE_OPTIONS"
             />
-            <p v-else class="text-sm text-gray-500">Type: <span class="font-semibold capitalize">{{ form.type.replace('_', ' ') }}</span></p>
+            <p v-else class="text-sm text-muted">Type: <span class="font-semibold capitalize">{{ form.type.replace('_', ' ') }}</span></p>
 
             <FloatingLabelInput id="activity-title" v-model="form.title" label="Title" />
             <TextareaInput id="activity-description" v-model="form.description" label="Description (optional)" :rows="2" />
 
-            <label class="flex items-center gap-2 text-sm text-gray-700">
+            <label class="flex items-center gap-2 text-sm text-body">
                 <input v-model="form.required" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                 Required for module completion
             </label>
 
             <div v-if="form.type === 'rich_text'">
-                <p class="mb-1 text-sm font-semibold text-gray-700">Content</p>
+                <p class="mb-1 text-sm font-semibold text-body">Content</p>
                 <RichTextEditor v-model="form.html" />
             </div>
 
             <div v-else-if="form.type === 'mermaid'">
                 <TextareaInput id="activity-mermaid" v-model="form.diagram" label="Mermaid Syntax" :rows="5" />
-                <div class="mt-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <div class="mt-2 rounded-xl border border-border bg-card-alt p-4">
                     <MermaidRender :diagram="form.diagram" />
                 </div>
             </div>
 
             <div v-else-if="form.type === 'katex'">
                 <TextareaInput id="activity-latex" v-model="form.latex" label="LaTeX" :rows="3" />
-                <div class="mt-2 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <div class="mt-2 rounded-xl border border-border bg-card-alt p-4">
                     <KatexRender :latex="form.latex" :display-mode="true" />
                 </div>
             </div>
@@ -288,7 +288,7 @@ function previewUrl(attachment) {
                     :options="h5pContents.map((content) => ({ value: content.id, label: content.title }))"
                 />
 
-                <div v-if="!h5pContentsLoading && h5pContents.length === 0" class="mt-1 text-xs text-gray-400">
+                <div v-if="!h5pContentsLoading && h5pContents.length === 0" class="mt-1 text-xs text-muted">
                     No H5P content matches this course's subject and grade yet — create one below.
                 </div>
 
@@ -307,13 +307,13 @@ function previewUrl(attachment) {
                         <PencilSquareIcon class="h-4 w-4" /> Edit Selected Content
                     </router-link>
                 </div>
-                <p class="mt-1 text-xs text-gray-400">
+                <p class="mt-1 text-xs text-muted">
                     Creating content here navigates away from this course editor — you'll return to select it once saved.
                 </p>
             </div>
 
-            <div v-if="isAttachmentType && current" class="space-y-3 rounded-xl border border-gray-200 p-4">
-                <p class="text-sm font-semibold text-gray-700">Attachments</p>
+            <div v-if="isAttachmentType && current" class="space-y-3 rounded-xl border border-border p-4">
+                <p class="text-sm font-semibold text-body">Attachments</p>
 
                 <ul v-if="current.attachments?.length" class="space-y-2">
                     <li v-for="attachment in current.attachments" :key="attachment.id" class="flex items-center justify-between gap-3 text-sm">
@@ -323,12 +323,12 @@ function previewUrl(attachment) {
                                 :href="previewUrl(attachment)"
                                 target="_blank"
                                 rel="noopener"
-                                class="text-gray-400 hover:text-accent"
+                                class="text-muted hover:text-accent"
                                 title="Preview"
                             >
                                 <EyeIcon class="h-4 w-4" />
                             </a>
-                            <button type="button" class="text-gray-400 hover:text-red-600" title="Remove" @click="removeAttachment(attachment)">
+                            <button type="button" class="text-muted hover:text-red-600" title="Remove" @click="removeAttachment(attachment)">
                                 <TrashIcon class="h-4 w-4" />
                             </button>
                         </span>
@@ -344,7 +344,7 @@ function previewUrl(attachment) {
                     />
                     <template v-if="['video_youtube', 'video_vimeo'].includes(newAttachmentMediaType)">
                         <FloatingLabelInput id="new-attachment-url" v-model="newAttachmentUrl" label="Video URL" />
-                        <button type="button" class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold" @click="addAttachment()">
+                        <button type="button" class="rounded-full border border-border px-4 py-2 text-sm font-semibold" @click="addAttachment()">
                             Add
                         </button>
                     </template>
@@ -353,7 +353,7 @@ function previewUrl(attachment) {
                         <button
                             type="button"
                             :disabled="!newAttachmentMediaType || uploadingAttachment"
-                            class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold disabled:opacity-40"
+                            class="rounded-full border border-border px-4 py-2 text-sm font-semibold disabled:opacity-40"
                             @click="pickFile"
                         >
                             {{ uploadingAttachment ? 'Uploading…' : 'Upload File' }}
@@ -365,7 +365,7 @@ function previewUrl(attachment) {
             <div class="flex justify-end gap-3 pt-2">
                 <button
                     type="button"
-                    class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                    class="rounded-full border border-border px-5 py-2.5 font-semibold text-body"
                     @click="current ? finishAttachments() : $emit('cancelled')"
                 >
                     {{ current ? 'Close' : 'Cancel' }}
@@ -373,7 +373,7 @@ function previewUrl(attachment) {
                 <button
                     type="submit"
                     :disabled="saving"
-                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {{ saving ? 'Saving…' : 'Save' }}
                 </button>

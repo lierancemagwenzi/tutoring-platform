@@ -70,7 +70,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex min-h-screen w-full bg-gray-100">
+    <div class="bg-surface flex min-h-screen w-full">
         <aside
             class="from-panel-start to-panel-end flex shrink-0 flex-col gap-6 bg-gradient-to-b py-6 text-white transition-all duration-200"
             :class="collapsed ? 'w-28 items-center' : 'w-64 px-4'"
@@ -180,9 +180,9 @@ onMounted(() => {
 
                     <div
                         v-if="notificationsOpen"
-                        class="absolute top-full right-0 mt-2 w-80 overflow-hidden rounded-xl bg-white text-gray-900 shadow-lg"
+                        class="bg-card text-body absolute top-full right-0 mt-2 w-80 overflow-hidden rounded-xl shadow-popover"
                     >
-                        <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+                        <div class="border-border flex items-center justify-between border-b px-4 py-3">
                             <span class="text-sm font-semibold">Notifications</span>
                             <button
                                 v-if="notifications.unreadCount > 0"
@@ -194,23 +194,23 @@ onMounted(() => {
                             </button>
                         </div>
                         <div class="max-h-96 overflow-y-auto">
-                            <p v-if="notifications.items.length === 0" class="px-4 py-6 text-center text-sm text-gray-500">
+                            <p v-if="notifications.items.length === 0" class="text-muted px-4 py-6 text-center text-sm">
                                 No notifications yet.
                             </p>
                             <button
                                 v-for="item in notifications.items"
                                 :key="item.id"
                                 type="button"
-                                class="flex w-full flex-col gap-0.5 border-b border-gray-50 px-4 py-3 text-left last:border-0 hover:bg-gray-50"
+                                class="border-border hover:bg-card-alt flex w-full flex-col gap-0.5 border-b px-4 py-3 text-left last:border-0"
                                 :class="!item.read ? 'bg-amber/5' : ''"
                                 @click="handleNotificationClick(item)"
                             >
                                 <span class="flex items-center gap-2">
                                     <span v-if="!item.read" class="bg-amber h-1.5 w-1.5 shrink-0 rounded-full" />
-                                    <span class="truncate text-sm font-semibold text-gray-900">{{ item.title }}</span>
+                                    <span class="text-body truncate text-sm font-semibold">{{ item.title }}</span>
                                 </span>
-                                <span class="line-clamp-2 text-xs text-gray-500">{{ item.body }}</span>
-                                <span class="text-[11px] text-gray-400">{{ timeAgo(item.created_at) }}</span>
+                                <span class="text-muted line-clamp-2 text-xs">{{ item.body }}</span>
+                                <span class="text-muted text-[11px]">{{ timeAgo(item.created_at) }}</span>
                             </button>
                         </div>
                     </div>
@@ -229,11 +229,11 @@ onMounted(() => {
 
                     <div
                         v-if="menuOpen"
-                        class="absolute top-full right-0 mt-2 w-44 overflow-hidden rounded-xl bg-white py-1 text-gray-900 shadow-lg"
+                        class="bg-card text-body absolute top-full right-0 mt-2 w-44 overflow-hidden rounded-xl py-1 shadow-popover"
                     >
                         <button
                             type="button"
-                            class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:bg-gray-50"
+                            class="hover:bg-card-alt flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"
                             @click="theme.toggle()"
                         >
                             <MoonIcon v-if="theme.theme === 'default'" class="h-4 w-4" />
@@ -242,7 +242,7 @@ onMounted(() => {
                         </button>
                         <button
                             type="button"
-                            class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm hover:bg-gray-50"
+                            class="hover:bg-card-alt flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"
                             @click="handleLogout"
                         >
                             <ArrowRightStartOnRectangleIcon class="h-4 w-4" />

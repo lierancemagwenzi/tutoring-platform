@@ -71,8 +71,8 @@ async function updateVisibility() {
 
 <template>
     <div class="max-w-2xl space-y-6">
-        <div class="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 class="text-ink text-lg font-bold">Publishing Checklist</h2>
+        <div class="rounded-2xl bg-card p-6 shadow-elevated">
+            <h2 class="text-body text-lg font-bold">Publishing Checklist</h2>
 
             <div v-if="loadingErrors" class="flex justify-center py-6">
                 <div class="border-amber h-6 w-6 animate-spin rounded-full border-4 border-t-transparent" />
@@ -96,7 +96,7 @@ async function updateVisibility() {
                     v-if="course.status !== 'published'"
                     type="button"
                     :disabled="busy || errors.length > 0"
-                    class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="publish"
                 >
                     Publish Course
@@ -105,7 +105,7 @@ async function updateVisibility() {
                     v-else
                     type="button"
                     :disabled="busy"
-                    class="rounded-full border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                    class="rounded-full border border-border px-6 py-2.5 text-sm font-semibold text-body disabled:opacity-40"
                     @click="unpublish"
                 >
                     Move Back to Draft
@@ -122,9 +122,9 @@ async function updateVisibility() {
             </div>
         </div>
 
-        <div class="rounded-2xl bg-white p-6 shadow-sm">
-            <h2 class="text-ink text-lg font-bold">Visibility</h2>
-            <p class="mt-1 text-sm text-gray-500">Controls who can find this course once it's published.</p>
+        <div class="rounded-2xl bg-card p-6 shadow-elevated">
+            <h2 class="text-body text-lg font-bold">Visibility</h2>
+            <p class="mt-1 text-sm text-muted">Controls who can find this course once it's published.</p>
             <div class="mt-4 max-w-xs">
                 <SelectInput id="course-visibility" v-model="visibility" label="Visibility" :options="VISIBILITY_OPTIONS" @update:model-value="updateVisibility" />
             </div>

@@ -34,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'role',
         'status',
         'disabled_at',
+        'terms_accepted_at',
     ];
 
     /**
@@ -59,6 +60,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
             'role' => UserRole::class,
             'status' => UserStatus::class,
             'disabled_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
             'is_super_admin' => 'boolean',
         ];
     }

@@ -90,19 +90,19 @@ function backToChapters() {
 
 <template>
     <div>
-        <nav class="mb-4 flex items-center gap-1 text-sm text-gray-500">
-            <button type="button" class="hover:text-accent" :class="step === 'course' && 'text-ink font-semibold'" @click="backToCourses">
+        <nav class="text-muted mb-4 flex items-center gap-1 text-sm">
+            <button type="button" class="hover:text-accent" :class="step === 'course' && 'text-body font-semibold'" @click="backToCourses">
                 Course
             </button>
             <template v-if="selectedCourse">
                 <ChevronRightIcon class="h-3.5 w-3.5" />
-                <button type="button" class="hover:text-accent" :class="step === 'chapter' && 'text-ink font-semibold'" @click="backToChapters">
+                <button type="button" class="hover:text-accent" :class="step === 'chapter' && 'text-body font-semibold'" @click="backToChapters">
                     {{ selectedCourse.title }}
                 </button>
             </template>
             <template v-if="selectedChapter">
                 <ChevronRightIcon class="h-3.5 w-3.5" />
-                <span class="text-ink font-semibold">{{ selectedChapter.title }}</span>
+                <span class="text-body font-semibold">{{ selectedChapter.title }}</span>
             </template>
         </nav>
 
@@ -117,16 +117,16 @@ function backToChapters() {
                 <SelectInput id="picker-subject" v-model="subjectId" label="Subject" :options="subjectOptions" />
             </div>
 
-            <p v-if="filteredCourses.length === 0" class="py-8 text-center text-sm text-gray-500">No courses match these filters.</p>
+            <p v-if="filteredCourses.length === 0" class="text-muted py-8 text-center text-sm">No courses match these filters.</p>
             <ul v-else class="max-h-80 space-y-1 overflow-y-auto">
                 <li v-for="course in filteredCourses" :key="course.id">
                     <button
                         type="button"
-                        class="flex w-full items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left hover:border-gray-300 hover:bg-gray-50"
+                        class="border-border hover:bg-card-alt flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left"
                         @click="chooseCourse(course)"
                     >
-                        <span class="text-sm font-medium text-gray-900">{{ course.title }}</span>
-                        <ChevronRightIcon class="h-4 w-4 text-gray-400" />
+                        <span class="text-body text-sm font-medium">{{ course.title }}</span>
+                        <ChevronRightIcon class="text-muted h-4 w-4" />
                     </button>
                 </li>
             </ul>
@@ -137,16 +137,16 @@ function backToChapters() {
                 <div class="border-amber h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
             </div>
             <template v-else>
-                <p v-if="chapters.length === 0" class="py-8 text-center text-sm text-gray-500">This course has no chapters yet.</p>
+                <p v-if="chapters.length === 0" class="text-muted py-8 text-center text-sm">This course has no chapters yet.</p>
                 <ul v-else class="max-h-80 space-y-1 overflow-y-auto">
                     <li v-for="chapter in chapters" :key="chapter.id">
                         <button
                             type="button"
-                            class="flex w-full items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left hover:border-gray-300 hover:bg-gray-50"
+                            class="border-border hover:bg-card-alt flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left"
                             @click="chooseChapter(chapter)"
                         >
-                            <span class="text-sm font-medium text-gray-900">{{ chapter.title }}</span>
-                            <ChevronRightIcon class="h-4 w-4 text-gray-400" />
+                            <span class="text-body text-sm font-medium">{{ chapter.title }}</span>
+                            <ChevronRightIcon class="text-muted h-4 w-4" />
                         </button>
                     </li>
                 </ul>
@@ -158,20 +158,20 @@ function backToChapters() {
                 <div class="border-amber h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
             </div>
             <template v-else>
-                <p v-if="lessons.length === 0" class="py-8 text-center text-sm text-gray-500">This chapter has no lessons yet.</p>
+                <p v-if="lessons.length === 0" class="text-muted py-8 text-center text-sm">This chapter has no lessons yet.</p>
                 <ul v-else class="max-h-80 space-y-1 overflow-y-auto">
                     <li v-for="lesson in lessons" :key="lesson.id">
                         <button
                             type="button"
-                            class="flex w-full items-center justify-between rounded-xl border border-gray-200 px-4 py-3 text-left"
-                            :class="lesson.status === 'published' ? 'hover:border-gray-300 hover:bg-gray-50' : 'cursor-not-allowed opacity-50'"
+                            class="border-border flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left"
+                            :class="lesson.status === 'published' ? 'hover:bg-card-alt' : 'cursor-not-allowed opacity-50'"
                             :disabled="lesson.status !== 'published'"
                             :title="lesson.status !== 'published' ? 'Publish this lesson before assigning it to a session.' : ''"
                             @click="chooseLesson(lesson)"
                         >
-                            <span class="text-sm font-medium text-gray-900">{{ lesson.title }}</span>
+                            <span class="text-body text-sm font-medium">{{ lesson.title }}</span>
                             <span v-if="lesson.status === 'published'" class="text-accent text-xs font-semibold">Assign</span>
-                            <span v-else class="text-xs font-semibold text-gray-400 capitalize">{{ lesson.status }}</span>
+                            <span v-else class="text-muted text-xs font-semibold capitalize">{{ lesson.status }}</span>
                         </button>
                     </li>
                 </ul>
@@ -179,7 +179,7 @@ function backToChapters() {
         </template>
 
         <div class="mt-4 flex justify-end">
-            <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700" @click="emit('cancelled')">
+            <button type="button" class="border-border text-body rounded-full border px-5 py-2.5 text-sm font-semibold" @click="emit('cancelled')">
                 Cancel
             </button>
         </div>

@@ -227,8 +227,8 @@ function backToContent() {
 <template>
     <div class="p-8">
         <button type="button" class="text-accent text-sm font-semibold" @click="backToContent">&larr; Back to Session Content</button>
-        <h1 class="text-ink mt-1 text-2xl font-bold">Manage Lesson Content</h1>
-        <p class="mt-1 text-gray-500">
+        <h1 class="text-body mt-1 text-2xl font-bold">Manage Lesson Content</h1>
+        <p class="text-muted mt-1">
             {{ route.query.lessonTitle ? `Choose which blocks of "${route.query.lessonTitle}" are available to students.` : 'Choose which blocks are available to students.' }}
         </p>
 
@@ -239,18 +239,18 @@ function backToContent() {
         </div>
 
         <div v-else-if="blocks.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <p class="text-gray-500">This lesson has no content blocks yet.</p>
+            <p class="text-muted">This lesson has no content blocks yet.</p>
         </div>
 
         <div v-else class="mt-8 space-y-3">
-            <div v-for="block in blocks" :key="block.id" class="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="block in blocks" :key="block.id" class="bg-card shadow-elevated flex items-start gap-4 rounded-2xl p-5">
                 <span class="bg-accent/10 text-accent mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
                     <component :is="blockRegistry[block.block_type]?.icon" class="h-4 w-4" />
                 </span>
 
                 <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-2">
-                        <p class="text-ink font-bold">{{ block.title || blockRegistry[block.block_type]?.label }}</p>
+                        <p class="text-body font-bold">{{ block.title || blockRegistry[block.block_type]?.label }}</p>
                         <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">
                             {{ blockRegistry[block.block_type]?.label }}
                         </span>
@@ -268,7 +268,7 @@ function backToContent() {
                             >
                                 {{ assignmentFor(block).is_available ? 'Available to students' : 'Not yet available' }}
                             </span>
-                            <span class="text-xs text-gray-500">{{ availabilityLabel(assignmentFor(block)) }}</span>
+                            <span class="text-muted text-xs">{{ availabilityLabel(assignmentFor(block)) }}</span>
                             <span
                                 v-if="assignmentFor(block).visibility !== 'visible'"
                                 class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600 capitalize"
@@ -284,7 +284,7 @@ function backToContent() {
                     <button
                         v-if="assignmentFor(block) && supportsSubmissions(block)"
                         type="button"
-                        class="text-accent rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold"
+                        class="text-accent border-border rounded-full border px-4 py-2 text-sm font-semibold"
                         @click="viewSubmissions(block)"
                     >
                         View Submissions
@@ -292,7 +292,7 @@ function backToContent() {
                     <button
                         v-if="assignmentFor(block) && supportsAttempts(block)"
                         type="button"
-                        class="text-accent rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold"
+                        class="text-accent border-border rounded-full border px-4 py-2 text-sm font-semibold"
                         @click="viewAttempts(block)"
                     >
                         View Attempts
@@ -300,14 +300,14 @@ function backToContent() {
                     <button
                         v-if="assignmentFor(block)?.availability_mode === 'manual_release'"
                         type="button"
-                        class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700"
+                        class="border-border text-body rounded-full border px-4 py-2 text-sm font-semibold"
                         @click="toggleManualRelease(block)"
                     >
                         {{ assignmentFor(block).is_manually_released ? 'Hide from students' : 'Release now' }}
                     </button>
                     <span
                         v-if="!assignmentFor(block) && block.status !== 'published'"
-                        class="text-sm font-semibold text-gray-400"
+                        class="text-muted text-sm font-semibold"
                         title="Publish this block before assigning it to a session."
                     >
                         Publish to assign
@@ -315,7 +315,7 @@ function backToContent() {
                     <button
                         v-else
                         type="button"
-                        class="text-accent rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold"
+                        class="text-accent border-border rounded-full border px-4 py-2 text-sm font-semibold"
                         @click="openConfigure(block)"
                     >
                         {{ assignmentFor(block) ? 'Edit Availability' : 'Assign' }}
@@ -323,7 +323,7 @@ function backToContent() {
                     <button
                         v-if="assignmentFor(block)"
                         type="button"
-                        class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-red-500 hover:text-red-700"
+                        class="border-border rounded-full border px-4 py-2 text-sm font-semibold text-red-500 hover:text-red-700"
                         @click="unassign(block)"
                     >
                         Unassign
@@ -345,42 +345,42 @@ function backToContent() {
 
                 <template v-if="form.availabilityMode === 'scheduled_release'">
                     <div>
-                        <label for="available-from" class="mb-1 block text-sm font-medium text-gray-700">Available From</label>
+                        <label for="available-from" class="text-body mb-1 block text-sm font-medium">Available From</label>
                         <input
                             id="available-from"
                             v-model="form.availableFrom"
                             type="datetime-local"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                            class="bg-card text-body border-border w-full rounded-xl border px-4 py-3"
                         />
                     </div>
                     <div>
-                        <label for="available-until" class="mb-1 block text-sm font-medium text-gray-700">Available Until (optional)</label>
+                        <label for="available-until" class="text-body mb-1 block text-sm font-medium">Available Until (optional)</label>
                         <input
                             id="available-until"
                             v-model="form.availableUntil"
                             type="datetime-local"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                            class="bg-card text-body border-border w-full rounded-xl border px-4 py-3"
                         />
                     </div>
                 </template>
 
                 <template v-if="form.availabilityMode === 'assessment_window'">
                     <div>
-                        <label for="opens-at" class="mb-1 block text-sm font-medium text-gray-700">Opens At</label>
-                        <input id="opens-at" v-model="form.opensAt" type="datetime-local" class="w-full rounded-xl border border-gray-300 px-4 py-3" />
+                        <label for="opens-at" class="text-body mb-1 block text-sm font-medium">Opens At</label>
+                        <input id="opens-at" v-model="form.opensAt" type="datetime-local" class="bg-card text-body border-border w-full rounded-xl border px-4 py-3" />
                     </div>
                     <div>
-                        <label for="closes-at" class="mb-1 block text-sm font-medium text-gray-700">Closes At</label>
-                        <input id="closes-at" v-model="form.closesAt" type="datetime-local" class="w-full rounded-xl border border-gray-300 px-4 py-3" />
+                        <label for="closes-at" class="text-body mb-1 block text-sm font-medium">Closes At</label>
+                        <input id="closes-at" v-model="form.closesAt" type="datetime-local" class="bg-card text-body border-border w-full rounded-xl border px-4 py-3" />
                     </div>
                 </template>
 
-                <label v-if="form.availabilityMode === 'manual_release'" class="flex items-center gap-2 text-sm text-gray-700">
+                <label v-if="form.availabilityMode === 'manual_release'" class="text-body flex items-center gap-2 text-sm">
                     <input v-model="form.isManuallyReleased" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                     Released to students
                 </label>
 
-                <hr class="border-gray-100" />
+                <hr class="border-border" />
 
                 <SelectInput id="visibility" v-model="form.visibility" label="Visibility" :options="VISIBILITY_OPTIONS" />
 
@@ -395,31 +395,31 @@ function backToContent() {
 
                 <SelectInput id="attempts-mode" v-model="form.attemptsMode" label="Attempts" :options="ATTEMPTS_OPTIONS" />
                 <div v-if="form.attemptsMode === 'limited'">
-                    <label for="max-attempts" class="mb-1 block text-sm font-medium text-gray-700">Maximum Attempts</label>
+                    <label for="max-attempts" class="text-body mb-1 block text-sm font-medium">Maximum Attempts</label>
                     <input
                         id="max-attempts"
                         v-model="form.maxAttempts"
                         type="number"
                         min="1"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                        class="bg-card text-body border-border w-full rounded-xl border px-4 py-3"
                     />
                 </div>
 
                 <div>
-                    <label for="passing-score" class="mb-1 block text-sm font-medium text-gray-700">Passing Score (optional)</label>
+                    <label for="passing-score" class="text-body mb-1 block text-sm font-medium">Passing Score (optional)</label>
                     <input
                         id="passing-score"
                         v-model="form.passingScore"
                         type="number"
                         min="0"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                        class="bg-card text-body border-border w-full rounded-xl border px-4 py-3"
                     />
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
                     <button
                         type="button"
-                        class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                        class="border-border text-body rounded-full border px-5 py-2.5 font-semibold"
                         @click="modalOpen = false"
                     >
                         Cancel
@@ -427,7 +427,7 @@ function backToContent() {
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber shadow-elevated rounded-full px-6 py-2.5 font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>

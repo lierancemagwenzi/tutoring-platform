@@ -38,8 +38,8 @@ function continueToReset() {
     <div class="w-full max-w-md">
         <template v-if="!submitted">
             <div class="text-center">
-                <h1 class="text-ink text-3xl font-bold">Forgot your password?</h1>
-                <p class="mt-2 text-gray-500">Enter your email address and we'll send you a code to reset it.</p>
+                <h1 class="text-body text-3xl font-bold">Forgot your password?</h1>
+                <p class="text-muted mt-2">Enter your email address and we'll send you a code to reset it.</p>
             </div>
 
             <form class="mt-10 space-y-6" novalidate @submit.prevent="handleSubmit">
@@ -50,7 +50,7 @@ function continueToReset() {
                 <button
                     type="submit"
                     :disabled="submitting || !email"
-                    class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {{ submitting ? 'Sending…' : 'Send reset code' }}
                 </button>
@@ -59,15 +59,15 @@ function continueToReset() {
 
         <template v-else>
             <div class="text-center">
-                <h1 class="text-ink text-3xl font-bold">Check your email</h1>
-                <p class="mt-2 text-gray-500">
+                <h1 class="text-body text-3xl font-bold">Check your email</h1>
+                <p class="text-muted mt-2">
                     If an account exists for <strong>{{ email }}</strong>, we've sent a password reset code to it.
                 </p>
             </div>
 
             <button
                 type="button"
-                class="bg-amber mt-10 w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber mt-10 w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95"
                 @click="continueToReset"
             >
                 I have the code

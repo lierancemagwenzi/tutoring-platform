@@ -108,12 +108,12 @@ async function remove(faq) {
     <div class="p-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-ink text-2xl font-bold">FAQs</h1>
-                <p class="mt-1 text-sm text-gray-500">Question &amp; answer entries shown to students and/or tutors.</p>
+                <h1 class="text-body text-2xl font-bold">FAQs</h1>
+                <p class="mt-1 text-sm text-muted">Question &amp; answer entries shown to students and/or tutors.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openCreate"
             >
                 New FAQ
@@ -126,7 +126,7 @@ async function remove(faq) {
                 :key="tab.value"
                 type="button"
                 class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                :class="activeAudience === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                :class="activeAudience === tab.value ? 'bg-amber text-white' : 'border border-border text-body hover:brightness-95'"
                 @click="selectAudience(tab.value)"
             >
                 {{ tab.label }}
@@ -139,15 +139,15 @@ async function remove(faq) {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.faqs.length === 0" class="mt-16 text-center text-gray-500">No FAQs yet.</div>
+        <div v-else-if="store.faqs.length === 0" class="mt-16 text-center text-muted">No FAQs yet.</div>
 
         <div v-else class="mt-6 space-y-3">
-            <div v-for="faq in store.faqs" :key="faq.id" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="faq in store.faqs" :key="faq.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink font-bold">{{ faq.question }}</p>
-                        <p class="mt-1 text-sm text-gray-600">{{ faq.answer }}</p>
-                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                        <p class="text-body font-bold">{{ faq.question }}</p>
+                        <p class="mt-1 text-sm text-muted">{{ faq.answer }}</p>
+                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
                             <span class="capitalize">Audience: {{ faq.audience }}</span>
                             <span v-if="!faq.is_published" class="font-semibold text-amber-600">Unpublished</span>
                         </div>
@@ -174,50 +174,50 @@ async function remove(faq) {
                 <p v-if="formError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ formError }}</p>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="faq-question">Question</label>
+                    <label class="block text-sm font-semibold text-body" for="faq-question">Question</label>
                     <textarea
                         id="faq-question"
                         v-model="form.question"
                         rows="2"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="faq-answer">Answer</label>
+                    <label class="block text-sm font-semibold text-body" for="faq-answer">Answer</label>
                     <textarea
                         id="faq-answer"
                         v-model="form.answer"
                         rows="4"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="faq-audience">Audience</label>
+                    <label class="block text-sm font-semibold text-body" for="faq-audience">Audience</label>
                     <select
                         id="faq-audience"
                         v-model="form.audience"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     >
                         <option v-for="option in AUDIENCE_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
                     </select>
                 </div>
 
-                <label class="flex items-center gap-2 text-sm text-gray-700">
-                    <input v-model="form.is_published" type="checkbox" class="rounded border-gray-300" />
+                <label class="flex items-center gap-2 text-sm text-body">
+                    <input v-model="form.is_published" type="checkbox" class="rounded border-border" />
                     Published
                 </label>
             </div>
 
             <template #footer>
-                <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700" @click="modalOpen = false">
+                <button type="button" class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body" @click="modalOpen = false">
                     Cancel
                 </button>
                 <button
                     type="button"
                     :disabled="saving"
-                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:opacity-40"
+                    class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:opacity-40"
                     @click="submitForm"
                 >
                     {{ saving ? 'Saving…' : 'Save' }}

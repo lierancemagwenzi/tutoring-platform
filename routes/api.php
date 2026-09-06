@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\CurriculumController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\LearningResourceController;
+use App\Http\Controllers\Api\LegalDocumentController;
 use App\Http\Controllers\Api\Marketplace\SelfPacedCourseController as MarketplaceSelfPacedCourseController;
 use App\Http\Controllers\Api\Marketplace\TutorController as MarketplaceTutorController;
 use App\Http\Controllers\Api\NotificationController;
@@ -117,6 +118,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register/student', StudentRegistrationController::class);
 Route::post('/register/tutor', TutorRegistrationController::class);
+Route::get('/legal-documents', LegalDocumentController::class);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/forgot-password', ForgotPasswordController::class)->middleware('throttle:6,1');
 Route::post('/reset-password', ResetPasswordController::class)->middleware('throttle:6,1');

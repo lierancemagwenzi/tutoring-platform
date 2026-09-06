@@ -233,8 +233,8 @@ async function submitOverride() {
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Financial Rules</h1>
-        <p class="mt-1 text-sm text-gray-500">Commission configuration — global default plus tutor/service/course overrides.</p>
+        <h1 class="text-body text-2xl font-bold">Financial Rules</h1>
+        <p class="mt-1 text-sm text-muted">Commission configuration — global default plus tutor/service/course overrides.</p>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -243,54 +243,54 @@ async function submitOverride() {
         </div>
 
         <template v-else>
-            <section class="mt-6 max-w-xl rounded-2xl bg-white p-6 shadow-sm">
-                <h2 class="text-ink font-bold">Global Default</h2>
-                <p class="mt-1 text-sm text-gray-500">Applies when no tutor/service/course override matches.</p>
+            <section class="mt-6 max-w-xl rounded-2xl bg-card p-6 shadow-elevated">
+                <h2 class="text-body font-bold">Global Default</h2>
+                <p class="mt-1 text-sm text-muted">Applies when no tutor/service/course override matches.</p>
 
                 <p v-if="globalError" class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ globalError }}</p>
                 <p v-if="globalSuccessMessage" class="mt-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">{{ globalSuccessMessage }}</p>
 
                 <div class="mt-4 grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Platform Percentage</label>
+                        <label class="block text-sm font-semibold text-body">Platform Percentage</label>
                         <input
                             v-model="globalForm.percentage"
                             type="number" step="0.01" min="0" max="100"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Platform Fixed Fee</label>
+                        <label class="block text-sm font-semibold text-body">Platform Fixed Fee</label>
                         <input
                             v-model="globalForm.fixed_fee"
                             type="number" step="0.01" min="0"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Provider Fee % <span class="font-normal text-gray-400">(optional)</span></label>
+                        <label class="block text-sm font-semibold text-body">Provider Fee % <span class="font-normal text-muted">(optional)</span></label>
                         <input
                             v-model="globalForm.provider_fee_percentage"
                             type="number" step="0.01" min="0" max="100"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Provider Fixed Fee <span class="font-normal text-gray-400">(optional)</span></label>
+                        <label class="block text-sm font-semibold text-body">Provider Fixed Fee <span class="font-normal text-muted">(optional)</span></label>
                         <input
                             v-model="globalForm.provider_fee_fixed"
                             type="number" step="0.01" min="0"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            Effective From <span class="font-normal text-gray-400">(leave blank to apply immediately)</span>
+                        <label class="block text-sm font-semibold text-body">
+                            Effective From <span class="font-normal text-muted">(leave blank to apply immediately)</span>
                         </label>
                         <input
                             v-model="globalForm.effective_from"
                             type="date"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                 </div>
@@ -298,7 +298,7 @@ async function submitOverride() {
                 <button
                     type="button"
                     :disabled="globalSaving"
-                    class="bg-amber mt-5 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber mt-5 rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="saveGlobal"
                 >
                     {{ globalSaving ? 'Saving…' : 'Save Global Rule' }}
@@ -307,10 +307,10 @@ async function submitOverride() {
 
             <section class="mt-8">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-ink font-bold">Overrides</h2>
+                    <h2 class="text-body font-bold">Overrides</h2>
                     <button
                         type="button"
-                        class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95"
+                        class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95"
                         @click="openCreate"
                     >
                         New Override
@@ -323,22 +323,22 @@ async function submitOverride() {
                         :key="tab.value"
                         type="button"
                         class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                        :class="activeScope === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                        :class="activeScope === tab.value ? 'bg-amber text-white' : 'border border-border text-body hover:brightness-95'"
                         @click="selectScope(tab.value)"
                     >
                         {{ tab.label }}
                     </button>
                 </div>
 
-                <div v-if="store.overrides.length === 0" class="mt-8 text-center text-gray-500">No overrides configured.</div>
+                <div v-if="store.overrides.length === 0" class="mt-8 text-center text-muted">No overrides configured.</div>
 
                 <div v-else class="mt-4 space-y-3">
-                    <div v-for="rule in store.overrides" :key="rule.id" class="rounded-2xl bg-white p-5 shadow-sm">
+                    <div v-for="rule in store.overrides" :key="rule.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                         <div class="flex items-start justify-between gap-4">
                             <div>
-                                <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600 capitalize">{{ rule.scope }}</span>
-                                <p class="text-ink mt-1.5 font-bold">{{ rule.target?.name ?? '—' }}</p>
-                                <p class="mt-1 text-sm text-gray-600">{{ rule.percentage }}% + R{{ rule.fixed_fee }} fixed</p>
+                                <span class="rounded-full bg-card-alt px-2.5 py-0.5 text-xs font-semibold text-muted capitalize">{{ rule.scope }}</span>
+                                <p class="text-body mt-1.5 font-bold">{{ rule.target?.name ?? '—' }}</p>
+                                <p class="mt-1 text-sm text-muted">{{ rule.percentage }}% + R{{ rule.fixed_fee }} fixed</p>
                                 <p v-if="rule.is_scheduled" class="mt-1 text-xs text-blue-600">Takes effect {{ rule.effective_from?.slice(0, 10) }}</p>
                             </div>
                             <div class="flex shrink-0 flex-col items-end gap-1.5">
@@ -349,7 +349,7 @@ async function submitOverride() {
                             </div>
                         </div>
 
-                        <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                        <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-4">
                             <button type="button" class="text-accent text-sm font-semibold" @click="openEdit(rule)">Edit</button>
                             <button
                                 type="button"
@@ -374,10 +374,10 @@ async function submitOverride() {
 
                 <template v-if="!editing">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Scope</label>
+                        <label class="block text-sm font-semibold text-body">Scope</label>
                         <select
                             v-model="overrideForm.scope"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                             @change="onScopeChange"
                         >
                             <option value="tutor">Tutor</option>
@@ -387,19 +387,19 @@ async function submitOverride() {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">{{ overrideForm.scope === 'tutor' ? 'Tutor' : overrideForm.scope === 'service' ? 'Service' : 'Course' }}</label>
+                        <label class="block text-sm font-semibold text-body">{{ overrideForm.scope === 'tutor' ? 'Tutor' : overrideForm.scope === 'service' ? 'Service' : 'Course' }}</label>
                         <input
                             v-model="searchQuery"
                             type="text"
                             placeholder="Search by name…"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                             @input="onSearchInput"
                         />
-                        <ul v-if="searchResults.length > 0" class="mt-1.5 max-h-40 overflow-y-auto rounded-xl border border-gray-200">
+                        <ul v-if="searchResults.length > 0" class="mt-1.5 max-h-40 overflow-y-auto rounded-xl border border-border">
                             <li v-for="item in searchResults" :key="item.id">
                                 <button
                                     type="button"
-                                    class="block w-full px-3.5 py-2 text-left text-sm hover:bg-gray-50"
+                                    class="block w-full px-3.5 py-2 text-left text-sm hover:brightness-95"
                                     @click="pickTarget(item)"
                                 >
                                     {{ lookup.label(item) }}
@@ -410,54 +410,54 @@ async function submitOverride() {
                     </div>
                 </template>
                 <template v-else>
-                    <p class="text-sm text-gray-600">
+                    <p class="text-sm text-muted">
                         <span class="font-semibold capitalize">{{ overrideForm.scope }}</span> — {{ overrideForm.target?.name }}
                     </p>
                 </template>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Percentage</label>
+                        <label class="block text-sm font-semibold text-body">Percentage</label>
                         <input
                             v-model="overrideForm.percentage"
                             type="number" step="0.01" min="0" max="100"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Fixed Fee</label>
+                        <label class="block text-sm font-semibold text-body">Fixed Fee</label>
                         <input
                             v-model="overrideForm.fixed_fee"
                             type="number" step="0.01" min="0"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Provider Fee % <span class="font-normal text-gray-400">(optional)</span></label>
+                        <label class="block text-sm font-semibold text-body">Provider Fee % <span class="font-normal text-muted">(optional)</span></label>
                         <input
                             v-model="overrideForm.provider_fee_percentage"
                             type="number" step="0.01" min="0" max="100"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700">Provider Fixed Fee <span class="font-normal text-gray-400">(optional)</span></label>
+                        <label class="block text-sm font-semibold text-body">Provider Fixed Fee <span class="font-normal text-muted">(optional)</span></label>
                         <input
                             v-model="overrideForm.provider_fee_fixed"
                             type="number" step="0.01" min="0"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            Effective From <span class="font-normal text-gray-400">(leave blank to apply immediately)</span>
+                        <label class="block text-sm font-semibold text-body">
+                            Effective From <span class="font-normal text-muted">(leave blank to apply immediately)</span>
                         </label>
                         <input
                             v-model="overrideForm.effective_from"
                             type="date"
-                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                            class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                         />
-                        <p v-if="editing" class="mt-1.5 text-xs text-gray-400">Saving creates a new rate rather than changing the existing one — past bookings keep the rate they were made under.</p>
+                        <p v-if="editing" class="mt-1.5 text-xs text-muted">Saving creates a new rate rather than changing the existing one — past bookings keep the rate they were made under.</p>
                     </div>
                 </div>
             </div>
@@ -465,7 +465,7 @@ async function submitOverride() {
             <template #footer>
                 <button
                     type="button"
-                    class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                    class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-body hover:brightness-95"
                     @click="showModal = false"
                 >
                     Cancel
@@ -473,7 +473,7 @@ async function submitOverride() {
                 <button
                     type="button"
                     :disabled="saving"
-                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="submitOverride"
                 >
                     {{ saving ? 'Saving…' : editing ? 'Save Changes' : 'Create Override' }}

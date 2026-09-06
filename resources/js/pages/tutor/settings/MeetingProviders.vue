@@ -64,7 +64,7 @@ const providerCards = computed(() =>
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Settings</h1>
+        <h1 class="text-body text-2xl font-bold">Settings</h1>
 
         <div class="mt-6">
             <SettingsTabs />
@@ -79,14 +79,14 @@ const providerCards = computed(() =>
             </div>
 
             <div v-else class="space-y-4">
-                <p class="text-sm text-gray-500">
+                <p class="text-muted text-sm">
                     Choose which service is used to create video meetings for your online and hybrid sessions.
                 </p>
 
                 <div
                     v-for="card in providerCards"
                     :key="card.key"
-                    class="rounded-2xl bg-white p-6 shadow-sm"
+                    class="bg-card shadow-elevated rounded-2xl p-6"
                     :class="{ 'opacity-50': !card.implemented }"
                 >
                     <div class="flex items-center justify-between">
@@ -95,11 +95,11 @@ const providerCards = computed(() =>
                                 {{ card.label.charAt(0) }}
                             </span>
                             <div>
-                                <p class="text-ink font-bold">{{ card.label }}</p>
+                                <p class="text-body font-bold">{{ card.label }}</p>
                                 <p v-if="card.selected" class="flex items-center gap-1 text-sm text-green-600">
                                     <CheckCircleIcon class="h-4 w-4" /> Selected
                                 </p>
-                                <p v-else-if="!card.implemented" class="text-sm text-gray-400">Coming Soon</p>
+                                <p v-else-if="!card.implemented" class="text-muted text-sm">Coming Soon</p>
                             </div>
                         </div>
 
@@ -107,14 +107,14 @@ const providerCards = computed(() =>
                             v-if="card.implemented && card.connected && !card.selected"
                             type="button"
                             :disabled="selecting === card.key"
-                            class="bg-amber rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                            class="bg-amber shadow-elevated rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                             @click="select(card.key)"
                         >
                             {{ selecting === card.key ? 'Selecting…' : 'Select' }}
                         </button>
                     </div>
 
-                    <div v-if="card.implemented && !card.connected" class="mt-4 border-t border-gray-100 pt-4 text-sm text-gray-500">
+                    <div v-if="card.implemented && !card.connected" class="border-border text-muted mt-4 border-t pt-4 text-sm">
                         Connect your Google account in
                         <router-link to="/tutor/settings/connected-accounts" class="text-amber font-semibold hover:underline">
                             Connected Accounts

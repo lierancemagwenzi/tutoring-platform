@@ -30,7 +30,7 @@ defineEmits(['search'])
         <SelectInput id="course-sort" v-model="sort" label="Sort by" :options="SORT_OPTIONS" class="sm:w-56" />
         <button
             type="button"
-            class="bg-amber flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition hover:brightness-95"
+            class="bg-amber shadow-elevated flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold text-white transition hover:brightness-95"
             @click="$emit('search')"
         >
             <MagnifyingGlassIcon class="h-5 w-5" />

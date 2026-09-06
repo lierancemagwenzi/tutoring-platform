@@ -114,12 +114,12 @@ async function onReorder() {
         <div class="flex items-center justify-between">
             <div>
                 <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back to Chapters</button>
-                <h1 class="text-ink mt-1 text-2xl font-bold">Lessons</h1>
-                <p class="mt-1 text-gray-500">Organize this chapter's lessons. Drag to reorder.</p>
+                <h1 class="text-body mt-1 text-2xl font-bold">Lessons</h1>
+                <p class="mt-1 text-muted">Organize this chapter's lessons. Drag to reorder.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openCreate"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -134,7 +134,7 @@ async function onReorder() {
         </div>
 
         <div v-else-if="lessons.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <p class="text-gray-500">No lessons yet. Add your first lesson to get started.</p>
+            <p class="text-muted">No lessons yet. Add your first lesson to get started.</p>
         </div>
 
         <draggable
@@ -146,14 +146,14 @@ async function onReorder() {
             @end="onReorder"
         >
             <template #item="{ element: lesson }">
-                <div class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                    <span class="drag-handle cursor-grab text-gray-400">
+                <div class="flex items-center gap-4 rounded-2xl bg-card p-5 shadow-elevated">
+                    <span class="drag-handle cursor-grab text-muted">
                         <Bars3Icon class="h-5 w-5" />
                     </span>
 
                     <div class="min-w-0 flex-1">
-                        <p class="text-ink font-bold">{{ lesson.title }}</p>
-                        <p class="mt-0.5 text-sm text-gray-500">
+                        <p class="text-body font-bold">{{ lesson.title }}</p>
+                        <p class="mt-0.5 text-sm text-muted">
                             <span v-if="lesson.estimated_duration_minutes">{{ lesson.estimated_duration_minutes }} min</span>
                         </p>
                     </div>
@@ -172,7 +172,7 @@ async function onReorder() {
                         <Squares2X2Icon class="h-4 w-4" />
                         Lesson Builder
                     </router-link>
-                    <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEdit(lesson)">
+                    <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEdit(lesson)">
                         <PencilSquareIcon class="h-4 w-4" />
                     </button>
                     <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="remove(lesson)">
@@ -194,13 +194,13 @@ async function onReorder() {
                 />
                 <SelectInput v-if="editingLesson" id="lesson-status" v-model="form.status" label="Status" :options="STATUS_OPTIONS" />
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="modalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="modalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>

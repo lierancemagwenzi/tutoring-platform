@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Enums\TutorSubjectStatus;
+use App\Http\Resources\TutorApplicationResource;
 use App\Models\TutorProfile;
 use App\Models\TutorSubject;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -42,23 +43,27 @@ class AdminTutorManagementService
      */
     public function detail(TutorProfile $tutor): array
     {
-        $tutor->loadMissing(['user', 'tutorSubjects.subject', 'connectedAccounts', 'bankAccount']);
+        $tutor->loadMissing(['user', 'tutorSubjects.subject', 'connectedAccounts', 'bankAccount', 'qualifications', 'documents']);
         $tutor->loadCount(['services', 'selfPacedCourses', 'bookings', 'teachingSessions']);
 
         $subjectsByStatus = $tutor->tutorSubjects->groupBy(fn ($ts) => $ts->status->value);
 
         return [
             'id' => $tutor->id,
-            'display_name' => $tutor->display_name,
-            'bio' => $tutor->bio,
-            'years_experience' => $tutor->years_experience,
             'user' => [
                 'id' => $tutor->user->id,
+                'name' => trim("{$tutor->user->first_name} {$tutor->user->last_name}"),
                 'email' => $tutor->user->email,
+                'phone' => $tutor->user->phone,
                 'email_verified' => $tutor->user->hasVerifiedEmail(),
                 'approval_status' => $tutor->user->status->value,
                 'disabled' => $tutor->user->disabled_at !== null,
+                'registered_at' => $tutor->user->created_at->toIso8601String(),
             ],
+            // The full application — bio, languages, teaching style,
+            // government ID, qualifications, supporting documents — the same
+            // shape shown on the pending-approval review page.
+            'profile' => (new TutorApplicationResource($tutor))->resolve(),
             'approved_subjects' => $this->subjectsSummary($subjectsByStatus->get(TutorSubjectStatus::Approved->value, collect())),
             'pending_subjects' => $this->subjectsSummary($subjectsByStatus->get(TutorSubjectStatus::Pending->value, collect())),
             'rejected_subjects' => $this->subjectsSummary($subjectsByStatus->get(TutorSubjectStatus::Rejected->value, collect())),

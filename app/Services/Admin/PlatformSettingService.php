@@ -40,6 +40,8 @@ class PlatformSettingService
         'pricing.booking_fee_percentage' => 5,
         'pricing.min_tutor_price' => null,
         'pricing.max_tutor_price' => null,
+        'legal.terms_and_conditions' => '',
+        'legal.privacy_policy' => '',
     ];
 
     public function __construct(private readonly AdminActivityLogger $logger) {}

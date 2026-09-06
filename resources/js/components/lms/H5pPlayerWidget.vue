@@ -69,7 +69,7 @@ watch(() => props.contentId, render)
 
 <template>
     <div>
-        <p v-if="loading" class="text-sm text-gray-400">Loading H5P preview…</p>
+        <p v-if="loading" class="text-sm text-muted">Loading H5P preview…</p>
         <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
         <div ref="container"></div>
     </div>

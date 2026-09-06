@@ -25,8 +25,8 @@ onMounted(() => load())
 
 <template>
     <div class="p-8">
-        <h1 class="text-ink text-2xl font-bold">Payment Tickets</h1>
-        <p class="mt-1 text-sm text-gray-500">Issues you've raised about specific earnings — raise a new one from the Earnings page.</p>
+        <h1 class="text-body text-2xl font-bold">Payment Tickets</h1>
+        <p class="text-muted mt-1 text-sm">Issues you've raised about specific earnings — raise a new one from the Earnings page.</p>
 
         <p v-if="errorMessage" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ errorMessage }}</p>
 
@@ -34,20 +34,20 @@ onMounted(() => load())
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.tickets.length === 0" class="mt-16 text-center text-gray-500">You haven't raised any payment tickets.</div>
+        <div v-else-if="store.tickets.length === 0" class="text-muted mt-16 text-center">You haven't raised any payment tickets.</div>
 
         <div v-else class="mt-6 space-y-3">
             <router-link
                 v-for="ticket in store.tickets"
                 :key="ticket.id"
                 :to="{ name: 'tutor.payment-tickets.show', params: { id: ticket.id } }"
-                class="block rounded-2xl bg-white p-5 shadow-sm transition hover:shadow-md"
+                class="bg-card shadow-elevated hover:shadow-popover block rounded-2xl p-5 transition"
             >
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-ink font-bold capitalize">{{ ticket.transaction.product_type.replace('_', ' ') }}</p>
-                        <p class="mt-1 text-sm text-gray-500">{{ ticket.message }}</p>
-                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                        <p class="text-body font-bold capitalize">{{ ticket.transaction.product_type.replace('_', ' ') }}</p>
+                        <p class="text-muted mt-1 text-sm">{{ ticket.message }}</p>
+                        <div class="text-muted mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
                             <span>{{ ticket.transaction.currency }} {{ ticket.transaction.tutor_amount }}</span>
                             <span>{{ ticket.comments_count }} comment{{ ticket.comments_count === 1 ? '' : 's' }}</span>
                             <span>{{ ticket.created_at.slice(0, 10) }}</span>

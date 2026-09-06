@@ -24,9 +24,9 @@ onMounted(() => load())
 </script>
 
 <template>
-    <div class="rounded-2xl bg-white p-6 shadow-sm">
+    <div class="bg-card rounded-2xl p-6 shadow-elevated">
         <div class="flex items-center justify-between">
-            <h2 class="text-ink text-lg font-bold">Upcoming Sessions</h2>
+            <h2 class="text-body text-lg font-bold">Upcoming Sessions</h2>
             <router-link to="/student/bookings" class="text-accent text-sm font-semibold">View all</router-link>
         </div>
 
@@ -35,10 +35,10 @@ onMounted(() => load())
         </div>
 
         <div v-else-if="sessions.length === 0" class="mt-6 flex flex-col items-center py-6 text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+            <span class="bg-card-alt text-muted flex h-14 w-14 items-center justify-center rounded-full">
                 <CalendarIcon class="h-7 w-7" />
             </span>
-            <p class="mt-3 text-sm text-gray-500">No upcoming sessions booked yet.</p>
+            <p class="text-muted mt-3 text-sm">No upcoming sessions booked yet.</p>
             <router-link to="/student/marketplace" class="text-accent mt-2 text-sm font-semibold">Browse tutors</router-link>
         </div>
 
@@ -47,25 +47,25 @@ onMounted(() => load())
                 <li v-for="entry in sessions" :key="entry.booking.id">
                     <router-link
                         :to="`/student/bookings/${entry.booking.id}`"
-                        class="block rounded-xl bg-gray-50 px-4 py-3.5 transition hover:bg-gray-100"
+                        class="bg-card-alt block rounded-xl px-4 py-3.5 transition hover:brightness-95"
                     >
-                        <p class="text-ink font-semibold">{{ entry.booking.tutor.display_name }}</p>
-                        <p class="text-sm text-gray-500">{{ entry.booking.service.title }}</p>
-                        <p class="mt-1 text-xs text-gray-400">{{ entry.booking.date }} &middot; {{ entry.booking.start_time }}</p>
+                        <p class="text-body font-semibold">{{ entry.booking.tutor.display_name }}</p>
+                        <p class="text-muted text-sm">{{ entry.booking.service.title }}</p>
+                        <p class="text-muted mt-1 text-xs">{{ entry.booking.date }} &middot; {{ entry.booking.start_time }}</p>
                     </router-link>
                 </li>
             </ul>
 
-            <div v-if="meta && meta.last_page > 1" class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
+            <div v-if="meta && meta.last_page > 1" class="border-border mt-4 flex items-center justify-between border-t pt-4">
                 <button
                     type="button"
-                    class="text-sm font-semibold text-gray-500 disabled:opacity-30"
+                    class="text-muted text-sm font-semibold disabled:opacity-30"
                     :disabled="meta.current_page <= 1"
                     @click="load(meta.current_page - 1)"
                 >
                     Previous
                 </button>
-                <span class="text-xs text-gray-400">Page {{ meta.current_page }} of {{ meta.last_page }}</span>
+                <span class="text-muted text-xs">Page {{ meta.current_page }} of {{ meta.last_page }}</span>
                 <button
                     type="button"
                     class="text-accent text-sm font-semibold disabled:opacity-30"

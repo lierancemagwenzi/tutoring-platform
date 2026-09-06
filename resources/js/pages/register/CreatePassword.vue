@@ -15,6 +15,7 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const submitting = ref(false)
 const submitError = ref('')
+const termsAccepted = ref(false)
 
 const rules = computed(() => [
     { label: 'Min 8 characters', met: registration.password.length >= 8 },
@@ -27,7 +28,8 @@ const canContinue = computed(
     () =>
         rules.value.every((rule) => rule.met) &&
         registration.password.length > 0 &&
-        registration.password === registration.confirmPassword,
+        registration.password === registration.confirmPassword &&
+        termsAccepted.value,
 )
 
 function buildPayload() {
@@ -36,6 +38,7 @@ function buildPayload() {
         last_name: registration.learner.surname,
         password: registration.password,
         password_confirmation: registration.confirmPassword,
+        terms_accepted: termsAccepted.value,
     }
 
     if (registration.role === 'guide') {
@@ -92,8 +95,8 @@ async function continueRegistration() {
 <template>
     <div v-if="!submitting" class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Now, create your password</h1>
-            <p class="mt-2 text-gray-500">Your password must be strong to keep your profile safe.</p>
+            <h1 class="text-body text-3xl font-bold">Now, create your password</h1>
+            <p class="text-muted mt-2">Your password must be strong to keep your profile safe.</p>
         </div>
 
         <form class="mt-10 space-y-6" novalidate @submit.prevent="continueRegistration">
@@ -135,23 +138,33 @@ async function continueRegistration() {
                 <li v-for="rule in rules" :key="rule.label" class="flex items-center gap-3">
                     <span
                         class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-                        :class="rule.met ? 'bg-accent text-white' : 'bg-gray-200 text-transparent'"
+                        :class="rule.met ? 'bg-accent text-white' : 'bg-card-alt text-transparent'"
                     >
                         <CheckIcon class="h-3.5 w-3.5" />
                     </span>
-                    <span class="text-ink">{{ rule.label }}</span>
+                    <span class="text-body">{{ rule.label }}</span>
                 </li>
             </ul>
 
-            <div class="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <div class="text-muted flex items-center justify-center gap-2 text-sm">
                 <ShieldCheckIcon class="h-5 w-5" />
                 Your information is confidential and secure
             </div>
 
+            <label class="text-body flex cursor-pointer items-start gap-3 text-sm">
+                <input v-model="termsAccepted" type="checkbox" class="accent-accent border-border mt-0.5 h-4 w-4 rounded" />
+                <span>
+                    I agree to the
+                    <router-link to="/terms" target="_blank" class="text-accent font-semibold underline">Terms &amp; Conditions</router-link>
+                    and
+                    <router-link to="/privacy" target="_blank" class="text-accent font-semibold underline">Privacy Policy</router-link>
+                </span>
+            </label>
+
             <button
                 type="submit"
                 :disabled="!canContinue"
-                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 Continue
             </button>

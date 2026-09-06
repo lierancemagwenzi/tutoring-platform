@@ -82,7 +82,7 @@ function statusLabel(status) {
 }
 
 function statusClasses(status) {
-    return STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-600'
+    return STATUS_CLASSES[status] ?? 'bg-card-alt text-muted'
 }
 
 async function markUnderReview() {
@@ -178,12 +178,12 @@ async function removeFeedbackAttachment(attachment) {
 
         <template v-else-if="submission">
             <div class="mt-4 flex items-center gap-3">
-                <h1 class="text-ink text-2xl font-bold">{{ submission.student.first_name }} {{ submission.student.last_name }}</h1>
+                <h1 class="text-body text-2xl font-bold">{{ submission.student.first_name }} {{ submission.student.last_name }}</h1>
                 <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="statusClasses(submission.status)">
                     {{ statusLabel(submission.status) }}
                 </span>
             </div>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-muted">
                 Attempt {{ submission.attempt_number }} &middot; Submitted {{ new Date(submission.submitted_at).toLocaleString() }}
             </p>
 
@@ -191,13 +191,13 @@ async function removeFeedbackAttachment(attachment) {
 
             <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div class="space-y-6">
-                    <section class="rounded-2xl bg-white p-6 shadow-sm">
-                        <h2 class="text-ink font-bold">Submission</h2>
+                    <section class="rounded-2xl bg-card p-6 shadow-elevated">
+                        <h2 class="text-body font-bold">Submission</h2>
                         <div v-if="submission.submission_text?.html" class="prose prose-sm mt-3 max-w-none" v-html="submission.submission_text.html" />
-                        <p v-else class="mt-3 text-sm text-gray-500">No text was submitted.</p>
+                        <p v-else class="mt-3 text-sm text-muted">No text was submitted.</p>
 
                         <div v-if="submission.student_attachments?.length" class="mt-4 space-y-1.5">
-                            <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Files</p>
+                            <p class="text-xs font-semibold tracking-wide text-muted uppercase">Files</p>
                             <a
                                 v-for="attachment in submission.student_attachments"
                                 :key="attachment.id"
@@ -211,11 +211,11 @@ async function removeFeedbackAttachment(attachment) {
                         </div>
                     </section>
 
-                    <section class="flex flex-wrap gap-3 rounded-2xl bg-white p-6 shadow-sm">
+                    <section class="flex flex-wrap gap-3 rounded-2xl bg-card p-6 shadow-elevated">
                         <button
                             v-if="canReview"
                             type="button"
-                            class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                            class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                             @click="markUnderReview"
                         >
                             Mark Under Review
@@ -223,7 +223,7 @@ async function removeFeedbackAttachment(attachment) {
                         <button
                             v-if="canReturn"
                             type="button"
-                            class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-red-600"
+                            class="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-red-600"
                             @click="returnForRevision"
                         >
                             Return for Revision
@@ -231,7 +231,7 @@ async function removeFeedbackAttachment(attachment) {
                         <button
                             v-if="canPublish"
                             type="button"
-                            class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                            class="bg-amber rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                             @click="publishResults"
                         >
                             Publish Results
@@ -240,8 +240,8 @@ async function removeFeedbackAttachment(attachment) {
                     </section>
                 </div>
 
-                <section class="space-y-4 rounded-2xl bg-white p-6 shadow-sm">
-                    <h2 class="text-ink font-bold">Grade &amp; Feedback</h2>
+                <section class="space-y-4 rounded-2xl bg-card p-6 shadow-elevated">
+                    <h2 class="text-body font-bold">Grade &amp; Feedback</h2>
 
                     <FloatingLabelInput
                         id="score"
@@ -249,18 +249,18 @@ async function removeFeedbackAttachment(attachment) {
                         type="number"
                         :label="submission.max_score ? `Score (out of ${submission.max_score})` : 'Score'"
                     />
-                    <p v-if="submission.passing_score" class="text-xs text-gray-500">Passing score: {{ submission.passing_score }}</p>
+                    <p v-if="submission.passing_score" class="text-xs text-muted">Passing score: {{ submission.passing_score }}</p>
 
                     <RichTextEditor v-model="feedbackHtml" @update:json="(json) => (feedbackJson = json)" />
 
                     <div class="space-y-2">
-                        <p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">Feedback Files</p>
+                        <p class="text-xs font-semibold tracking-wide text-muted uppercase">Feedback Files</p>
                         <div
                             v-for="attachment in submission.feedback_attachments ?? []"
                             :key="attachment.id"
-                            class="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3"
+                            class="flex items-center justify-between rounded-xl border border-border px-4 py-3"
                         >
-                            <span class="truncate text-sm font-medium text-gray-900">{{ attachment.original_name }}</span>
+                            <span class="truncate text-sm font-medium text-body">{{ attachment.original_name }}</span>
                             <button type="button" class="text-red-500 hover:text-red-700" @click="removeFeedbackAttachment(attachment)">
                                 <TrashIcon class="h-4 w-4" />
                             </button>
@@ -284,7 +284,7 @@ async function removeFeedbackAttachment(attachment) {
                             </div>
                             <button
                                 type="button"
-                                class="rounded-full border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40"
+                                class="rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-body disabled:opacity-40"
                                 :disabled="!attachmentFile || attachmentUploading"
                                 @click="addFeedbackAttachment"
                             >
@@ -296,7 +296,7 @@ async function removeFeedbackAttachment(attachment) {
                     <div class="flex justify-end pt-2">
                         <button
                             type="button"
-                            class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                            class="bg-amber rounded-full px-6 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                             :disabled="grading || scoreForm === ''"
                             @click="saveGrade"
                         >

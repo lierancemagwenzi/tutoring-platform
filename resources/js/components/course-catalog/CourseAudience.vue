@@ -5,9 +5,9 @@ defineProps({
 </script>
 
 <template>
-    <div v-if="audience.length" class="rounded-2xl bg-white p-6 shadow-sm">
-        <h2 class="text-ink text-lg font-bold">Who this course is for</h2>
-        <ul class="mt-3 list-inside list-disc space-y-1 text-gray-600">
+    <div v-if="audience.length" class="bg-card shadow-elevated rounded-2xl p-6">
+        <h2 class="text-body text-lg font-bold">Who this course is for</h2>
+        <ul class="text-muted mt-3 list-inside list-disc space-y-1">
             <li v-for="(entry, index) in audience" :key="index">{{ entry }}</li>
         </ul>
     </div>

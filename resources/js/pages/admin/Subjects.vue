@@ -90,10 +90,10 @@ async function createSubject() {
 <template>
     <div class="p-8">
         <div class="flex items-center justify-between">
-            <h1 class="text-ink text-2xl font-bold">Subjects</h1>
+            <h1 class="text-body text-2xl font-bold">Subjects</h1>
             <button
                 type="button"
-                class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95"
                 @click="showCreate = true"
             >
                 New Subject
@@ -105,7 +105,7 @@ async function createSubject() {
                 v-model="filters.search"
                 type="text"
                 placeholder="Search subjects…"
-                class="focus:border-accent w-64 rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-900 outline-none"
+                class="focus:border-accent w-64 rounded-xl border border-border px-4 py-2.5 text-sm text-body outline-none"
                 @input="onSearchInput"
             />
             <div class="flex flex-wrap gap-2">
@@ -114,7 +114,7 @@ async function createSubject() {
                     :key="tab.value"
                     type="button"
                     class="rounded-full px-4 py-2 text-sm font-semibold transition"
-                    :class="filters.status === tab.value ? 'bg-amber text-white' : 'border border-gray-300 text-gray-700 hover:bg-gray-50'"
+                    :class="filters.status === tab.value ? 'bg-amber text-white' : 'border border-border text-body hover:brightness-95'"
                     @click="selectStatus(tab.value)"
                 >
                     {{ tab.label }}
@@ -128,17 +128,17 @@ async function createSubject() {
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
         </div>
 
-        <div v-else-if="store.subjects.length === 0" class="mt-16 text-center text-gray-500">No subjects found.</div>
+        <div v-else-if="store.subjects.length === 0" class="mt-16 text-center text-muted">No subjects found.</div>
 
         <div v-else class="mt-6 space-y-3">
-            <div v-for="subject in store.subjects" :key="subject.id" class="rounded-2xl bg-white p-5 shadow-sm">
+            <div v-for="subject in store.subjects" :key="subject.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <router-link :to="`/admin/subjects/${subject.id}`" class="text-ink font-bold hover:underline">
+                        <router-link :to="`/admin/subjects/${subject.id}`" class="text-body font-bold hover:underline">
                             {{ subject.name }}
                         </router-link>
-                        <p class="mt-1 text-sm text-gray-500">{{ subject.description || 'No description.' }}</p>
-                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
+                        <p class="mt-1 text-sm text-muted">{{ subject.description || 'No description.' }}</p>
+                        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
                             <span>{{ subject.approved_tutors_count }} approved tutors</span>
                             <span>{{ subject.pending_requests_count }} pending requests</span>
                             <span>{{ subject.services_count }} services</span>
@@ -150,7 +150,7 @@ async function createSubject() {
                     </span>
                 </div>
 
-                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4">
+                <div class="mt-4 flex flex-wrap items-center gap-4 border-t border-border pt-4">
                     <button
                         v-if="subject.status !== 'active'"
                         type="button"
@@ -164,7 +164,7 @@ async function createSubject() {
                         v-if="subject.status === 'active'"
                         type="button"
                         :disabled="actioningId === subject.id"
-                        class="text-sm font-semibold text-gray-600 disabled:opacity-40"
+                        class="text-sm font-semibold text-muted disabled:opacity-40"
                         @click="setStatus(subject, 'deactivate', 'Deactivate')"
                     >
                         Deactivate
@@ -188,21 +188,21 @@ async function createSubject() {
             <div class="space-y-4">
                 <p v-if="createError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ createError }}</p>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="subject-name">Name</label>
+                    <label class="block text-sm font-semibold text-body" for="subject-name">Name</label>
                     <input
                         id="subject-name"
                         v-model="createForm.name"
                         type="text"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700" for="subject-description">Description</label>
+                    <label class="block text-sm font-semibold text-body" for="subject-description">Description</label>
                     <textarea
                         id="subject-description"
                         v-model="createForm.description"
                         rows="3"
-                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none"
+                        class="focus:border-accent mt-1.5 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm text-body outline-none"
                     />
                 </div>
             </div>
@@ -210,7 +210,7 @@ async function createSubject() {
             <template #footer>
                 <button
                     type="button"
-                    class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                    class="rounded-full border border-border px-4 py-2 text-sm font-semibold text-body hover:brightness-95"
                     @click="showCreate = false"
                 >
                     Cancel
@@ -218,7 +218,7 @@ async function createSubject() {
                 <button
                     type="button"
                     :disabled="creating || !createForm.name"
-                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber rounded-full px-6 py-2 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     @click="createSubject"
                 >
                     {{ creating ? 'Creating…' : 'Create Subject' }}

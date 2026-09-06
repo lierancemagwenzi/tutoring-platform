@@ -43,6 +43,7 @@ class AdminStudentManagementService
         $student->loadMissing([
             'enrollments.course', 'enrollments.certificate',
             'bookings.service', 'bookings.tutorProfile',
+            'studentGuardian',
         ]);
 
         return [
@@ -50,10 +51,18 @@ class AdminStudentManagementService
                 'id' => $student->id,
                 'name' => trim("{$student->first_name} {$student->last_name}"),
                 'email' => $student->email,
+                'phone' => $student->phone,
+                'date_of_birth' => $student->date_of_birth?->toDateString(),
                 'email_verified' => $student->hasVerifiedEmail(),
                 'disabled' => $student->disabled_at !== null,
                 'registered_at' => $student->created_at->toIso8601String(),
             ],
+            'guardian' => $student->studentGuardian ? [
+                'name' => trim("{$student->studentGuardian->guardian_first_name} {$student->studentGuardian->guardian_last_name}"),
+                'email' => $student->studentGuardian->guardian_email,
+                'phone' => $student->studentGuardian->guardian_phone,
+                'relationship_to_student' => $student->studentGuardian->relationship_to_student,
+            ] : null,
             'enrollments' => $student->enrollments->map(fn ($enrollment) => [
                 'id' => $enrollment->id,
                 'course_title' => $enrollment->course?->title,

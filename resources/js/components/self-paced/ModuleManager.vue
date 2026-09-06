@@ -110,10 +110,10 @@ function onModuleContentChanged(moduleId, updated) {
 <template>
     <div>
         <div class="flex items-center justify-between">
-            <p class="text-sm text-gray-500">Organize your course into modules. Drag to reorder.</p>
+            <p class="text-sm text-muted">Organize your course into modules. Drag to reorder.</p>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="openCreate"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -128,28 +128,28 @@ function onModuleContentChanged(moduleId, updated) {
         </div>
 
         <div v-else-if="modules.length === 0" class="mt-8 flex flex-col items-center text-center">
-            <p class="text-gray-500">No modules yet. Add your first module to start building this course.</p>
+            <p class="text-muted">No modules yet. Add your first module to start building this course.</p>
         </div>
 
         <draggable v-else v-model="modules" item-key="id" handle=".drag-handle" class="mt-6 space-y-3" @end="onReorder">
             <template #item="{ element: module }">
-                <div class="rounded-2xl bg-white shadow-sm">
+                <div class="rounded-2xl bg-card shadow-elevated">
                     <div class="flex items-center gap-3 p-5">
-                        <span class="drag-handle cursor-grab text-gray-400">
+                        <span class="drag-handle cursor-grab text-muted">
                             <Bars3Icon class="h-5 w-5" />
                         </span>
-                        <button type="button" class="text-gray-400 hover:text-gray-600" @click="toggle(module.id)">
+                        <button type="button" class="text-muted hover:text-muted" @click="toggle(module.id)">
                             <component :is="expanded.has(module.id) ? ChevronDownIcon : ChevronRightIcon" class="h-4 w-4" />
                         </button>
                         <div class="min-w-0 flex-1 cursor-pointer" @click="toggle(module.id)">
-                            <p class="text-ink font-bold">{{ module.title }}</p>
-                            <p v-if="module.description" class="mt-0.5 truncate text-sm text-gray-500">{{ module.description }}</p>
-                            <p class="mt-0.5 text-xs text-gray-400">
+                            <p class="text-body font-bold">{{ module.title }}</p>
+                            <p v-if="module.description" class="mt-0.5 truncate text-sm text-muted">{{ module.description }}</p>
+                            <p class="mt-0.5 text-xs text-muted">
                                 {{ module.activities.length }} activit{{ module.activities.length === 1 ? 'y' : 'ies' }}
                                 &middot; {{ module.assessments.length }} assessment{{ module.assessments.length === 1 ? '' : 's' }}
                             </p>
                         </div>
-                        <button type="button" class="shrink-0 text-gray-500 hover:text-gray-700" @click="openEdit(module)">
+                        <button type="button" class="shrink-0 text-muted hover:text-body" @click="openEdit(module)">
                             <PencilSquareIcon class="h-4 w-4" />
                         </button>
                         <button type="button" class="shrink-0 text-red-500 hover:text-red-700" @click="remove(module)">
@@ -157,7 +157,7 @@ function onModuleContentChanged(moduleId, updated) {
                         </button>
                     </div>
 
-                    <div v-if="expanded.has(module.id)" class="border-t border-gray-100 p-5">
+                    <div v-if="expanded.has(module.id)" class="border-t border-border p-5">
                         <ModuleContentList :module="module" @changed="(updated) => onModuleContentChanged(module.id, updated)" />
                     </div>
                 </div>
@@ -170,24 +170,24 @@ function onModuleContentChanged(moduleId, updated) {
                 <TextareaInput id="module-description" v-model="form.description" label="Description" />
 
                 <div class="space-y-2">
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.activity_completion_required" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Require all Learning Activities to be completed
                     </label>
-                    <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <label class="flex items-center gap-2 text-sm text-body">
                         <input v-model="form.assessment_completion_required" type="checkbox" class="accent-accent h-4 w-4 rounded" />
                         Require required Assessments to be passed
                     </label>
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700" @click="modalOpen = false">
+                    <button type="button" class="rounded-full border border-border px-5 py-2.5 font-semibold text-body" @click="modalOpen = false">
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="saving"
-                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        class="bg-amber rounded-full px-6 py-2.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         {{ saving ? 'Saving…' : 'Save' }}
                     </button>

@@ -73,12 +73,12 @@ function manageContent(sessionLesson) {
                 <button type="button" class="text-accent text-sm font-semibold" @click="router.push(`/tutor/sessions/${sessionId}`)">
                     &larr; Back to Session
                 </button>
-                <h1 class="text-ink mt-1 text-2xl font-bold">Session Content</h1>
-                <p class="mt-1 text-gray-500">Assign lessons to this session, then choose which of their blocks students can see.</p>
+                <h1 class="text-body mt-1 text-2xl font-bold">Session Content</h1>
+                <p class="text-muted mt-1">Assign lessons to this session, then choose which of their blocks students can see.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95"
                 @click="pickerOpen = true"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -93,7 +93,7 @@ function manageContent(sessionLesson) {
         </div>
 
         <div v-else-if="sessionLessons.length === 0" class="mt-16 flex flex-col items-center text-center">
-            <p class="text-gray-500">No lessons assigned yet. Assign your first lesson to get started.</p>
+            <p class="text-muted">No lessons assigned yet. Assign your first lesson to get started.</p>
         </div>
 
         <draggable
@@ -105,14 +105,14 @@ function manageContent(sessionLesson) {
             @end="onReorder"
         >
             <template #item="{ element: sessionLesson }">
-                <div class="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                    <span class="drag-handle cursor-grab text-gray-400">
+                <div class="bg-card shadow-elevated flex items-center gap-4 rounded-2xl p-5">
+                    <span class="drag-handle text-muted cursor-grab">
                         <Bars3Icon class="h-5 w-5" />
                     </span>
 
                     <div class="min-w-0 flex-1">
-                        <p class="text-ink font-bold">{{ sessionLesson.lesson.title }}</p>
-                        <p class="mt-1 text-sm text-gray-500">
+                        <p class="text-body font-bold">{{ sessionLesson.lesson.title }}</p>
+                        <p class="text-muted mt-1 text-sm">
                             {{ sessionLesson.assigned_blocks_count ?? 0 }}
                             {{ sessionLesson.assigned_blocks_count === 1 ? 'block' : 'blocks' }} assigned
                         </p>
@@ -120,7 +120,7 @@ function manageContent(sessionLesson) {
 
                     <button
                         type="button"
-                        class="text-accent shrink-0 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold"
+                        class="text-accent border-border shrink-0 rounded-full border px-4 py-2 text-sm font-semibold"
                         @click="manageContent(sessionLesson)"
                     >
                         Manage Content

@@ -145,12 +145,12 @@ function exportUrl(contentId) {
         <div class="flex items-center justify-between">
             <div>
                 <button type="button" class="text-accent text-sm font-semibold" @click="$router.back()">&larr; Back to Lesson Builder</button>
-                <h1 class="text-ink mt-1 text-2xl font-bold">H5P Activity</h1>
-                <p class="mt-1 text-gray-500">Create a new H5P activity or choose one from your library.</p>
+                <h1 class="text-body mt-1 text-2xl font-bold">H5P Activity</h1>
+                <p class="mt-1 text-muted">Create a new H5P activity or choose one from your library.</p>
             </div>
             <button
                 type="button"
-                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-elevated transition hover:brightness-95"
                 @click="createNew"
             >
                 <PlusIcon class="h-4 w-4" />
@@ -165,9 +165,9 @@ function exportUrl(contentId) {
         </div>
 
         <template v-else>
-            <div class="mt-8 flex items-center justify-between rounded-2xl bg-white p-6 shadow-sm">
+            <div class="mt-8 flex items-center justify-between rounded-2xl bg-card p-6 shadow-elevated">
                 <div>
-                    <p class="text-sm font-semibold text-gray-500">Status</p>
+                    <p class="text-sm font-semibold text-muted">Status</p>
                     <span
                         class="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize"
                         :class="block.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
@@ -186,14 +186,14 @@ function exportUrl(contentId) {
                 </div>
             </div>
 
-            <div v-if="!browsing && block.h5p_content" class="mt-8 rounded-2xl bg-white p-6 shadow-sm">
-                <p class="text-sm font-semibold text-gray-500">Selected activity</p>
-                <h2 class="text-ink mt-1 text-lg font-bold">{{ block.h5p_content.title }}</h2>
-                <p class="mt-0.5 text-sm text-gray-500">{{ block.h5p_content.main_library }}</p>
+            <div v-if="!browsing && block.h5p_content" class="mt-8 rounded-2xl bg-card p-6 shadow-elevated">
+                <p class="text-sm font-semibold text-muted">Selected activity</p>
+                <h2 class="text-body mt-1 text-lg font-bold">{{ block.h5p_content.title }}</h2>
+                <p class="mt-0.5 text-sm text-muted">{{ block.h5p_content.main_library }}</p>
                 <div class="mt-4 flex flex-wrap gap-3">
                     <button
                         type="button"
-                        class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                        class="flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                         @click="preview(block.h5p_content)"
                     >
                         <EyeIcon class="h-4 w-4" />
@@ -201,7 +201,7 @@ function exportUrl(contentId) {
                     </button>
                     <button
                         type="button"
-                        class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                        class="flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                         @click="editContent(block.h5p_content)"
                     >
                         <PencilSquareIcon class="h-4 w-4" />
@@ -209,7 +209,7 @@ function exportUrl(contentId) {
                     </button>
                     <a
                         :href="exportUrl(block.h5p_content.id)"
-                        class="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700"
+                        class="flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-body"
                     >
                         <ArrowDownTrayIcon class="h-4 w-4" />
                         Export
@@ -222,19 +222,19 @@ function exportUrl(contentId) {
 
             <div v-else class="mt-8">
                 <div v-if="!block.h5p_content" class="mb-4 flex items-center justify-between">
-                    <h2 class="text-ink text-lg font-bold">Choose from your library</h2>
+                    <h2 class="text-body text-lg font-bold">Choose from your library</h2>
                 </div>
 
-                <p class="mb-6 text-sm text-gray-500">
+                <p class="mb-6 text-sm text-muted">
                     Showing activities classified under
-                    <span class="font-semibold text-gray-700">{{ block.course_classification.subject.name }}</span> ·
-                    <span class="font-semibold text-gray-700">{{ block.course_classification.grade.name }}</span> ·
-                    <span class="font-semibold text-gray-700">{{ block.course_classification.curriculum.name }}</span>
+                    <span class="font-semibold text-body">{{ block.course_classification.subject.name }}</span> ·
+                    <span class="font-semibold text-body">{{ block.course_classification.grade.name }}</span> ·
+                    <span class="font-semibold text-body">{{ block.course_classification.curriculum.name }}</span>
                     — this lesson's course.
                 </p>
 
                 <div v-if="library.length === 0 && !loading" class="mt-8 flex flex-col items-center text-center">
-                    <p class="text-gray-500">
+                    <p class="text-muted">
                         No H5P activities match this course's subject, grade, and curriculum yet. Create one to get started.
                     </p>
                 </div>

@@ -12,7 +12,7 @@ const totalSteps = computed(() => route.meta.totalSteps ?? 3)
 </script>
 
 <template>
-    <div class="min-h-screen w-full bg-white">
+    <div class="bg-surface min-h-screen w-full">
         <div class="bg-ink flex items-center justify-between px-6 py-4">
             <button type="button" aria-label="Go back" class="text-white" @click="router.back()">
                 <ArrowLeftIcon class="h-6 w-6" />

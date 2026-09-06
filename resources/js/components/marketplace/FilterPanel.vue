@@ -33,14 +33,14 @@ const emit = defineEmits(['apply', 'clear'])
         <div class="flex gap-3 pt-2">
             <button
                 type="button"
-                class="flex-1 rounded-full border border-gray-300 px-5 py-2.5 font-semibold text-gray-700"
+                class="border-border text-body flex-1 rounded-full border px-5 py-2.5 font-semibold"
                 @click="emit('clear')"
             >
                 Clear Filters
             </button>
             <button
                 type="button"
-                class="bg-amber flex-1 rounded-full px-5 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-95"
+                class="bg-amber shadow-elevated flex-1 rounded-full px-5 py-2.5 font-semibold text-white transition hover:brightness-95"
                 @click="emit('apply')"
             >
                 Apply Filters

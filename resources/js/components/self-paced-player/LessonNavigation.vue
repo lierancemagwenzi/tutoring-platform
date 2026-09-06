@@ -43,10 +43,10 @@ function go(item) {
 </script>
 
 <template>
-    <div class="flex items-center justify-between gap-3 border-t border-gray-100 bg-white px-4 py-3 sm:px-6">
+    <div class="bg-card border-border flex items-center justify-between gap-3 border-t px-4 py-3 sm:px-6">
         <button
             type="button"
-            class="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+            class="border-border text-body rounded-full border px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40"
             :disabled="!previousItem"
             @click="go(previousItem)"
         >
@@ -55,7 +55,7 @@ function go(item) {
 
         <button
             type="button"
-            class="bg-amber rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+            class="bg-amber shadow-elevated rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             :disabled="!isNavigable(nextItem)"
             @click="go(nextItem)"
         >
