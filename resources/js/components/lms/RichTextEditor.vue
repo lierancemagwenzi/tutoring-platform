@@ -152,6 +152,6 @@ function insertTable() {
             <button type="button" class="rounded-lg px-2.5 py-1.5 text-sm text-muted hover:brightness-95" @click="insertTable">Table</button>
         </div>
 
-        <EditorContent :editor="editor" class="prose prose-sm max-w-none px-4 py-3" />
+        <EditorContent :editor="editor" class="prose prose-sm text-body max-w-none px-4 py-3" />
     </div>
 </template>
