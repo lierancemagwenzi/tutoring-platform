@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTutorServicesStore } from '../../stores/tutorServices'
 import SelectInput from '../../components/forms/SelectInput.vue'
@@ -33,6 +33,7 @@ const formError = ref('')
 
 const form = reactive({
     subjectId: '',
+    gradeId: '',
     serviceCategoryId: '',
     sessionFormatId: '',
     title: '',
@@ -50,6 +51,22 @@ const form = reactive({
 })
 
 const subjectOptions = computed(() => store.subjects.map((subject) => ({ value: String(subject.id), label: subject.name })))
+// Grades are per tutor-subject approval — only offer the grades this
+// tutor was actually approved to teach the currently-selected subject
+// for (see StoreServiceRequest's grade_id validation).
+const gradeOptions = computed(() => {
+    const tutorSubject = store.approvedTutorSubjects.find((ts) => String(ts.subject_id) === String(form.subjectId))
+    return tutorSubject ? tutorSubject.grades.map((grade) => ({ value: String(grade.id), label: grade.name })) : []
+})
+
+watch(
+    () => form.subjectId,
+    () => {
+        if (!gradeOptions.value.some((option) => option.value === form.gradeId)) {
+            form.gradeId = ''
+        }
+    },
+)
 const categoryOptions = computed(() => store.categories.map((category) => ({ value: String(category.id), label: category.name })))
 const sessionFormatOptions = computed(() => store.sessionFormats.map((format) => ({ value: String(format.id), label: format.name })))
 const learningResourceOptions = computed(() => store.learningResources.map((resource) => ({ value: resource.id, label: resource.name })))
@@ -62,6 +79,7 @@ onMounted(async () => {
     if (isEditing.value) {
         const service = await store.fetchService(serviceId.value)
         form.subjectId = String(service.subject.id)
+        form.gradeId = service.grade?.id ? String(service.grade.id) : ''
         form.serviceCategoryId = String(service.category.id)
         form.sessionFormatId = String(service.session_format.id)
         form.title = service.title
@@ -84,6 +102,7 @@ onMounted(async () => {
 function buildPayload() {
     return {
         subject_id: Number(form.subjectId),
+        grade_id: Number(form.gradeId),
         service_category_id: Number(form.serviceCategoryId),
         session_format_id: Number(form.sessionFormatId),
         title: form.title,
@@ -138,6 +157,13 @@ async function save() {
             <section class="space-y-5 rounded-2xl bg-card p-6 shadow-elevated">
                 <h2 class="text-body font-bold">Basic Information</h2>
                 <SelectInput id="subject" v-model="form.subjectId" label="Subject" :options="subjectOptions" />
+                <SelectInput
+                    id="grade"
+                    v-model="form.gradeId"
+                    label="Grade"
+                    :options="gradeOptions"
+                    :disabled="!form.subjectId"
+                />
                 <SelectInput id="category" v-model="form.serviceCategoryId" label="Service Category" :options="categoryOptions" />
                 <FloatingLabelInput id="title" v-model="form.title" label="Service Title" />
                 <TextareaInput id="description" v-model="form.description" label="Description" />

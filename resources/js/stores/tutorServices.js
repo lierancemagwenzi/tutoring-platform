@@ -5,6 +5,11 @@ export const useTutorServicesStore = defineStore('tutorServices', {
     state: () => ({
         services: [],
         subjects: [],
+        // The approved tutor-subject records themselves (id, subject_id,
+        // grades) — kept separately from `subjects` (used for the plain
+        // subject dropdown) so the service form can look up which grades
+        // the tutor is actually approved to teach a given subject for.
+        approvedTutorSubjects: [],
         categories: [],
         sessionFormats: [],
         learningResources: [],
@@ -23,9 +28,8 @@ export const useTutorServicesStore = defineStore('tutorServices', {
                 api.get('/curricula'),
             ])
 
-            this.subjects = tutorSubjects.data.subjects
-                .filter((tutorSubject) => tutorSubject.status === 'approved')
-                .map((tutorSubject) => tutorSubject.subject)
+            this.approvedTutorSubjects = tutorSubjects.data.subjects.filter((tutorSubject) => tutorSubject.status === 'approved')
+            this.subjects = this.approvedTutorSubjects.map((tutorSubject) => tutorSubject.subject)
             this.categories = categories.data.categories
             this.sessionFormats = sessionFormats.data.formats
             this.learningResources = learningResources.data.resources
