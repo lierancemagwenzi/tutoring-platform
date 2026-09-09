@@ -16,7 +16,7 @@ class SelfPacedDiscountCodeTest extends TestCase
     private function tutorWithPricedCourse(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutorUser->tutorProfile->selfPacedCourses()->create([
             'title' => 'Priced Course',
             'price' => 200,
@@ -115,7 +115,7 @@ class SelfPacedDiscountCodeTest extends TestCase
         [, $course] = $this->tutorWithPricedCourse();
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $this->postJson("/api/tutor/self-paced-courses/{$course->id}/discount-codes", [

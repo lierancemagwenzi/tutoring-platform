@@ -19,7 +19,7 @@ class SelfPacedCourseTest extends TestCase
     private function tutor(): User
     {
         $tutorUser = User::factory()->tutor()->create();
-        $profile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $profile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         // Creating a self-paced course now requires banking details on file
         // (see BankingEligibilityService) — every test in this file needs one.
         $profile->bankAccount()->create([

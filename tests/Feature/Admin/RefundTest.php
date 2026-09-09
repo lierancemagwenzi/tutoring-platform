@@ -36,7 +36,7 @@ class RefundTest extends TestCase
     private function confirmedBookingWithTransaction(string $bookingStatus = 'confirmed'): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $student = User::factory()->create();
         $subject = Subject::create(['name' => 'Mathematics']);
         $category = ServiceCategory::create(['name' => 'Private Lesson']);

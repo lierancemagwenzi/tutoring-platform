@@ -164,23 +164,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/submit', SubmitTutorApplicationController::class);
     });
 
-    Route::middleware('tutor')->prefix('tutor/subjects')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/subjects')->group(function () {
         Route::get('/', [TutorSubjectController::class, 'index']);
         Route::post('/', [TutorSubjectController::class, 'store']);
         Route::put('/{subject}', [TutorSubjectController::class, 'update']);
         Route::delete('/{subject}', [TutorSubjectController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->get('/tutor/approved-subjects', [SubjectController::class, 'approvedForTutor']);
+    Route::middleware(['tutor', 'tutor.onboarded'])->get('/tutor/approved-subjects', [SubjectController::class, 'approvedForTutor']);
 
-    Route::middleware('tutor')->prefix('tutor/availability')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/availability')->group(function () {
         Route::get('/', [AvailabilityController::class, 'index']);
         Route::post('/', [AvailabilityController::class, 'store']);
         Route::put('/{slot}', [AvailabilityController::class, 'update']);
         Route::delete('/{slot}', [AvailabilityController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/services')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/services')->group(function () {
         Route::get('/', [ServiceController::class, 'index']);
         Route::post('/', [ServiceController::class, 'store']);
         Route::get('/{service}', [ServiceController::class, 'show']);
@@ -194,7 +194,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/upcoming-sessions', [LearningHubController::class, 'upcomingSessions']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/workspace')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/workspace')->group(function () {
         Route::get('/', [TutorWorkspaceController::class, 'index']);
         Route::get('/upcoming-sessions', [TutorWorkspaceController::class, 'upcomingSessions']);
     });
@@ -243,13 +243,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/student/financial-transactions', [StudentFinancialTransactionController::class, 'index']);
 
-    Route::middleware('tutor')->prefix('tutor/settings/connected-accounts')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/settings/connected-accounts')->group(function () {
         Route::get('/', [ConnectedAccountController::class, 'index']);
         Route::get('/{provider}/redirect', [ConnectedAccountController::class, 'redirect']);
         Route::delete('/{tutorConnectedAccount}', [ConnectedAccountController::class, 'disconnect']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/settings/meeting-providers')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/settings/meeting-providers')->group(function () {
         Route::get('/', [MeetingProviderSettingController::class, 'index']);
         Route::put('/', [MeetingProviderSettingController::class, 'update']);
     });
@@ -293,39 +293,39 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/{attempt}/complete', [StudentAttemptController::class, 'complete']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/booking-requests')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/booking-requests')->group(function () {
         Route::get('/', [BookingRequestController::class, 'index']);
         Route::get('/{booking}', [BookingRequestController::class, 'show']);
         Route::patch('/{booking}/accept', [BookingRequestController::class, 'accept']);
         Route::patch('/{booking}/reject', [BookingRequestController::class, 'reject']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/earnings')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/earnings')->group(function () {
         Route::get('/', [EarningsController::class, 'summary']);
         Route::get('/transactions', [EarningsController::class, 'transactions']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/banking-details')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/banking-details')->group(function () {
         Route::get('/', [BankingDetailsController::class, 'show']);
         Route::put('/', [BankingDetailsController::class, 'store']);
     });
 
-    Route::middleware('tutor')->post('/tutor/financial-transactions/{financialTransaction}/tickets', [PaymentTicketController::class, 'store']);
+    Route::middleware(['tutor', 'tutor.onboarded'])->post('/tutor/financial-transactions/{financialTransaction}/tickets', [PaymentTicketController::class, 'store']);
 
-    Route::middleware('tutor')->prefix('tutor/payment-tickets')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/payment-tickets')->group(function () {
         Route::get('/', [PaymentTicketController::class, 'index']);
         Route::get('/{paymentTicket}', [PaymentTicketController::class, 'show']);
         Route::post('/{paymentTicket}/comments', [PaymentTicketController::class, 'storeComment']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/bookings/{booking}')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/bookings/{booking}')->group(function () {
         Route::get('/', [BookingSessionController::class, 'show']);
         Route::post('/sessions', [BookingSessionController::class, 'store']);
         Route::get('/messages', [TutorBookingChatController::class, 'index']);
         Route::post('/messages', [TutorBookingChatController::class, 'store']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/sessions')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/sessions')->group(function () {
         Route::get('/', [TeachingSessionController::class, 'index']);
         Route::get('/{session}', [TeachingSessionController::class, 'show']);
         Route::post('/{session}/meeting/retry', [TeachingSessionController::class, 'retryMeeting']);
@@ -333,25 +333,25 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{session}/cancel', [TeachingSessionController::class, 'cancel']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/sessions/{session}/lessons')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/sessions/{session}/lessons')->group(function () {
         Route::get('/', [SessionLessonController::class, 'index']);
         Route::post('/', [SessionLessonController::class, 'store']);
         Route::patch('/reorder', [SessionLessonController::class, 'reorder']);
         Route::delete('/{sessionLesson}', [SessionLessonController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/session-lessons/{sessionLesson}/blocks')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/session-lessons/{sessionLesson}/blocks')->group(function () {
         Route::get('/', [SessionLessonBlockController::class, 'index']);
         Route::post('/', [SessionLessonBlockController::class, 'store']);
         Route::patch('/{sessionLessonBlock}', [SessionLessonBlockController::class, 'update']);
         Route::delete('/{sessionLessonBlock}', [SessionLessonBlockController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/session-lesson-blocks/{sessionLessonBlock}/submissions')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/session-lesson-blocks/{sessionLessonBlock}/submissions')->group(function () {
         Route::get('/', [TutorSubmissionController::class, 'index']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/submissions')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/submissions')->group(function () {
         Route::get('/{submission}', [TutorSubmissionController::class, 'show']);
         Route::patch('/{submission}/review', [TutorSubmissionController::class, 'review']);
         Route::patch('/{submission}/return', [TutorSubmissionController::class, 'returnForRevision']);
@@ -360,19 +360,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/{submission}/feedback-attachments', [SubmissionFeedbackAttachmentController::class, 'store']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/feedback-attachments')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/feedback-attachments')->group(function () {
         Route::delete('/{submissionAttachment}', [SubmissionFeedbackAttachmentController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/session-lesson-blocks/{sessionLessonBlock}/attempts')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/session-lesson-blocks/{sessionLessonBlock}/attempts')->group(function () {
         Route::get('/', [TutorAttemptController::class, 'index']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/attempts')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/attempts')->group(function () {
         Route::get('/{attempt}', [TutorAttemptController::class, 'show']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/courses')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/courses')->group(function () {
         Route::get('/', [CourseController::class, 'index']);
         Route::post('/', [CourseController::class, 'store']);
         Route::get('/{course}', [CourseController::class, 'show']);
@@ -385,7 +385,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{course}/chapters/reorder', [ChapterController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/chapters')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/chapters')->group(function () {
         Route::put('/{chapter}', [ChapterController::class, 'update']);
         Route::delete('/{chapter}', [ChapterController::class, 'destroy']);
 
@@ -394,7 +394,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{chapter}/lessons/reorder', [LessonController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/lessons')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/lessons')->group(function () {
         Route::put('/{lesson}', [LessonController::class, 'update']);
         Route::delete('/{lesson}', [LessonController::class, 'destroy']);
 
@@ -403,7 +403,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{lesson}/blocks/reorder', [LessonBlockController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/lesson-blocks')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/lesson-blocks')->group(function () {
         Route::get('/{lessonBlock}', [LessonBlockController::class, 'show']);
         Route::put('/{lessonBlock}', [LessonBlockController::class, 'update']);
         Route::delete('/{lessonBlock}', [LessonBlockController::class, 'destroy']);
@@ -414,12 +414,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{lessonBlock}/media-items/reorder', [MediaItemController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/media-items')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/media-items')->group(function () {
         Route::put('/{mediaItem}', [MediaItemController::class, 'update']);
         Route::delete('/{mediaItem}', [MediaItemController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/quizzes')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/quizzes')->group(function () {
         Route::get('/{quiz}', [QuizController::class, 'show']);
         Route::put('/{quiz}', [QuizController::class, 'update']);
         Route::patch('/{quiz}/publish', [QuizController::class, 'publish']);
@@ -429,7 +429,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{quiz}/questions/reorder', [QuizQuestionController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/quiz-questions')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/quiz-questions')->group(function () {
         Route::put('/{question}', [QuizQuestionController::class, 'update']);
         Route::delete('/{question}', [QuizQuestionController::class, 'destroy']);
     });
@@ -441,7 +441,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/attempts/{attempt}/submit', [StudentQuizAttemptController::class, 'submit']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/learning-activities')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/learning-activities')->group(function () {
         Route::get('/{learningActivity}', [LearningActivityController::class, 'show']);
         Route::put('/{learningActivity}', [LearningActivityController::class, 'update']);
         Route::delete('/{learningActivity}', [LearningActivityController::class, 'destroy']);
@@ -451,7 +451,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{learningActivity}/attachments/reorder', [ActivityAttachmentController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/activity-attachments')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/activity-attachments')->group(function () {
         Route::put('/{activityAttachment}', [ActivityAttachmentController::class, 'update']);
         Route::delete('/{activityAttachment}', [ActivityAttachmentController::class, 'destroy']);
     });
@@ -460,7 +460,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Tutor-Led Learning routes above; never shares a controller, request, or
     // resource with them.
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-courses')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-courses')->group(function () {
         Route::get('/', [SelfPacedCourseController::class, 'index']);
         Route::post('/', [SelfPacedCourseController::class, 'store']);
         Route::get('/{selfPacedCourse}', [SelfPacedCourseController::class, 'show']);
@@ -487,7 +487,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/{selfPacedCourse}/certificates/{certificate}/download', [CourseCertificatesController::class, 'download']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-modules')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-modules')->group(function () {
         Route::put('/{selfPacedModule}', [SelfPacedModuleController::class, 'update']);
         Route::delete('/{selfPacedModule}', [SelfPacedModuleController::class, 'destroy']);
 
@@ -500,7 +500,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{selfPacedModule}/content/reorder', [SelfPacedModuleContentController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-activities')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-activities')->group(function () {
         Route::put('/{selfPacedActivity}', [SelfPacedActivityController::class, 'update']);
         Route::delete('/{selfPacedActivity}', [SelfPacedActivityController::class, 'destroy']);
 
@@ -508,27 +508,27 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{selfPacedActivity}/attachments/reorder', [SelfPacedActivityAttachmentController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-activity-attachments')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-activity-attachments')->group(function () {
         Route::put('/{selfPacedActivityAttachment}', [SelfPacedActivityAttachmentController::class, 'update']);
         Route::delete('/{selfPacedActivityAttachment}', [SelfPacedActivityAttachmentController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-assessments')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-assessments')->group(function () {
         Route::put('/{selfPacedAssessment}', [SelfPacedAssessmentController::class, 'update']);
         Route::delete('/{selfPacedAssessment}', [SelfPacedAssessmentController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-discount-codes')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-discount-codes')->group(function () {
         Route::put('/{selfPacedDiscountCode}', [SelfPacedDiscountCodeController::class, 'update']);
         Route::delete('/{selfPacedDiscountCode}', [SelfPacedDiscountCodeController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-h5p-contents')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-h5p-contents')->group(function () {
         Route::get('/', [SelfPacedH5pContentController::class, 'index']);
         Route::post('/', [SelfPacedH5pContentController::class, 'store']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-survey-contents')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-survey-contents')->group(function () {
         Route::get('/', [SelfPacedSurveyContentController::class, 'index']);
         Route::post('/', [SelfPacedSurveyContentController::class, 'store']);
         Route::get('/{selfPacedSurveyContent}', [SelfPacedSurveyContentController::class, 'show']);
@@ -539,12 +539,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::patch('/{selfPacedSurveyContent}/questions/reorder', [SelfPacedSurveyQuestionController::class, 'reorder']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/self-paced-survey-questions')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/self-paced-survey-questions')->group(function () {
         Route::put('/{selfPacedSurveyQuestion}', [SelfPacedSurveyQuestionController::class, 'update']);
         Route::delete('/{selfPacedSurveyQuestion}', [SelfPacedSurveyQuestionController::class, 'destroy']);
     });
 
-    Route::middleware('tutor')->prefix('tutor/h5p-content')->group(function () {
+    Route::middleware(['tutor', 'tutor.onboarded'])->prefix('tutor/h5p-content')->group(function () {
         Route::get('/', [H5pContentController::class, 'index']);
         Route::get('/editor-model', [H5pContentController::class, 'newEditorModel']);
         Route::get('/{contentId}/editor-model', [H5pContentController::class, 'editorModel']);

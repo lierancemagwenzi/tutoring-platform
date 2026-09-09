@@ -56,7 +56,7 @@ class TutorWorkspaceTest extends TestCase
     private function tutorWithProfile(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,

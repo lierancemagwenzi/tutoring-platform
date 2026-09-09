@@ -18,7 +18,7 @@ class TutorSubjectTest extends TestCase
     public function test_assigning_a_subject_defaults_to_pending_status(): void
     {
         $user = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $user->id]);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
         $subject = Subject::create(['name' => 'Mathematics', 'is_active' => true]);
         $grade = Grade::create(['name' => 'Grade 10', 'level' => 10, 'is_active' => true]);
 
@@ -40,7 +40,7 @@ class TutorSubjectTest extends TestCase
     public function test_tutor_subject_resource_exposes_status(): void
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
         $subject = Subject::create(['name' => 'Mathematics', 'is_active' => true]);
         $grade = Grade::create(['name' => 'Grade 10', 'level' => 10, 'is_active' => true]);
 

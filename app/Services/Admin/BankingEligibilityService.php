@@ -6,10 +6,16 @@ use App\Models\TutorProfile;
 
 /**
  * Whether a tutor has banking details on file — the single source of
- * truth reused both for tutor-side creation gates (StoreServiceRequest,
- * StoreSelfPacedCourseRequest) and the admin's tutor-approval gate
- * (ApproveTutorRequest). Without this, the platform has nowhere to send a
- * tutor's earnings, so neither action is allowed to proceed.
+ * truth reused for tutor-side creation gates (StoreServiceRequest,
+ * StoreSelfPacedCourseRequest) and the admin's payout gate
+ * (MarkFinancialTransactionPaidRequest). Without this, the platform has
+ * nowhere to send a tutor's earnings, so none of those actions are
+ * allowed to proceed. Deliberately NOT required for account approval
+ * (ApproveTutorRequest) — banking details aren't captured anywhere in
+ * registration or the tutor application, only later via tutor/settings,
+ * so requiring them upfront would leave every tutor unapprovable.
+ * Approval just needs to happen before the tutor's first payout, not
+ * before their account even exists.
  */
 class BankingEligibilityService
 {

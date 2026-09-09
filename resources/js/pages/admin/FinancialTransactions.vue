@@ -50,7 +50,10 @@ async function markPaid(transaction) {
     try {
         await store.markPaid(transaction.id)
     } catch (error) {
-        errorMessage.value = error.response?.data?.message ?? 'Could not mark this transaction as paid.'
+        const errors = error.response?.data?.errors
+        errorMessage.value = errors
+            ? Object.values(errors).flat().join(' ')
+            : (error.response?.data?.message ?? 'Could not mark this transaction as paid.')
     } finally {
         markingPaidId.value = null
     }

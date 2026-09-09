@@ -35,7 +35,7 @@ class AvailabilitySlotTest extends TestCase
     private function tutorWithProfile(): User
     {
         $user = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $user->id]);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
 
         return $user->fresh();
     }

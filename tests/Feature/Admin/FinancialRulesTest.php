@@ -27,7 +27,7 @@ class FinancialRulesTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
     }
 
     public function test_global_rule_is_auto_created_with_v1_defaults(): void

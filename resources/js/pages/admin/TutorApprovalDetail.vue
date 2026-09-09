@@ -264,8 +264,8 @@ async function submitReason(text) {
                             <dd class="text-body font-medium">{{ store.current.bank_account.account_type }}</dd>
                         </div>
                     </dl>
-                    <p v-else class="mt-3 text-sm font-semibold text-red-600">
-                        No banking details on file — this tutor cannot be approved until they add them.
+                    <p v-else class="mt-3 text-sm text-muted">
+                        No banking details on file yet — the tutor will need to add these before their first payout.
                     </p>
                 </section>
             </div>
@@ -277,8 +277,7 @@ async function submitReason(text) {
                 <button type="button" class="text-sm font-semibold text-red-600" @click="openReasonModal('reject')">Reject</button>
                 <button
                     type="button"
-                    :disabled="actioning || !store.current.bank_account"
-                    :title="store.current.bank_account ? '' : 'This tutor has no banking details on file.'"
+                    :disabled="actioning"
                     class="bg-amber ml-auto rounded-full px-6 py-2 text-sm font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:bg-card-alt disabled:text-muted"
                     @click="approve"
                 >

@@ -42,7 +42,7 @@ class SessionLifecycleTest extends TestCase
     private function scheduledSessionFor(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $subject = Subject::create(['name' => 'Mathematics', 'is_active' => true]);
         $category = ServiceCategory::create(['name' => 'Private Lesson', 'is_active' => true]);
@@ -98,7 +98,7 @@ class SessionLifecycleTest extends TestCase
     private function twoScheduledSessionsFor(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $subject = Subject::create(['name' => 'Mathematics', 'is_active' => true]);
         $category = ServiceCategory::create(['name' => 'Private Lesson', 'is_active' => true]);
@@ -314,7 +314,7 @@ class SessionLifecycleTest extends TestCase
         $session = $booking->teachingSessions()->first();
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id]);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id]);
         Sanctum::actingAs($intruder);
 
         $this->patchJson("/api/tutor/sessions/{$session->id}/complete")->assertForbidden();

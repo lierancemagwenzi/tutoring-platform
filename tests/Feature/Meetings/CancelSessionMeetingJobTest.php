@@ -29,7 +29,7 @@ class CancelSessionMeetingJobTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor', 'meeting_provider' => 'google']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor', 'meeting_provider' => 'google']);
     }
 
     private function connectGoogle(TutorProfile $tutor): TutorConnectedAccount

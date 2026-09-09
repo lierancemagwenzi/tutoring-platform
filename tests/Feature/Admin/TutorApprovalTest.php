@@ -24,7 +24,7 @@ class TutorApprovalTest extends TestCase
     private function pendingTutor(): User
     {
         $tutorUser = User::factory()->tutor()->create(['status' => UserStatus::Pending]);
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Pending Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Pending Tutor']);
 
         return $tutorUser;
     }
@@ -35,7 +35,7 @@ class TutorApprovalTest extends TestCase
         $pending = $this->pendingTutor();
         // An approved tutor should not appear in the pending list.
         $approvedTutorUser = User::factory()->tutor()->create(['status' => UserStatus::Approved]);
-        TutorProfile::create(['user_id' => $approvedTutorUser->id, 'display_name' => 'Approved Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $approvedTutorUser->id, 'display_name' => 'Approved Tutor']);
 
         $response = $this->getJson('/api/admin/tutors/pending');
 
@@ -48,10 +48,6 @@ class TutorApprovalTest extends TestCase
     {
         $this->admin();
         $tutor = $this->pendingTutor();
-        $tutor->tutorProfile->bankAccount()->create([
-            'bank_name' => 'Test Bank', 'account_holder_name' => 'Pending Tutor',
-            'account_number' => '123456789', 'branch_code' => '000000', 'account_type' => 'savings',
-        ]);
 
         $response = $this->postJson("/api/admin/tutors/{$tutor->id}/approve");
 
@@ -60,15 +56,20 @@ class TutorApprovalTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $tutor->id, 'status' => 'approved']);
     }
 
-    public function test_admin_cannot_approve_a_tutor_without_banking_details(): void
+    public function test_admin_can_approve_a_tutor_with_no_banking_details_on_file(): void
     {
+        // Banking details aren't captured anywhere in registration or the
+        // tutor application — requiring them for approval would leave every
+        // tutor unapprovable. They're only required later, at payout time
+        // (see MarkFinancialTransactionPaidRequest / PayoutTest).
         $this->admin();
         $tutor = $this->pendingTutor();
+        $this->assertNull($tutor->tutorProfile->bankAccount);
 
         $response = $this->postJson("/api/admin/tutors/{$tutor->id}/approve");
 
-        $response->assertStatus(422);
-        $this->assertDatabaseHas('users', ['id' => $tutor->id, 'status' => 'pending']);
+        $response->assertOk();
+        $this->assertDatabaseHas('users', ['id' => $tutor->id, 'status' => 'approved']);
     }
 
     public function test_admin_can_reject_a_pending_tutor_with_a_reason(): void

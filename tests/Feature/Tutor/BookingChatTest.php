@@ -24,7 +24,7 @@ class BookingChatTest extends TestCase
         $student = User::factory()->create();
         if (! $tutor) {
             $tutorUser = User::factory()->tutor()->create();
-            $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+            $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         }
         $subject = Subject::create(['name' => 'Mathematics']);
         $category = ServiceCategory::create(['name' => 'Private Lesson']);
@@ -63,7 +63,7 @@ class BookingChatTest extends TestCase
         $booking = $this->bookingWithStatus('confirmed');
         Sanctum::actingAs($booking->tutorProfile->user);
 
-        $response = $this->postJson("/api/tutor/bookings/{$booking->id}/messages", ['body' => "Looking forward to it."]);
+        $response = $this->postJson("/api/tutor/bookings/{$booking->id}/messages", ['body' => 'Looking forward to it.']);
 
         $response->assertCreated();
         $response->assertJsonPath('message.body', 'Looking forward to it.');
@@ -98,7 +98,7 @@ class BookingChatTest extends TestCase
     {
         $booking = $this->bookingWithStatus('confirmed');
         $otherTutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $otherTutorUser->id, 'display_name' => 'Other Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $otherTutorUser->id, 'display_name' => 'Other Tutor']);
         Sanctum::actingAs($otherTutorUser);
 
         $this->getJson("/api/tutor/bookings/{$booking->id}/messages")->assertForbidden();

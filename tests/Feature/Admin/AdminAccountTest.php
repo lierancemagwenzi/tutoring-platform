@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Mail\AdminInviteMail;
-use App\Models\EmailOtp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;

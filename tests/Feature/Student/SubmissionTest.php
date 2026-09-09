@@ -67,7 +67,7 @@ class SubmissionTest extends TestCase
     private function createAssignmentDelivery(array $sessionLessonBlockOverrides = [], string $blockType = 'assignment'): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,

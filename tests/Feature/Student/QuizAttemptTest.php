@@ -59,7 +59,7 @@ class QuizAttemptTest extends TestCase
         $this->sessionFormat = SessionFormat::create(['name' => 'Online', 'is_active' => true]);
 
         $tutorUser = User::factory()->tutor()->create();
-        $this->tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id]);
+        $this->tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id]);
 
         $this->course = $this->tutorProfile->courses()->create([
             'curriculum_id' => $this->curriculum->id,

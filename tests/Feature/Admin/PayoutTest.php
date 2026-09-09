@@ -32,8 +32,13 @@ class PayoutTest extends TestCase
     private function tutor(): TutorProfile
     {
         $tutorUser = User::factory()->tutor()->create();
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor->bankAccount()->create([
+            'bank_name' => 'Test Bank', 'account_holder_name' => 'Test Tutor',
+            'account_number' => '123456789', 'branch_code' => '000000', 'account_type' => 'savings',
+        ]);
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return $tutor;
     }
 
     private function courseTransaction(TutorProfile $tutor): FinancialTransaction
@@ -146,6 +151,19 @@ class PayoutTest extends TestCase
             'subject_type' => FinancialTransaction::class,
             'subject_id' => $transaction->id,
         ]);
+    }
+
+    public function test_an_earning_cannot_be_marked_paid_without_banking_details_on_file(): void
+    {
+        $this->admin();
+        $tutorUser = User::factory()->tutor()->create();
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'No Bank Tutor']);
+        $transaction = $this->courseTransaction($tutor);
+
+        $response = $this->postJson("/api/admin/financial-transactions/{$transaction->id}/mark-paid");
+
+        $response->assertStatus(422);
+        $this->assertSame('pending', $transaction->fresh()->payout_status->value);
     }
 
     public function test_already_paid_earning_cannot_be_marked_paid_again(): void

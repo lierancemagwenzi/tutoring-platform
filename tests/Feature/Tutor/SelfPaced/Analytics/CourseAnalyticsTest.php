@@ -21,7 +21,7 @@ class CourseAnalyticsTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
     }
 
     /**
@@ -101,7 +101,7 @@ class CourseAnalyticsTest extends TestCase
     public function test_course_overview_reflects_students_at_different_stages(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $this->enrollAndProgress($course, $refs, 0); // not started
@@ -125,7 +125,7 @@ class CourseAnalyticsTest extends TestCase
     public function test_a_course_with_no_enrollments_reports_zeroed_stats_without_error(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course] = $this->courseWithTwoModules($tutor);
 
         Sanctum::actingAs($tutorUser);
@@ -144,7 +144,7 @@ class CourseAnalyticsTest extends TestCase
         [$course] = $this->courseWithTwoModules($owner);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $response = $this->getJson("/api/tutor/self-paced-courses/{$course->id}/analytics");

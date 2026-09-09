@@ -40,7 +40,7 @@ class SubjectManagementTest extends TestCase
         $this->admin();
         $subject = Subject::create(['name' => 'Physics']);
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         TutorSubject::create(['tutor_profile_id' => $tutor->id, 'subject_id' => $subject->id, 'status' => TutorSubjectStatus::Approved]);
 
         $response = $this->getJson('/api/admin/subjects');

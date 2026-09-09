@@ -28,7 +28,7 @@ class BookingOrderTest extends TestCase
         $format = SessionFormat::create(['name' => 'Online', 'is_active' => true]);
 
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create(array_merge([
             'subject_id' => $subject->id,

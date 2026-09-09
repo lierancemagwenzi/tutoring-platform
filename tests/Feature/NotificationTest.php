@@ -102,7 +102,7 @@ class NotificationTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create(['status' => UserStatus::Pending]);
-        $profile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Pending Tutor']);
+        $profile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Pending Tutor']);
         $profile->bankAccount()->create([
             'bank_name' => 'Test Bank', 'account_holder_name' => 'Pending Tutor',
             'account_number' => '123456789', 'branch_code' => '000000', 'account_type' => 'savings',

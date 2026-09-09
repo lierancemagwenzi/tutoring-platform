@@ -57,7 +57,7 @@ class SessionContentTest extends TestCase
     private function createBookedSession(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,
@@ -346,7 +346,7 @@ class SessionContentTest extends TestCase
     {
         $studentUser = User::factory()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id]);
 
         $service = $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,

@@ -30,7 +30,7 @@ class StudentManagementTest extends TestCase
         $admin = User::factory()->admin()->create();
         $student = User::factory()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutor->selfPacedCourses()->create(['title' => 'Algebra Basics', 'price' => 100, 'currency' => 'ZAR']);
         Enrollment::create([
             'student_id' => $student->id,
@@ -71,7 +71,7 @@ class StudentManagementTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         Sanctum::actingAs($admin);
         $response = $this->getJson("/api/admin/students/{$tutorUser->id}");

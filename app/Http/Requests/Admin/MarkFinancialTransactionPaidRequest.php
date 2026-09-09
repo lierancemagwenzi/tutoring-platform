@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\PayoutStatus;
+use App\Services\Admin\BankingEligibilityService;
 use App\Services\Admin\PayoutService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -38,6 +39,14 @@ class MarkFinancialTransactionPaidRequest extends FormRequest
 
             if (! app(PayoutService::class)->isEligible($transaction)) {
                 $validator->errors()->add('payout', 'This booking has not been completed yet — it cannot be paid out.');
+
+                return;
+            }
+
+            $errors = app(BankingEligibilityService::class)->errorsFor($transaction->tutorProfile);
+
+            foreach ($errors as $error) {
+                $validator->errors()->add('banking_details', $error);
             }
         });
     }

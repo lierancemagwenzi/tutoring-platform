@@ -57,7 +57,7 @@ class AttemptTest extends TestCase
     private function createDeliveryWithCompletedAttempt(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,
@@ -187,7 +187,7 @@ class AttemptTest extends TestCase
     {
         [, , $slb, $attempt] = $this->createDeliveryWithCompletedAttempt();
         $otherTutor = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $otherTutor->id, 'display_name' => 'Other Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $otherTutor->id, 'display_name' => 'Other Tutor']);
         Sanctum::actingAs($otherTutor);
 
         $this->getJson("/api/tutor/session-lesson-blocks/{$slb->id}/attempts")->assertForbidden();

@@ -70,7 +70,7 @@ class StudentAssessmentsTest extends TestCase
     public function test_shows_every_attempt_with_best_and_latest_scores(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithAssessment($tutor);
 
         $student = User::factory()->create();
@@ -106,7 +106,7 @@ class StudentAssessmentsTest extends TestCase
     public function test_an_assessment_never_attempted_still_appears_with_null_scores(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course] = $this->courseWithAssessment($tutor);
 
         $student = User::factory()->create();
@@ -128,7 +128,7 @@ class StudentAssessmentsTest extends TestCase
     public function test_tutor_cannot_view_assessments_for_another_tutors_course(): void
     {
         $ownerUser = User::factory()->tutor()->create();
-        $owner = TutorProfile::create(['user_id' => $ownerUser->id, 'display_name' => 'Owner']);
+        $owner = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $ownerUser->id, 'display_name' => 'Owner']);
         [$course] = $this->courseWithAssessment($owner);
 
         $student = User::factory()->create();
@@ -138,7 +138,7 @@ class StudentAssessmentsTest extends TestCase
         ]);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $response = $this->getJson("/api/tutor/self-paced-courses/{$course->id}/enrollments/{$enrollment->id}/assessments");

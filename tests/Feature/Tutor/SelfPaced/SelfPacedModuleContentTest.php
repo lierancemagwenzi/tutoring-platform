@@ -20,7 +20,7 @@ class SelfPacedModuleContentTest extends TestCase
     private function tutorWithCourse(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutorUser->tutorProfile->selfPacedCourses()->create(['title' => 'Course']);
 
         return [$tutorUser, $course];
@@ -34,7 +34,7 @@ class SelfPacedModuleContentTest extends TestCase
     private function tutorWithClassifiedCourse(string $subjectName = 'Mathematics'): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $subject = Subject::create(['name' => $subjectName, 'is_active' => true]);
         $grade = Grade::create(['name' => 'Grade 10', 'level' => 10, 'is_active' => true]);
         $course = $tutorUser->tutorProfile->selfPacedCourses()->create([
@@ -126,7 +126,7 @@ class SelfPacedModuleContentTest extends TestCase
         $module = $course->modules()->create(['title' => 'Introduction', 'position' => 0]);
 
         $owner = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $owner->id, 'display_name' => 'Owner']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $owner->id, 'display_name' => 'Owner']);
 
         $this->seedH5pContent(123, 'Interactive Quiz');
         $this->seedH5pClassification(123, $owner->tutorProfile->id, $grade->id, $subject->id, Curriculum::create(['name' => 'CAPS', 'is_active' => true])->id);
@@ -317,7 +317,7 @@ class SelfPacedModuleContentTest extends TestCase
         $activity = $module->activities()->create(['type' => 'rich_text', 'title' => 'Welcome', 'position' => 0]);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $this->putJson("/api/tutor/self-paced-modules/{$module->id}", ['title' => 'Hacked'])->assertForbidden();

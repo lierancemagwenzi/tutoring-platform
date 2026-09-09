@@ -42,6 +42,42 @@ class AccountVerificationTest extends TestCase
         return [$response->json('token'), $code];
     }
 
+    private function registerTutor(): array
+    {
+        Mail::fake();
+
+        $response = $this->postJson('/api/register/tutor', [
+            'first_name' => 'Grace',
+            'last_name' => 'Hopper',
+            'email' => 'grace@example.com',
+            'phone' => '0123456789',
+            'terms_accepted' => true,
+            'password' => 'Password!123',
+            'password_confirmation' => 'Password!123',
+        ]);
+
+        $response->assertCreated();
+
+        $code = null;
+        Mail::assertQueued(AccountVerificationOtpMail::class, function ($mail) use (&$code) {
+            $code = $mail->code;
+
+            return true;
+        });
+
+        return [$response->json('token'), $code];
+    }
+
+    public function test_verifying_a_tutors_email_includes_their_tutor_profile_so_the_onboarding_redirect_can_fire(): void
+    {
+        [$token, $code] = $this->registerTutor();
+
+        $response = $this->withToken($token)->postJson('/api/email/verify', ['otp' => $code]);
+
+        $response->assertOk();
+        $response->assertJsonPath('user.tutor_profile.onboarding_complete', false);
+    }
+
     public function test_registering_creates_an_unverified_account_and_sends_an_otp(): void
     {
         Mail::fake();

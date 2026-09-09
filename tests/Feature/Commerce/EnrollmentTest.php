@@ -18,7 +18,7 @@ class EnrollmentTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
     }
 
     private function course(TutorProfile $tutor, array $overrides = []): SelfPacedCourse

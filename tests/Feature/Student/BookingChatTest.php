@@ -23,7 +23,7 @@ class BookingChatTest extends TestCase
     {
         $student ??= User::factory()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $subject = Subject::create(['name' => 'Mathematics']);
         $category = ServiceCategory::create(['name' => 'Private Lesson']);
         $format = SessionFormat::create(['name' => 'Online']);

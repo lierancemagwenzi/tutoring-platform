@@ -26,7 +26,7 @@ class FinancialRuleSchedulingTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
     }
 
     public function test_updating_the_global_rule_without_a_date_applies_immediately(): void

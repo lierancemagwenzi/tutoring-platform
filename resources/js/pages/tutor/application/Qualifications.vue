@@ -131,24 +131,24 @@ function continueApplication() {
 
     <div v-else class="w-full max-w-lg">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Your qualifications</h1>
-            <p class="mt-2 text-gray-500">Add every qualification relevant to the subjects you teach.</p>
+            <h1 class="text-body text-3xl font-bold">Your qualifications</h1>
+            <p class="mt-2 text-muted">Add every qualification relevant to the subjects you teach.</p>
         </div>
 
         <p v-if="listError" class="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ listError }}</p>
 
         <ul class="mt-8 space-y-4">
-            <li v-for="qualification in qualifications" :key="qualification.id" class="rounded-xl border border-gray-200 p-4">
+            <li v-for="qualification in qualifications" :key="qualification.id" class="rounded-xl border border-border p-4">
                 <div class="flex items-start justify-between gap-3">
                     <div>
-                        <p class="text-ink font-bold">{{ qualification.title }}</p>
-                        <p class="text-sm text-gray-500">{{ LEVEL_LABELS[qualification.level] ?? qualification.level }} · {{ qualification.field_of_study }}</p>
-                        <p class="text-sm text-gray-500">{{ qualification.institution }}</p>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-body font-bold">{{ qualification.title }}</p>
+                        <p class="text-sm text-muted">{{ LEVEL_LABELS[qualification.level] ?? qualification.level }} · {{ qualification.field_of_study }}</p>
+                        <p class="text-sm text-muted">{{ qualification.institution }}</p>
+                        <p class="text-sm text-muted">
                             {{ qualification.start_year }} –
                             {{ qualification.is_currently_studying ? 'Present' : qualification.completion_year }}
                         </p>
-                        <p v-if="qualification.description" class="mt-2 text-sm text-gray-600">{{ qualification.description }}</p>
+                        <p v-if="qualification.description" class="mt-2 text-sm text-muted">{{ qualification.description }}</p>
                     </div>
                     <div class="flex shrink-0 gap-2">
                         <button type="button" aria-label="Edit qualification" class="text-accent" @click="openEditForm(qualification)">
@@ -172,7 +172,7 @@ function continueApplication() {
             Add qualification
         </button>
 
-        <form v-else class="mt-6 space-y-6 rounded-xl border border-gray-200 p-5" novalidate @submit.prevent="saveQualification">
+        <form v-else class="mt-6 space-y-6 rounded-xl border border-border p-5" novalidate @submit.prevent="saveQualification">
             <p v-if="formError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ formError }}</p>
 
             <FloatingLabelInput id="qualification-title" v-model="form.title" label="Qualification Title" />
@@ -182,8 +182,8 @@ function continueApplication() {
             <FloatingLabelInput id="qualification-start-year" v-model="form.startYear" label="Start Year" type="number" />
 
             <label class="flex cursor-pointer items-center gap-3">
-                <input v-model="form.isCurrentlyStudying" type="checkbox" class="accent-accent h-5 w-5 rounded border-gray-300" />
-                <span class="text-gray-600">I am currently studying towards this qualification</span>
+                <input v-model="form.isCurrentlyStudying" type="checkbox" class="accent-accent h-5 w-5 rounded border-border" />
+                <span class="text-muted">I am currently studying towards this qualification</span>
             </label>
 
             <FloatingLabelInput
@@ -197,13 +197,13 @@ function continueApplication() {
             <TextareaInput id="qualification-description" v-model="form.description" label="Qualification Description (optional)" :rows="3" />
 
             <div class="flex gap-3">
-                <button type="button" class="w-full rounded-full border border-gray-300 py-3 font-semibold text-gray-700" @click="closeForm">
+                <button type="button" class="w-full rounded-full border border-border py-3 font-semibold text-body" @click="closeForm">
                     Cancel
                 </button>
                 <button
                     type="submit"
                     :disabled="submitting"
-                    class="bg-amber w-full rounded-full py-3 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                    class="bg-amber w-full rounded-full py-3 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     {{ submitting ? 'Saving…' : 'Save qualification' }}
                 </button>
@@ -213,7 +213,7 @@ function continueApplication() {
         <button
             type="button"
             :disabled="!canContinue"
-            class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+            class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             @click="continueApplication"
         >
             Save & Continue

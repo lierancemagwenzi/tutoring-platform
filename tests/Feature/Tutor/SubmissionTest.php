@@ -60,7 +60,7 @@ class SubmissionTest extends TestCase
     private function createDeliveryWithSubmission(?float $maxScore = 100, ?float $passingScore = 50): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create([
             'subject_id' => $this->subject->id,
@@ -280,7 +280,7 @@ class SubmissionTest extends TestCase
     {
         [, , $slb, $submission] = $this->createDeliveryWithSubmission();
         $otherTutor = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $otherTutor->id, 'display_name' => 'Other Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $otherTutor->id, 'display_name' => 'Other Tutor']);
         Sanctum::actingAs($otherTutor);
 
         $this->getJson("/api/tutor/session-lesson-blocks/{$slb->id}/submissions")->assertForbidden();

@@ -21,7 +21,7 @@ class EarningsTest extends TestCase
     private function tutorWithProfile(): User
     {
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         return $tutorUser;
     }

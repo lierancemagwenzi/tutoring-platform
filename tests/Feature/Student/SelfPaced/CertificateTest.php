@@ -18,7 +18,7 @@ class CertificateTest extends TestCase
     private function completedEnrollment(): Enrollment
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $course = $tutor->selfPacedCourses()->create([
             'title' => 'Completed Course', 'price' => 100, 'currency' => 'ZAR',

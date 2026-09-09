@@ -34,7 +34,7 @@ class LearningActivityTest extends TestCase
     private function tutorWithActivity(): array
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
 
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutorProfile->id,
@@ -107,7 +107,7 @@ class LearningActivityTest extends TestCase
     public function test_external_activity_requires_a_valid_external_url(): void
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
 
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutorProfile->id,

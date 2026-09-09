@@ -45,7 +45,7 @@ class CourseTest extends TestCase
     private function tutorWithApprovedSubject(): User
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
 
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutorProfile->id,
@@ -146,7 +146,7 @@ class CourseTest extends TestCase
     public function test_tutor_cannot_create_a_course_for_a_subject_pending_approval(): void
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutorProfile->id,
             'subject_id' => $this->subject->id,

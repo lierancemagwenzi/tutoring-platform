@@ -33,7 +33,7 @@ class CertificatesTest extends TestCase
     public function test_lists_every_certificate_issued_for_the_course(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutor->selfPacedCourses()->create([
             'title' => 'Completed Course', 'price' => 100, 'currency' => 'ZAR',
             'status' => 'published', 'visibility' => 'public',
@@ -59,7 +59,7 @@ class CertificatesTest extends TestCase
     public function test_a_course_with_no_certificates_returns_an_empty_list(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutor->selfPacedCourses()->create([
             'title' => 'Fresh Course', 'price' => 100, 'currency' => 'ZAR',
             'status' => 'published', 'visibility' => 'public',
@@ -75,7 +75,7 @@ class CertificatesTest extends TestCase
     public function test_tutor_can_download_a_certificate_issued_for_their_course(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $enrollment = $this->completedEnrollment($tutor);
         $certificate = app(CertificateService::class)->generate($enrollment);
 
@@ -89,12 +89,12 @@ class CertificatesTest extends TestCase
     public function test_tutor_cannot_download_a_certificate_from_another_tutors_course(): void
     {
         $ownerUser = User::factory()->tutor()->create();
-        $owner = TutorProfile::create(['user_id' => $ownerUser->id, 'display_name' => 'Owner']);
+        $owner = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $ownerUser->id, 'display_name' => 'Owner']);
         $enrollment = $this->completedEnrollment($owner);
         $certificate = app(CertificateService::class)->generate($enrollment);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $response = $this->get("/api/tutor/self-paced-courses/{$enrollment->self_paced_course_id}/certificates/{$certificate->id}/download");
@@ -105,7 +105,7 @@ class CertificatesTest extends TestCase
     public function test_a_certificate_belonging_to_a_different_course_returns_404(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $courseA = $tutor->selfPacedCourses()->create([
             'title' => 'Course A', 'price' => 100, 'currency' => 'ZAR', 'status' => 'published', 'visibility' => 'public',
         ]);
@@ -121,13 +121,13 @@ class CertificatesTest extends TestCase
     public function test_tutor_cannot_list_certificates_for_another_tutors_course(): void
     {
         $ownerUser = User::factory()->tutor()->create();
-        $owner = TutorProfile::create(['user_id' => $ownerUser->id, 'display_name' => 'Owner']);
+        $owner = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $ownerUser->id, 'display_name' => 'Owner']);
         $course = $owner->selfPacedCourses()->create([
             'title' => 'Course', 'price' => 100, 'currency' => 'ZAR', 'status' => 'published', 'visibility' => 'public',
         ]);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $response = $this->getJson("/api/tutor/self-paced-courses/{$course->id}/certificates");

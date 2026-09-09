@@ -30,7 +30,7 @@ class TutorSubjectApprovalTest extends TestCase
     private function tutorRequestingSubject(): array
     {
         $tutorUser = User::factory()->tutor()->create(['status' => UserStatus::Approved]);
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $subject = Subject::create(['name' => 'Mathematics']);
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutor->id,

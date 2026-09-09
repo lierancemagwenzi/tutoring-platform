@@ -91,8 +91,8 @@ async function submitReason(text) {
                             <span>{{ tutor.email_verified ? 'Email verified' : 'Email not verified' }}</span>
                             <span>{{ tutor.profile_complete ? 'Profile complete' : 'Profile incomplete' }}</span>
                             <span>{{ tutor.requested_subjects_count }} subjects requested</span>
-                            <span :class="tutor.has_banking_details ? 'text-green-600' : 'text-red-600'">
-                                {{ tutor.has_banking_details ? 'Banking details on file' : 'No banking details' }}
+                            <span :class="tutor.has_banking_details ? 'text-green-600' : 'text-muted'">
+                                {{ tutor.has_banking_details ? 'Banking details on file' : 'No banking details yet' }}
                             </span>
                         </div>
                     </div>
@@ -110,8 +110,7 @@ async function submitReason(text) {
                     </router-link>
                     <button
                         type="button"
-                        :disabled="actioningId === tutor.id || !tutor.has_banking_details"
-                        :title="tutor.has_banking_details ? '' : 'This tutor has no banking details on file.'"
+                        :disabled="actioningId === tutor.id"
                         class="text-sm font-semibold text-green-600 disabled:opacity-40"
                         @click="approve(tutor.id)"
                     >

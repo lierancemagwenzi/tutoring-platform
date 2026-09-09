@@ -19,7 +19,7 @@ class VerifyEmailController extends Controller
 
         return response()->json([
             'message' => 'Your account has been verified.',
-            'user' => new UserResource($request->user()->fresh()),
+            'user' => new UserResource($request->user()->fresh(['tutorProfile', 'studentGuardian'])),
         ]);
     }
 }

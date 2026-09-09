@@ -1,5 +1,6 @@
 import axios from 'axios'
 import router from '../router'
+import { TUTOR_APPLICATION_STEP_ROUTES } from '../router/tutorApplicationSteps'
 
 const api = axios.create({
     baseURL: '/api',
@@ -32,6 +33,22 @@ api.interceptors.response.use(
 
             if (router.currentRoute.value.name !== 'login') {
                 router.push({ name: 'login' })
+            }
+        }
+
+        // A tutor whose application isn't complete yet (see
+        // EnsureTutorOnboardingComplete) gets this on every other endpoint.
+        // The router guard already redirects `/tutor` itself, but a direct
+        // deep link elsewhere would otherwise leave the page's own fetch
+        // rejected and its loading state stuck forever — bounce to the
+        // wizard step they left off at instead.
+        if (error.response?.data?.code === 'TUTOR_ONBOARDING_INCOMPLETE') {
+            const user = JSON.parse(localStorage.getItem('auth_user') ?? 'null')
+            const step = user?.tutor_profile?.onboarding_step ?? 1
+            const target = TUTOR_APPLICATION_STEP_ROUTES[step - 1] ?? TUTOR_APPLICATION_STEP_ROUTES[0]
+
+            if (router.currentRoute.value.path !== target) {
+                router.push(target)
             }
         }
 

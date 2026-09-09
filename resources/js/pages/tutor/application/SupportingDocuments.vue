@@ -93,8 +93,8 @@ function continueApplication() {
 
     <div v-else class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Supporting documents</h1>
-            <p class="mt-2 text-gray-500">Add any documents that support your application.</p>
+            <h1 class="text-body text-3xl font-bold">Supporting documents</h1>
+            <p class="mt-2 text-muted">Add any documents that support your application.</p>
         </div>
 
         <ul class="mt-8 space-y-4">
@@ -114,8 +114,8 @@ function continueApplication() {
             </li>
         </ul>
 
-        <div class="mt-8 space-y-4 rounded-xl border border-gray-200 p-5">
-            <p class="font-semibold text-gray-700">Add a document</p>
+        <div class="mt-8 space-y-4 rounded-xl border border-border p-5">
+            <p class="font-semibold text-body">Add a document</p>
             <p v-if="addError" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ addError }}</p>
             <SelectInput id="new-document-type" v-model="newDocType" label="Document Type" :options="TYPE_OPTIONS" />
             <FileUploadInput id="new-document-file" label="Document File" :uploading="adding" @select="handleAdd" />
@@ -123,7 +123,7 @@ function continueApplication() {
 
         <button
             type="button"
-            class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95"
+            class="bg-amber mt-8 w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95"
             @click="continueApplication"
         >
             Save & Continue

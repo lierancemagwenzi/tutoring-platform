@@ -75,8 +75,8 @@ async function continueApplication() {
 
     <div v-else class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Tell us about yourself</h1>
-            <p class="mt-2 text-gray-500">This helps students get to know you before booking a session.</p>
+            <h1 class="text-body text-3xl font-bold">Tell us about yourself</h1>
+            <p class="mt-2 text-muted">This helps students get to know you before booking a session.</p>
         </div>
 
         <form class="mt-10 space-y-6" novalidate @submit.prevent="continueApplication">
@@ -113,7 +113,7 @@ async function continueApplication() {
 
             <TagInput id="languages" v-model="languages" label="Languages Spoken (press Enter to add)" />
 
-            <div class="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <div class="flex items-center justify-center gap-2 text-sm text-muted">
                 <ShieldCheckIcon class="h-5 w-5" />
                 Your information is confidential and secure
             </div>
@@ -121,7 +121,7 @@ async function continueApplication() {
             <button
                 type="submit"
                 :disabled="!canContinue || submitting"
-                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {{ submitting ? 'Saving…' : 'Save & Continue' }}
             </button>

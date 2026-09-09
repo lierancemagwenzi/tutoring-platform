@@ -50,8 +50,8 @@ function continueApplication() {
 
     <div v-else class="w-full max-w-md">
         <div class="text-center">
-            <h1 class="text-ink text-3xl font-bold">Verify your identity</h1>
-            <p class="mt-2 text-gray-500">Upload a government-issued ID so we can confirm who you are.</p>
+            <h1 class="text-body text-3xl font-bold">Verify your identity</h1>
+            <p class="mt-2 text-muted">Upload a government-issued ID so we can confirm who you are.</p>
         </div>
 
         <div class="mt-10 space-y-6">
@@ -65,7 +65,7 @@ function continueApplication() {
                 @select="handleSelect"
             />
 
-            <div class="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <div class="flex items-center justify-center gap-2 text-sm text-muted">
                 <ShieldCheckIcon class="h-5 w-5" />
                 Your information is confidential and secure
             </div>
@@ -73,7 +73,7 @@ function continueApplication() {
             <button
                 type="button"
                 :disabled="!canContinue"
-                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-sm transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                class="bg-amber w-full rounded-full py-3.5 font-semibold text-white shadow-elevated transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
                 @click="continueApplication"
             >
                 Save & Continue

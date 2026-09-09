@@ -21,7 +21,7 @@ class ServicePriceLimitsTest extends TestCase
     private function tutorWithProfile(Subject $subject, Grade $grade): User
     {
         $user = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $user->id]);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $user->id]);
 
         $tutorSubject = TutorSubject::create([
             'tutor_profile_id' => $tutorProfile->id, 'subject_id' => $subject->id, 'status' => 'approved',

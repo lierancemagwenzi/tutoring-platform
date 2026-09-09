@@ -21,7 +21,7 @@ class TutorAvailabilityServiceTest extends TestCase
     private function tutorWithService(): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $subject = Subject::create(['name' => 'Mathematics', 'is_active' => true]);
         $category = ServiceCategory::create(['name' => 'Private Lesson', 'is_active' => true]);

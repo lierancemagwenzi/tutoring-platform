@@ -29,7 +29,7 @@ class PaymentTicketTest extends TestCase
     {
         $tutorUser = User::factory()->tutor()->create();
 
-        return TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        return TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
     }
 
     private function transactionFor(TutorProfile $tutor): FinancialTransaction
@@ -158,7 +158,7 @@ class PaymentTicketTest extends TestCase
     public function test_non_admin_cannot_access_admin_payment_ticket_routes(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $ticket = $this->ticketFor($tutor, $this->transactionFor($tutor));
         Sanctum::actingAs($tutorUser);
 

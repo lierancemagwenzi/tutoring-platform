@@ -57,7 +57,7 @@ class SessionSchedulingTest extends TestCase
     private function createTutorWithService(array $overrides = []): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create(array_merge([
             'subject_id' => $this->subject->id,
@@ -320,7 +320,7 @@ class SessionSchedulingTest extends TestCase
         $booking = $this->confirmedBookingFor($tutorProfile, $service);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id]);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id]);
         Sanctum::actingAs($intruder);
 
         $response = $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [

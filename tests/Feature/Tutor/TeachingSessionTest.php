@@ -47,7 +47,7 @@ class TeachingSessionTest extends TestCase
     private function createTutorWithService(array $serviceOverrides = []): array
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutorProfile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutorProfile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
 
         $service = $tutorProfile->services()->create(array_merge([
             'subject_id' => $this->subject->id,
@@ -169,7 +169,7 @@ class TeachingSessionTest extends TestCase
         $booking = $this->createPaidBooking($tutorProfile, $service, $slot);
 
         $otherTutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $otherTutorUser->id]);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $otherTutorUser->id]);
         Sanctum::actingAs($otherTutorUser);
 
         $this->getJson("/api/tutor/sessions/{$booking->teachingSessions()->first()->id}")->assertForbidden();

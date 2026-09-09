@@ -89,7 +89,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_lists_every_enrolled_student_with_computed_columns(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $notStarted = $this->enrollAndProgress($course, $refs, 0, 'Alice');
@@ -124,7 +124,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_filters_by_status_completed(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $this->enrollAndProgress($course, $refs, 0);
@@ -143,7 +143,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_filters_by_status_not_started_and_in_progress(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $notStarted = $this->enrollAndProgress($course, $refs, 0);
@@ -164,7 +164,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_filters_by_certificate_issued(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $this->enrollAndProgress($course, $refs, 1);
@@ -180,7 +180,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_filters_by_student_name_search(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         $this->enrollAndProgress($course, $refs, 0, 'Zelda');
@@ -196,7 +196,7 @@ class CourseEnrollmentsTest extends TestCase
     public function test_pagination_meta_is_correct_across_pages(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         [$course, $refs] = $this->courseWithTwoModules($tutor);
 
         for ($i = 0; $i < 5; $i++) {
@@ -215,11 +215,11 @@ class CourseEnrollmentsTest extends TestCase
     public function test_tutor_cannot_list_enrollments_for_another_tutors_course(): void
     {
         $ownerUser = User::factory()->tutor()->create();
-        $owner = TutorProfile::create(['user_id' => $ownerUser->id, 'display_name' => 'Owner']);
+        $owner = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $ownerUser->id, 'display_name' => 'Owner']);
         [$course] = $this->courseWithTwoModules($owner);
 
         $intruder = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $intruder->id, 'display_name' => 'Intruder']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $intruder->id, 'display_name' => 'Intruder']);
         Sanctum::actingAs($intruder);
 
         $response = $this->getJson("/api/tutor/self-paced-courses/{$course->id}/enrollments");

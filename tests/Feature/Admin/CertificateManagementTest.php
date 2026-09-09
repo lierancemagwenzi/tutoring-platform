@@ -19,7 +19,7 @@ class CertificateManagementTest extends TestCase
     {
         $student = User::factory()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $course = $tutor->selfPacedCourses()->create(['title' => 'Algebra Basics', 'price' => 100, 'currency' => 'ZAR']);
         $enrollment = Enrollment::create([
             'student_id' => $student->id,

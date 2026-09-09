@@ -19,7 +19,7 @@ class TutorManagementTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         Sanctum::actingAs($admin);
 
         $response = $this->getJson('/api/admin/tutor-profiles');
@@ -32,7 +32,7 @@ class TutorManagementTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create(['phone' => '0821234567']);
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor', 'bio' => 'Loves teaching.']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor', 'bio' => 'Loves teaching.']);
         $approvedSubject = Subject::create(['name' => 'Mathematics']);
         $pendingSubject = Subject::create(['name' => 'Physics']);
         TutorSubject::create(['tutor_profile_id' => $tutor->id, 'subject_id' => $approvedSubject->id, 'status' => TutorSubjectStatus::Approved]);
@@ -54,7 +54,7 @@ class TutorManagementTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $tutor->connectedAccounts()->create([
             'provider' => 'google',
             'provider_user_id' => 'abc123',

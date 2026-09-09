@@ -22,7 +22,7 @@ class BankingDetailsTest extends TestCase
     private function tutorWithApprovedSubject(): User
     {
         $tutorUser = User::factory()->tutor()->create();
-        $profile = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $profile = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $subject = Subject::create(['name' => 'Mathematics']);
         TutorSubject::create(['tutor_profile_id' => $profile->id, 'subject_id' => $subject->id, 'status' => TutorSubjectStatus::Approved]);
 

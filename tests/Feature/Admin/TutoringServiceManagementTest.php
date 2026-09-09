@@ -20,7 +20,7 @@ class TutoringServiceManagementTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
         $tutorUser = User::factory()->tutor()->create();
-        $tutor = TutorProfile::create(['user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
+        $tutor = TutorProfile::create(['onboarding_complete' => true, 'user_id' => $tutorUser->id, 'display_name' => 'Test Tutor']);
         $subject = Subject::create(['name' => 'Mathematics']);
         $grade = Grade::create(['name' => 'Grade 10', 'level' => 10]);
         $category = ServiceCategory::create(['name' => 'Private Lesson']);
