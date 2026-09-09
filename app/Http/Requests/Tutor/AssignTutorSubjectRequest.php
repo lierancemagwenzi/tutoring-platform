@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Tutor;
 
+use App\Enums\UserStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class AssignTutorSubjectRequest extends FormRequest
 {
@@ -14,6 +16,21 @@ class AssignTutorSubjectRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            // onboarding_complete just means the application was submitted
+            // — the tutor's account still needs an admin decision before
+            // they should be requesting subjects to teach.
+            if ($this->user()->status !== UserStatus::Approved) {
+                $validator->errors()->add('status', 'Your tutor account must be approved before you can add subjects.');
+            }
+        });
     }
 
     /**
