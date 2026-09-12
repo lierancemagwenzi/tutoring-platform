@@ -16,14 +16,21 @@ use Illuminate\Http\Request;
 class LessonController extends Controller
 {
     /**
-     * Return the lessons belonging to a chapter.
+     * Return the lessons belonging to a chapter. Passing `service_id` (the
+     * lesson-picker's scheduling context) narrows this to published
+     * lessons only — the same status ScheduleSessionRequest/
+     * AssignSessionLessonRequest require before a lesson can be assigned.
      */
     public function index(Request $request, Chapter $chapter): JsonResponse
     {
         abort_unless($chapter->course->tutor_profile_id === $request->user()->tutorProfile?->id, 403);
 
+        $lessons = $chapter->lessons()
+            ->when($request->filled('service_id'), fn ($query) => $query->where('status', LessonStatus::Published))
+            ->get();
+
         return response()->json([
-            'lessons' => LessonResource::collection($chapter->lessons),
+            'lessons' => LessonResource::collection($lessons),
         ]);
     }
 

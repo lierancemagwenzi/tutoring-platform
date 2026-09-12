@@ -16,14 +16,20 @@ use Illuminate\Http\Request;
 class ChapterController extends Controller
 {
     /**
-     * Return the chapters belonging to a course.
+     * Return the chapters belonging to a course. Passing `service_id` (the
+     * lesson-picker's scheduling context) narrows this to published
+     * chapters only.
      */
     public function index(Request $request, Course $course): JsonResponse
     {
         abort_unless($course->tutor_profile_id === $request->user()->tutorProfile?->id, 403);
 
+        $chapters = $course->chapters()
+            ->when($request->filled('service_id'), fn ($query) => $query->where('status', ChapterStatus::Published))
+            ->get();
+
         return response()->json([
-            'chapters' => ChapterResource::collection($course->chapters),
+            'chapters' => ChapterResource::collection($chapters),
         ]);
     }
 

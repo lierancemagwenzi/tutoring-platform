@@ -4,6 +4,15 @@ import { ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { useCoursesStore } from '../../stores/courses'
 import SelectInput from '../forms/SelectInput.vue'
 
+const props = defineProps({
+    // When set, only published courses/chapters/lessons assignable to this
+    // service are shown — the subject/grade/curriculum filters are hidden
+    // since everything listed already matches. Without it (e.g. the
+    // "assign more lessons to a session" flow), every course is browsable
+    // and mismatched/draft lessons are shown but disabled, as before.
+    serviceId: { type: [Number, String], default: null },
+})
+
 const emit = defineEmits(['selected', 'cancelled'])
 
 const store = useCoursesStore()
@@ -15,6 +24,7 @@ const curriculumId = ref('')
 const gradeId = ref('')
 const subjectId = ref('')
 
+const courses = ref([])
 const selectedCourse = ref(null)
 const selectedChapter = ref(null)
 
@@ -24,7 +34,12 @@ const chaptersLoading = ref(false)
 const lessonsLoading = ref(false)
 
 onMounted(async () => {
-    await Promise.all([store.fetchLookups(), store.fetchCourses()])
+    if (props.serviceId) {
+        courses.value = await store.fetchCoursesForService(props.serviceId)
+    } else {
+        await Promise.all([store.fetchLookups(), store.fetchCourses()])
+        courses.value = store.courses
+    }
     loading.value = false
 })
 
@@ -49,7 +64,7 @@ const subjectOptions = computed(() => [
 ])
 
 const filteredCourses = computed(() =>
-    store.courses.filter((course) => {
+    courses.value.filter((course) => {
         if (curriculumId.value && String(course.curriculum_id) !== curriculumId.value) return false
         if (gradeId.value && String(course.grade_id) !== gradeId.value) return false
         if (subjectId.value && String(course.subject_id) !== subjectId.value) return false
@@ -61,7 +76,7 @@ async function chooseCourse(course) {
     selectedCourse.value = course
     chaptersLoading.value = true
     step.value = 'chapter'
-    chapters.value = await store.fetchChapters(course.id)
+    chapters.value = await store.fetchChapters(course.id, props.serviceId)
     chaptersLoading.value = false
 }
 
@@ -69,7 +84,7 @@ async function chooseChapter(chapter) {
     selectedChapter.value = chapter
     lessonsLoading.value = true
     step.value = 'lesson'
-    lessons.value = await store.fetchLessons(chapter.id)
+    lessons.value = await store.fetchLessons(chapter.id, props.serviceId)
     lessonsLoading.value = false
 }
 
@@ -111,13 +126,16 @@ function backToChapters() {
         </div>
 
         <template v-else-if="step === 'course'">
-            <div class="mb-4 grid grid-cols-3 gap-3">
+            <div v-if="!serviceId" class="mb-4 grid grid-cols-3 gap-3">
                 <SelectInput id="picker-curriculum" v-model="curriculumId" label="Curriculum" :options="curriculumOptions" />
                 <SelectInput id="picker-grade" v-model="gradeId" label="Grade" :options="gradeOptions" />
                 <SelectInput id="picker-subject" v-model="subjectId" label="Subject" :options="subjectOptions" />
             </div>
 
-            <p v-if="filteredCourses.length === 0" class="text-muted py-8 text-center text-sm">No courses match these filters.</p>
+            <p v-if="filteredCourses.length === 0 && serviceId" class="text-muted py-8 text-center text-sm">
+                No published course matches this booking's subject, grade, and curriculum yet.
+            </p>
+            <p v-else-if="filteredCourses.length === 0" class="text-muted py-8 text-center text-sm">No courses match these filters.</p>
             <ul v-else class="max-h-80 space-y-1 overflow-y-auto">
                 <li v-for="course in filteredCourses" :key="course.id">
                     <button

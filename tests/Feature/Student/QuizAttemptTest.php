@@ -216,6 +216,23 @@ class QuizAttemptTest extends TestCase
         $response->assertOk()->assertJsonPath('quiz.title', 'Chapter Check-in');
     }
 
+    public function test_student_with_a_paid_booking_for_a_grade_agnostic_service_can_view_the_quiz(): void
+    {
+        // A service with no grade requirement (grade_id null) must match a
+        // course of any grade — grade_id on a course is never null, so a
+        // naive equality check here would silently deny access.
+        $student = $this->student();
+        $service = $this->createService(['grade_id' => null]);
+        $service->curricula()->sync([$this->curriculum->id]);
+        $this->paidBookingFor($student, $service);
+
+        Sanctum::actingAs($student);
+
+        $response = $this->getJson("/api/quizzes/{$this->quiz->id}");
+
+        $response->assertOk()->assertJsonPath('quiz.title', 'Chapter Check-in');
+    }
+
     public function test_unpublished_quiz_is_not_accessible_even_with_a_paid_booking(): void
     {
         $this->quiz->update(['status' => 'draft']);

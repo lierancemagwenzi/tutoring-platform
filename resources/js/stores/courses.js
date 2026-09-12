@@ -30,6 +30,14 @@ export const useCoursesStore = defineStore('courses', {
             return this.courses
         },
 
+        // Used by the lesson picker when scheduling a session: returns only
+        // published courses assignable to the given service, without
+        // touching the shared `courses` list ("My Courses" state).
+        async fetchCoursesForService(serviceId) {
+            const { data } = await api.get('/tutor/courses', { params: { service_id: serviceId } })
+            return data.courses
+        },
+
         async fetchCourse(id) {
             const { data } = await api.get(`/tutor/courses/${id}`)
             return data.course
@@ -68,8 +76,10 @@ export const useCoursesStore = defineStore('courses', {
 
         // --- Chapters ---
 
-        async fetchChapters(courseId) {
-            const { data } = await api.get(`/tutor/courses/${courseId}/chapters`)
+        async fetchChapters(courseId, serviceId = null) {
+            const { data } = await api.get(`/tutor/courses/${courseId}/chapters`, {
+                params: serviceId ? { service_id: serviceId } : {},
+            })
             return data.chapters
         },
 
@@ -94,8 +104,10 @@ export const useCoursesStore = defineStore('courses', {
 
         // --- Lessons ---
 
-        async fetchLessons(chapterId) {
-            const { data } = await api.get(`/tutor/chapters/${chapterId}/lessons`)
+        async fetchLessons(chapterId, serviceId = null) {
+            const { data } = await api.get(`/tutor/chapters/${chapterId}/lessons`, {
+                params: serviceId ? { service_id: serviceId } : {},
+            })
             return data.lessons
         },
 

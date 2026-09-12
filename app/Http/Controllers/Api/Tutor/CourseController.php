@@ -10,6 +10,7 @@ use App\Http\Requests\Tutor\StoreCourseRequest;
 use App\Http\Requests\Tutor\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
+use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,15 +25,25 @@ class CourseController extends Controller
     private const WITH = ['curriculum', 'grade', 'subject'];
 
     /**
-     * Return the logged in tutor's courses.
+     * Return the logged in tutor's courses. Passing `service_id` narrows
+     * this to published courses assignable to that service — used by the
+     * lesson picker when scheduling a session, so a tutor only sees courses
+     * students booked for that service could actually access.
      */
     public function index(Request $request): JsonResponse
     {
-        $courses = $request->user()->tutorProfile
+        $query = $request->user()->tutorProfile
             ->courses()
-            ->with(self::WITH)
-            ->latest()
-            ->get();
+            ->with(self::WITH);
+
+        if ($request->filled('service_id')) {
+            $service = Service::where('tutor_profile_id', $request->user()->tutorProfile->id)
+                ->findOrFail($request->integer('service_id'));
+
+            $query->where('status', CourseStatus::Published)->matchingService($service);
+        }
+
+        $courses = $query->latest()->get();
 
         return response()->json([
             'courses' => CourseResource::collection($courses),

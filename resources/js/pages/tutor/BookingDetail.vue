@@ -323,7 +323,12 @@ async function retryMeeting(session) {
         </Modal>
 
         <Modal v-model="pickerOpen" title="Choose Lesson">
-            <LessonPicker v-if="pickerOpen" @selected="onLessonSelected" @cancelled="pickerOpen = false" />
+            <LessonPicker
+                v-if="pickerOpen"
+                :service-id="store.currentBooking?.service?.id"
+                @selected="onLessonSelected"
+                @cancelled="pickerOpen = false"
+            />
         </Modal>
     </div>
 </template>

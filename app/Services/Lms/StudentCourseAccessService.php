@@ -29,7 +29,11 @@ class StudentCourseAccessService
             ->where('status', BookingStatus::Confirmed)
             ->whereHas('service', function ($query) use ($course) {
                 $query->where('subject_id', $course->subject_id)
-                    ->where('grade_id', $course->grade_id)
+                    // A service with no grade requirement (grade_id is null)
+                    // matches a course of any grade — see Course::matchesService().
+                    ->where(function ($query) use ($course) {
+                        $query->whereNull('grade_id')->orWhere('grade_id', $course->grade_id);
+                    })
                     ->whereHas('curricula', function ($query) use ($course) {
                         $query->whereKey($course->curriculum_id);
                     });
