@@ -3,10 +3,12 @@
 namespace App\Services\Admin;
 
 use App\Enums\TutorSubjectStatus;
+use App\Mail\TutorSubjectApprovedMail;
 use App\Models\TutorSubject;
 use App\Models\User;
 use App\Notifications\UserNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Reviews individual tutor-subject requests. This is a decision entirely
@@ -51,6 +53,11 @@ class TutorSubjectApprovalService
             title: 'Subject approved',
             body: "Your request to teach \"{$tutorSubject->subject->name}\" was approved.",
             url: '/tutor',
+        ));
+        Mail::to($tutorSubject->tutorProfile->user->email)->queue(new TutorSubjectApprovedMail(
+            firstName: $tutorSubject->tutorProfile->user->first_name,
+            subjectName: $tutorSubject->subject->name,
+            dashboardUrl: rtrim(config('app.url'), '/').'/tutor',
         ));
 
         return $tutorSubject;

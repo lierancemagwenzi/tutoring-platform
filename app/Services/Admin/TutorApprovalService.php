@@ -5,9 +5,11 @@ namespace App\Services\Admin;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Resources\TutorApplicationResource;
+use App\Mail\TutorApprovedMail;
 use App\Models\User;
 use App\Notifications\UserNotification;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Reviews tutor applications — reuses the existing users.status field
@@ -95,6 +97,10 @@ class TutorApprovalService
             title: 'Application approved',
             body: 'Your tutor application has been approved. You can now start accepting bookings.',
             url: '/tutor',
+        ));
+        Mail::to($tutor->email)->queue(new TutorApprovedMail(
+            firstName: $tutor->first_name,
+            dashboardUrl: rtrim(config('app.url'), '/').'/tutor',
         ));
 
         return $tutor;
