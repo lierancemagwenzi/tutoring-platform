@@ -8,6 +8,7 @@ use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\SelfPacedCourse;
 use App\Models\User;
+use App\Notifications\NewCourseEnrollment;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 
@@ -26,8 +27,10 @@ class EnrollmentService
                 continue;
             }
 
+            $course = SelfPacedCourse::find($item->product_id);
+
             try {
-                Enrollment::query()->firstOrCreate(
+                $enrollment = Enrollment::query()->firstOrCreate(
                     [
                         'student_id' => $order->student_id,
                         'self_paced_course_id' => $item->product_id,
@@ -39,14 +42,31 @@ class EnrollmentService
                         // Captured at enrollment time so future progress can
                         // be reconciled against the course version it was
                         // actually earned against — see SelfPacedCourse::$course_version.
-                        'course_version' => SelfPacedCourse::find($item->product_id)?->course_version ?? 1,
+                        'course_version' => $course?->course_version ?? 1,
                     ],
                 );
             } catch (QueryException) {
                 // A concurrent request already created this enrollment —
                 // the student owns the course either way, nothing to do.
+                continue;
+            }
+
+            if ($enrollment->wasRecentlyCreated && $course) {
+                $this->notifyTutor($order, $course);
             }
         }
+    }
+
+    private function notifyTutor(Order $order, SelfPacedCourse $course): void
+    {
+        $course->loadMissing('tutorProfile.user');
+        $order->loadMissing('student');
+
+        $course->tutorProfile->user->notify(new NewCourseEnrollment(
+            studentName: trim("{$order->student->first_name} {$order->student->last_name}"),
+            courseTitle: $course->title,
+            courseUrl: rtrim(config('app.url'), '/')."/tutor/self-paced-courses/{$course->id}",
+        ));
     }
 
     /**

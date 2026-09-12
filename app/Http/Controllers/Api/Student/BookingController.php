@@ -11,6 +11,7 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Models\TutorProfile;
+use App\Notifications\NewBookingRequest;
 use App\Notifications\UserNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -73,11 +74,10 @@ class BookingController extends Controller
         ]);
 
         $service->loadMissing('subject');
-        $tutor->user->notify(new UserNotification(
-            type: 'booking.created',
-            title: 'New booking request',
-            body: "{$request->user()->first_name} requested a {$service->subject->name} session.",
-            url: '/tutor/booking-requests',
+        $tutor->user->notify(new NewBookingRequest(
+            studentName: trim("{$request->user()->first_name} {$request->user()->last_name}"),
+            subjectName: $service->subject->name,
+            bookingUrl: rtrim(config('app.url'), '/').'/tutor/booking-requests',
         ));
 
         return response()->json([
