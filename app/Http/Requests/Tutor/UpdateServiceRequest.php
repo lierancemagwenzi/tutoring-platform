@@ -63,7 +63,9 @@ class UpdateServiceRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:5000'],
             'price' => ['required', 'numeric', 'min:0.01'],
-            'currency' => ['required', Rule::enum(Currency::class)],
+            // ZAR is the only currency PayFast (the sole payment gateway) can
+            // settle — see OrderService's currency checks.
+            'currency' => ['required', Rule::in([Currency::ZAR->value])],
             'session_duration_minutes' => ['required', 'integer', 'min:1'],
             'sessions_included' => ['required', 'integer', 'min:1'],
             'validity_period_days' => ['required', 'integer', 'min:1'],

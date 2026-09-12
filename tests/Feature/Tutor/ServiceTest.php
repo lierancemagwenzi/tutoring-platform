@@ -146,6 +146,16 @@ class ServiceTest extends TestCase
         ]);
     }
 
+    public function test_tutor_cannot_create_a_service_priced_in_a_currency_other_than_zar(): void
+    {
+        $tutor = $this->tutorWithProfile();
+        Sanctum::actingAs($tutor);
+
+        $response = $this->postJson('/api/tutor/services', $this->validPayload(['currency' => 'USD']));
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('currency');
+    }
+
     public function test_tutor_cannot_create_a_service_for_a_subject_they_do_not_teach(): void
     {
         $tutor = $this->tutorWithProfile();

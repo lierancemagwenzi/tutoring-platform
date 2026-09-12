@@ -45,7 +45,9 @@ class UpdateSelfPacedCourseRequest extends FormRequest
             'target_audience.*' => ['string', 'max:500'],
             'visibility' => ['sometimes', Rule::enum(SelfPacedCourseVisibility::class)],
             'price' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'currency' => ['sometimes', 'nullable', Rule::enum(Currency::class)],
+            // ZAR is the only currency PayFast (the sole payment gateway) can
+            // settle — see OrderService's currency checks.
+            'currency' => ['sometimes', 'nullable', Rule::in([Currency::ZAR->value])],
             'thumbnail' => ['sometimes', 'nullable', 'image', 'max:5120'],
             'promo_video' => ['sometimes', 'nullable', 'file', 'mimes:mp4,mov,webm', 'max:102400'],
         ];

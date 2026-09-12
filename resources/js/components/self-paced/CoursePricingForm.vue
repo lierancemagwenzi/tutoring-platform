@@ -4,12 +4,9 @@ import { useSelfPacedCoursesStore } from '../../stores/selfPacedCourses'
 import FloatingLabelInput from '../forms/FloatingLabelInput.vue'
 import SelectInput from '../forms/SelectInput.vue'
 
-const CURRENCY_OPTIONS = [
-    { value: 'ZAR', label: 'ZAR' },
-    { value: 'USD', label: 'USD' },
-    { value: 'GBP', label: 'GBP' },
-    { value: 'EUR', label: 'EUR' },
-]
+// ZAR is the only currency PayFast (the sole payment gateway) can settle —
+// see OrderService's currency checks — so it's the only option here too.
+const CURRENCY_OPTIONS = [{ value: 'ZAR', label: 'ZAR' }]
 
 const props = defineProps({
     course: { type: Object, required: true },
@@ -24,7 +21,7 @@ const success = ref(false)
 
 const form = reactive({
     price: props.course.price ?? '',
-    currency: props.course.currency ?? '',
+    currency: props.course.currency ?? 'ZAR',
 })
 
 async function save() {

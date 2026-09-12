@@ -84,6 +84,20 @@ class SelfPacedCourseTest extends TestCase
         $this->assertNotNull($course->fresh()->thumbnail_path);
     }
 
+    public function test_tutor_cannot_price_a_self_paced_course_in_a_currency_other_than_zar(): void
+    {
+        $tutor = $this->tutor();
+        $course = $tutor->tutorProfile->selfPacedCourses()->create(['title' => 'Draft Course']);
+        Sanctum::actingAs($tutor);
+
+        $response = $this->putJson("/api/tutor/self-paced-courses/{$course->id}", [
+            'price' => 49.99,
+            'currency' => 'USD',
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('currency');
+    }
+
     public function test_course_cannot_publish_without_modules_or_pricing(): void
     {
         $tutor = $this->tutor();

@@ -7,12 +7,9 @@ import FloatingLabelInput from '../../components/forms/FloatingLabelInput.vue'
 import TextareaInput from '../../components/forms/TextareaInput.vue'
 import CheckboxGroup from '../../components/forms/CheckboxGroup.vue'
 
-const CURRENCY_OPTIONS = [
-    { value: 'ZAR', label: 'ZAR' },
-    { value: 'USD', label: 'USD' },
-    { value: 'GBP', label: 'GBP' },
-    { value: 'EUR', label: 'EUR' },
-]
+// ZAR is the only currency PayFast (the sole payment gateway) can settle —
+// see OrderService's currency checks — so it's the only option here too.
+const CURRENCY_OPTIONS = [{ value: 'ZAR', label: 'ZAR' }]
 
 const VISIBILITY_OPTIONS = [
     { value: 'draft', label: 'Draft' },

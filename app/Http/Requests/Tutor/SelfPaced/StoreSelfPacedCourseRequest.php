@@ -45,7 +45,9 @@ class StoreSelfPacedCourseRequest extends FormRequest
             'target_audience' => ['nullable', 'array'],
             'target_audience.*' => ['string', 'max:500'],
             'price' => ['nullable', 'numeric', 'min:0'],
-            'currency' => ['nullable', Rule::enum(Currency::class)],
+            // ZAR is the only currency PayFast (the sole payment gateway) can
+            // settle — see OrderService's currency checks.
+            'currency' => ['nullable', Rule::in([Currency::ZAR->value])],
         ];
     }
 
