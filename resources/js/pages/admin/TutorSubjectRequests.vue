@@ -85,7 +85,12 @@ async function submitReason(text) {
             <div v-for="request in store.requests" :key="request.id" class="rounded-2xl bg-card p-5 shadow-elevated">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-body font-bold">{{ request.tutor.display_name }}</p>
+                        <router-link
+                            :to="{ name: 'admin.tutors.show', params: { id: request.tutor.tutor_profile_id } }"
+                            class="text-body font-bold hover:text-amber hover:underline"
+                        >
+                            {{ request.tutor.display_name }}
+                        </router-link>
                         <p class="text-sm text-muted">{{ request.tutor.email }}</p>
                         <p class="mt-2 text-sm text-body">
                             Requesting <span class="font-semibold">{{ request.subject.name }}</span>
