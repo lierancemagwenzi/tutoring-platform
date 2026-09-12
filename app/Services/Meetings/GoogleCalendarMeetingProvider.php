@@ -78,6 +78,12 @@ class GoogleCalendarMeetingProvider implements MeetingProviderContract
             // failure, not a transient one — any other status is left to
             // propagate for the queue's normal retry.
             if ($exception->response->status() === 403) {
+                if ($exception->response->json('error.errors.0.reason') === 'accessNotConfigured') {
+                    throw new RuntimeException(
+                        'The Google Calendar API is not enabled for this app\'s Google Cloud project. Enable it in Google Cloud Console, then retry.',
+                    );
+                }
+
                 throw new RuntimeException(
                     "The tutor's Google account doesn't have calendar permission. Reconnect Google and allow calendar access to create meeting links.",
                 );

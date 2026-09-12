@@ -125,6 +125,30 @@ class GoogleCalendarMeetingProviderTest extends TestCase
         app(GoogleCalendarMeetingProvider::class)->createMeeting($session->fresh(['tutorProfile.user', 'service.sessionFormat', 'bookings.student']), $booking);
     }
 
+    public function test_a_403_with_accessnotconfigured_becomes_an_api_not_enabled_exception(): void
+    {
+        $tutor = $this->tutorWithConnectedAccount();
+        [$session, $booking] = $this->sessionWithBooking($tutor);
+
+        Http::fake([
+            'https://www.googleapis.com/calendar/v3/*' => Http::response([
+                'error' => [
+                    'code' => 403,
+                    'message' => 'Google Calendar API has not been used in project 123 before or it is disabled.',
+                    'errors' => [
+                        ['reason' => 'accessNotConfigured', 'domain' => 'usageLimits'],
+                    ],
+                    'status' => 'PERMISSION_DENIED',
+                ],
+            ], 403),
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Google Calendar API is not enabled');
+
+        app(GoogleCalendarMeetingProvider::class)->createMeeting($session->fresh(['tutorProfile.user', 'service.sessionFormat', 'bookings.student']), $booking);
+    }
+
     public function test_fake_meetings_flag_skips_google_entirely_and_returns_a_placeholder_link(): void
     {
         config(['services.google.fake_meetings' => true]);
