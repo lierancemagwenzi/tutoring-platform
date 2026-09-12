@@ -2,11 +2,13 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { CalendarDaysIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { useTutorAvailabilityStore } from '../../stores/tutorAvailability'
+import { useTutorServicesStore } from '../../stores/tutorServices'
 import MonthCalendar from '../../components/calendar/MonthCalendar.vue'
 import Modal from '../../components/common/Modal.vue'
 import FloatingLabelInput from '../../components/forms/FloatingLabelInput.vue'
 
 const store = useTutorAvailabilityStore()
+const servicesStore = useTutorServicesStore()
 
 const today = new Date()
 const year = ref(today.getFullYear())
@@ -58,7 +60,34 @@ async function loadMonth() {
     }
 }
 
-onMounted(loadMonth)
+onMounted(() => {
+    loadMonth()
+    servicesStore.fetchServices()
+})
+
+// A slot's own window has no service tied to it — students only see it as
+// bookable for a service whose full session_duration_minutes fits inside
+// it (see BookingAvailabilityService::bookableStartTimesForSlot()). A slot
+// shorter than a published service's duration silently never appears as
+// an option for that service, with nothing on the tutor's side to explain
+// why — this surfaces that instead of leaving it invisible.
+const slotDurationMinutes = computed(() => {
+    if (!form.startTime || !form.endTime) return null
+
+    const [startH, startM] = form.startTime.split(':').map(Number)
+    const [endH, endM] = form.endTime.split(':').map(Number)
+    const minutes = endH * 60 + endM - (startH * 60 + startM)
+
+    return minutes > 0 ? minutes : null
+})
+
+const servicesTooLongForSlot = computed(() => {
+    if (slotDurationMinutes.value === null) return []
+
+    return servicesStore.services.filter(
+        (service) => service.visibility === 'published' && service.session_duration_minutes > slotDurationMinutes.value,
+    )
+})
 
 function selectDate(dateString) {
     selectedDate.value = dateString
@@ -242,6 +271,13 @@ async function removeSlot() {
 
                 <FloatingLabelInput id="start-time" v-model="form.startTime" type="time" label="Start Time" />
                 <FloatingLabelInput id="end-time" v-model="form.endTime" type="time" label="End Time" />
+
+                <p v-if="servicesTooLongForSlot.length > 0" class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                    This is a {{ slotDurationMinutes }}-minute window. Students won't be able to book it for
+                    {{ servicesTooLongForSlot.length === 1 ? 'this service' : 'these services' }}, since
+                    {{ servicesTooLongForSlot.length === 1 ? 'its session is' : 'their sessions are' }} longer than that:
+                    {{ servicesTooLongForSlot.map((service) => `${service.title} (${service.session_duration_minutes} min)`).join(', ') }}.
+                </p>
 
                 <div class="flex justify-end gap-3">
                     <button
