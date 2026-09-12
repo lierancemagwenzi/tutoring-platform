@@ -228,13 +228,13 @@ class SelfPacedModuleContentTest extends TestCase
 
     public function test_tutor_can_add_an_assessment_with_a_surveyjs_provider(): void
     {
-        [$tutor, $course] = $this->tutorWithCourse();
+        [$tutor, $course, $subject, $grade] = $this->tutorWithClassifiedCourse();
         $module = $course->modules()->create(['title' => 'Assessments', 'position' => 0]);
         Sanctum::actingAs($tutor);
 
         $surveyContent = $tutor->tutorProfile->selfPacedSurveyContents()->create([
-            'grade_id' => Grade::create(['name' => 'Grade 10', 'level' => 10, 'is_active' => true])->id,
-            'subject_id' => Subject::create(['name' => 'Mathematics', 'is_active' => true])->id,
+            'grade_id' => $grade->id,
+            'subject_id' => $subject->id,
             'curriculum_id' => Curriculum::create(['name' => 'CAPS', 'is_active' => true])->id,
             'title' => 'Chapter 1 Bank',
         ]);
@@ -251,6 +251,71 @@ class SelfPacedModuleContentTest extends TestCase
 
         $response->assertCreated();
         $response->assertJsonPath('assessment.is_configured', true);
+    }
+
+    public function test_tutor_cannot_add_an_assessment_with_a_surveyjs_content_of_a_different_subject(): void
+    {
+        [$tutor, $course, , $grade] = $this->tutorWithClassifiedCourse();
+        $module = $course->modules()->create(['title' => 'Assessments', 'position' => 0]);
+        Sanctum::actingAs($tutor);
+
+        $surveyContent = $tutor->tutorProfile->selfPacedSurveyContents()->create([
+            'grade_id' => $grade->id,
+            'subject_id' => Subject::create(['name' => 'Physics', 'is_active' => true])->id,
+            'curriculum_id' => Curriculum::create(['name' => 'CAPS', 'is_active' => true])->id,
+            'title' => 'Physics Bank',
+        ]);
+
+        $response = $this->postJson("/api/tutor/self-paced-modules/{$module->id}/assessments", [
+            'assessment_type' => 'knowledge_check',
+            'title' => 'Quick Check',
+            'provider' => 'surveyjs',
+            'provider_config' => ['survey_content_id' => $surveyContent->id],
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('provider_config');
+    }
+
+    public function test_tutor_can_add_an_assessment_with_a_matching_h5p_provider(): void
+    {
+        [$tutor, $course, $subject, $grade] = $this->tutorWithClassifiedCourse();
+        $module = $course->modules()->create(['title' => 'Assessments', 'position' => 0]);
+        $curriculum = Curriculum::create(['name' => 'CAPS', 'is_active' => true]);
+        $this->seedH5pContent(456, 'Interactive Quiz');
+        $this->seedH5pClassification(456, $tutor->tutorProfile->id, $grade->id, $subject->id, $curriculum->id);
+        $tutor->tutorProfile->selfPacedH5pContents()->create(['h5p_content_id' => '456', 'title' => 'Interactive Quiz']);
+        Sanctum::actingAs($tutor);
+
+        $response = $this->postJson("/api/tutor/self-paced-modules/{$module->id}/assessments", [
+            'assessment_type' => 'knowledge_check',
+            'title' => 'Quick Check',
+            'provider' => 'h5p',
+            'provider_config' => ['h5p_content_id' => '456'],
+        ]);
+
+        $response->assertCreated();
+        $response->assertJsonPath('assessment.is_configured', true);
+    }
+
+    public function test_tutor_cannot_add_an_assessment_with_an_h5p_provider_of_a_different_grade(): void
+    {
+        [$tutor, $course, $subject] = $this->tutorWithClassifiedCourse();
+        $module = $course->modules()->create(['title' => 'Assessments', 'position' => 0]);
+        $curriculum = Curriculum::create(['name' => 'CAPS', 'is_active' => true]);
+        $otherGrade = Grade::create(['name' => 'Grade 11', 'level' => 11, 'is_active' => true]);
+        $this->seedH5pContent(789, 'Interactive Quiz');
+        $this->seedH5pClassification(789, $tutor->tutorProfile->id, $otherGrade->id, $subject->id, $curriculum->id);
+        $tutor->tutorProfile->selfPacedH5pContents()->create(['h5p_content_id' => '789', 'title' => 'Interactive Quiz']);
+        Sanctum::actingAs($tutor);
+
+        $response = $this->postJson("/api/tutor/self-paced-modules/{$module->id}/assessments", [
+            'assessment_type' => 'knowledge_check',
+            'title' => 'Quick Check',
+            'provider' => 'h5p',
+            'provider_config' => ['h5p_content_id' => '789'],
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('provider_config');
     }
 
     public function test_assessment_with_limited_attempts_requires_max_attempts(): void

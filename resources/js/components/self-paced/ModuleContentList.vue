@@ -161,6 +161,7 @@ async function onReorder() {
         <AssessmentEditor
             v-if="editingAssessment !== undefined"
             :module-id="module.id"
+            :course-id="module.self_paced_course_id"
             :assessment="editingAssessment"
             @saved="onAssessmentSaved"
             @cancelled="editingAssessment = undefined"

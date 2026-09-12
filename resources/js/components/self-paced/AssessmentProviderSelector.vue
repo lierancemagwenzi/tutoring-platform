@@ -11,6 +11,7 @@ const PROVIDER_OPTIONS = [
 ]
 
 const props = defineProps({
+    courseId: { type: Number, required: true },
     provider: { type: String, default: '' },
     providerConfig: { type: Object, default: () => ({}) },
 })
@@ -26,8 +27,13 @@ const surveyContentId = ref(props.providerConfig?.survey_content_id ? String(pro
 
 onMounted(async () => {
     // Both scoped to this tutor's self-paced-tagged content only — never
-    // Tutor-Led Learning's Quiz/H5P content, and never another tutor's.
-    const [h5p, surveys] = await Promise.all([store.fetchH5pContents(), surveyStore.fetchSurveyContents()])
+    // Tutor-Led Learning's Quiz/H5P content, and never another tutor's —
+    // and further narrowed to this course's own subject+grade (self-paced
+    // courses have no curriculum to also match on), mirroring how
+    // ActivityEditor.vue scopes its own H5P picker.
+    const course = await store.fetchCourse(props.courseId)
+    const filters = { subject_id: course.subject?.id, grade_id: course.grade?.id }
+    const [h5p, surveys] = await Promise.all([store.fetchH5pContents(filters), surveyStore.fetchSurveyContents(filters)])
     h5pContents.value = h5p
     surveyContents.value = surveys
 })

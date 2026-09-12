@@ -65,19 +65,31 @@ class UpdateSelfPacedAssessmentRequest extends FormRequest
 
             $config = (array) $this->input('provider_config', []);
             $tutor = $this->user()->tutorProfile;
+            $course = $this->route('selfPacedAssessment')->module->course;
 
             match ($provider) {
-                SelfPacedAssessmentProvider::SurveyJs => $this->requireOwnedContent(
+                SelfPacedAssessmentProvider::SurveyJs => $this->requireMatchingContent(
                     $validator,
                     $config,
                     'survey_content_id',
-                    fn (string $id) => $tutor->selfPacedSurveyContents()->whereKey($id)->exists(),
+                    fn (string $id) => $tutor->selfPacedSurveyContents()
+                        ->whereKey($id)
+                        ->where('subject_id', $course->subject_id)
+                        ->where('grade_id', $course->grade_id)
+                        ->exists(),
                 ),
-                SelfPacedAssessmentProvider::H5p => $this->requireOwnedContent(
+                SelfPacedAssessmentProvider::H5p => $this->requireMatchingContent(
                     $validator,
                     $config,
                     'h5p_content_id',
-                    fn (string $id) => $tutor->selfPacedH5pContents()->where('h5p_content_id', $id)->exists(),
+                    fn (string $id) => $tutor->selfPacedH5pContents()
+                        ->where('h5p_content_id', $id)
+                        ->whereIn('h5p_content_id', fn ($query) => $query
+                            ->select('h5p_content_id')
+                            ->from('h5p_content_classifications')
+                            ->where('subject_id', $course->subject_id)
+                            ->where('grade_id', $course->grade_id))
+                        ->exists(),
                 ),
             };
         });
@@ -85,12 +97,15 @@ class UpdateSelfPacedAssessmentRequest extends FormRequest
 
     /**
      * Requires the config key be present AND, when it is, that it
-     * references content this tutor has tagged for self-paced use — never
-     * another tutor's, and never Tutor-Led Learning's untagged content.
+     * references content this tutor has tagged for self-paced use and
+     * whose subject/grade matches this course's own (self-paced courses
+     * have no curriculum to also match on) — never another tutor's, never
+     * Tutor-Led Learning's untagged content, and never a mismatched
+     * subject/grade a student could never actually be shown.
      *
      * @param  array<string, mixed>  $config
      */
-    private function requireOwnedContent(Validator $validator, array $config, string $key, callable $isOwnedByTutor): void
+    private function requireMatchingContent(Validator $validator, array $config, string $key, callable $matchesCourse): void
     {
         $value = $config[$key] ?? null;
 
@@ -100,8 +115,11 @@ class UpdateSelfPacedAssessmentRequest extends FormRequest
             return;
         }
 
-        if (! $isOwnedByTutor((string) $value)) {
-            $validator->errors()->add('provider_config', "The selected provider_config.{$key} was not found in your self-paced content.");
+        if (! $matchesCourse((string) $value)) {
+            $validator->errors()->add(
+                'provider_config',
+                "The selected provider_config.{$key} doesn't match this course's subject and grade.",
+            );
         }
     }
 }

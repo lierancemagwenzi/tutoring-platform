@@ -16,11 +16,17 @@ class SelfPacedH5pContentController extends Controller
     /**
      * List the H5P content this tutor has tagged for self-paced course use
      * — never Tutor-Led Learning's H5P content, and never another tutor's.
+     * Supports optional subject_id/grade_id filters for the Assessment
+     * provider picker (self-paced courses have no curriculum to match on).
      */
     public function index(Request $request): JsonResponse
     {
+        $filters = array_filter($request->only(['subject_id', 'grade_id']));
+
         return response()->json([
-            'contents' => SelfPacedH5pContentResource::collection($this->h5pContents->forTutor($request->user()->tutorProfile)),
+            'contents' => SelfPacedH5pContentResource::collection(
+                $this->h5pContents->forTutor($request->user()->tutorProfile, $filters),
+            ),
         ]);
     }
 

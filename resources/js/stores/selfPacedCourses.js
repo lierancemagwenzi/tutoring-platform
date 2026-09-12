@@ -164,8 +164,8 @@ export const useSelfPacedCoursesStore = defineStore('selfPacedCourses', {
         // Never the same list as Tutor-Led Learning's /tutor/h5p-content —
         // this is scoped to only what's been tagged for self-paced use.
 
-        async fetchH5pContents() {
-            const { data } = await api.get('/tutor/self-paced-h5p-contents')
+        async fetchH5pContents(filters = {}) {
+            const { data } = await api.get('/tutor/self-paced-h5p-contents', { params: filters })
             return data.contents
         },
 

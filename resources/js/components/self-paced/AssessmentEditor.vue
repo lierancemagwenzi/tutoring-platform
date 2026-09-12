@@ -22,6 +22,7 @@ const ATTEMPTS_MODE_OPTIONS = [
 
 const props = defineProps({
     moduleId: { type: Number, required: true },
+    courseId: { type: Number, required: true },
     assessment: { type: Object, default: null },
 })
 
@@ -129,6 +130,7 @@ async function save() {
             <div class="rounded-xl border border-border p-4">
                 <p class="mb-2 text-sm font-semibold text-body">Provider</p>
                 <AssessmentProviderSelector
+                    :course-id="courseId"
                     v-model:provider="form.provider"
                     v-model:provider-config="form.provider_config"
                 />
