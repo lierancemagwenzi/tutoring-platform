@@ -14,7 +14,6 @@ use App\Models\SessionLesson;
 use App\Models\SessionLessonBlock;
 use App\Models\Subject;
 use App\Models\Submission;
-use App\Models\TeachingSession;
 use App\Models\TutorProfile;
 use App\Models\User;
 use App\Services\Attempts\AttemptService;
@@ -119,18 +118,9 @@ class TutorWorkspaceTest extends TestCase
 
         $order = app(OrderService::class)->createForBooking($booking);
         app(BookingConfirmationService::class)->confirm($order);
-        $booking = $booking->fresh();
 
-        $session = TeachingSession::create([
-            'tutor_profile_id' => $tutorProfile->id,
-            'service_id' => $service->id,
-            'date' => $date,
-            'start_time' => $startTime,
-            'end_time' => $endTime,
-            'status' => 'scheduled',
-        ]);
-        $booking->teachingSessions()->attach($session->id);
-
+        // Auto-scheduled by BookingConfirmationService from the booking's
+        // own requested date/time.
         return $booking->fresh();
     }
 

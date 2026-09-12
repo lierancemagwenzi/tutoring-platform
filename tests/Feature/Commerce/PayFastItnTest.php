@@ -254,12 +254,13 @@ class PayFastItnTest extends TestCase
         $this->assertDatabaseCount('enrollments', 0);
     }
 
-    public function test_valid_itn_for_a_booking_order_confirms_the_booking_without_scheduling_any_session(): void
+    public function test_valid_itn_for_a_booking_order_confirms_the_booking_and_auto_schedules_the_first_session(): void
     {
-        // Payment only confirms the booking — the purchased package's
-        // sessions are scheduled later, one at a time, by the tutor via
-        // SessionSchedulingService. No session/meeting exists yet, and
-        // nothing is queued at this point.
+        // Payment confirms the booking and immediately schedules its first
+        // session from the date/time the student originally requested —
+        // see BookingConfirmationService::scheduleFirstSession(). Any
+        // further sessions in the purchased package are still scheduled
+        // later, one at a time, by the tutor via SessionSchedulingService.
         Http::fake(['*' => Http::response('VALID', 200)]);
         Queue::fake();
 
@@ -274,10 +275,11 @@ class PayFastItnTest extends TestCase
         $this->assertSame('paid', $order->fresh()->status->value);
         $this->assertSame('confirmed', $booking->status->value);
 
-        $this->assertDatabaseCount('teaching_sessions', 0);
-        $this->assertDatabaseCount('session_meetings', 0);
+        $this->assertDatabaseCount('teaching_sessions', 1);
+        $this->assertDatabaseCount('session_meetings', 1);
+        $this->assertTrue($booking->teachingSessions()->exists());
 
-        Queue::assertNotPushed(CreateSessionMeetingJob::class);
+        Queue::assertPushed(CreateSessionMeetingJob::class);
 
         // Default global rule (20% / R0) against a R300 booking.
         $transaction = FinancialTransaction::first();
@@ -298,7 +300,9 @@ class PayFastItnTest extends TestCase
         $this->postJson('/api/payfast/itn', $payload)->assertOk();
 
         $this->assertSame('confirmed', $booking->fresh()->status->value);
-        $this->assertDatabaseCount('teaching_sessions', 0);
+        // Only the first ITN call's auto-scheduled session — the duplicate
+        // is a no-op because the booking is already Confirmed by then.
+        $this->assertDatabaseCount('teaching_sessions', 1);
     }
 
     public function test_duplicate_itn_does_not_create_a_second_financial_transaction(): void

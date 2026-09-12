@@ -110,17 +110,9 @@ class SessionContentTest extends TestCase
         app(BookingConfirmationService::class)->confirm($order);
         $booking = $booking->fresh();
 
-        $session = TeachingSession::create([
-            'tutor_profile_id' => $tutor->id,
-            'service_id' => $service->id,
-            'date' => $this->futureDate,
-            'start_time' => '09:00',
-            'end_time' => '10:00',
-            'status' => 'scheduled',
-        ]);
-        $booking->teachingSessions()->attach($session->id);
-
-        return $session;
+        // Auto-scheduled by BookingConfirmationService from the booking's
+        // own requested date/time.
+        return $booking->teachingSessions()->firstOrFail();
     }
 
     private function createLessonFor(TutorProfile $tutor): Lesson

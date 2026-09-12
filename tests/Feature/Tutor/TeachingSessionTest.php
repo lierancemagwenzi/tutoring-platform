@@ -12,7 +12,6 @@ use App\Models\Subject;
 use App\Models\TutorProfile;
 use App\Models\User;
 use App\Services\Booking\BookingConfirmationService;
-use App\Services\Booking\SessionSchedulingService;
 use App\Services\Commerce\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -96,18 +95,12 @@ class TeachingSessionTest extends TestCase
 
         $order = app(OrderService::class)->createForBooking($booking);
         app(BookingConfirmationService::class)->confirm($order);
-        $booking = $booking->fresh();
 
-        // Payment confirmation no longer auto-creates a session — the
-        // tutor now schedules it manually. A second booking for the exact
-        // same tutor/service/time attaches to the same TeachingSession
-        // (SessionSchedulingService's exact-match/group-class behavior).
-        app(SessionSchedulingService::class)->scheduleSession($booking, [
-            'date' => $this->futureDate,
-            'start_time' => '09:00',
-            'end_time' => '10:00',
-        ]);
-
+        // Payment confirmation auto-schedules the first session from the
+        // booking's own requested date/time — see BookingConfirmationService.
+        // A second booking for the exact same tutor/service/time attaches to
+        // the same TeachingSession (SessionSchedulingService's
+        // exact-match/group-class behavior).
         return $booking->fresh();
     }
 

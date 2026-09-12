@@ -94,15 +94,9 @@ class LearningHubTest extends TestCase
         app(BookingConfirmationService::class)->confirm($order);
         $booking = $booking->fresh();
 
-        $session = TeachingSession::create([
-            'tutor_profile_id' => $tutorProfile->id,
-            'service_id' => $service->id,
-            'date' => $date,
-            'start_time' => '09:00',
-            'end_time' => '10:00',
-            'status' => 'scheduled',
-        ]);
-        $booking->teachingSessions()->attach($session->id);
+        // Auto-scheduled by BookingConfirmationService from the booking's
+        // own requested date/time.
+        $session = $booking->teachingSessions()->firstOrFail();
 
         $course = $tutorProfile->courses()->create([
             'curriculum_id' => $this->curriculum->id,

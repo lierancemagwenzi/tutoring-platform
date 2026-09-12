@@ -13,8 +13,6 @@ use App\Models\SessionFormat;
 use App\Models\Subject;
 use App\Models\TutorProfile;
 use App\Models\User;
-use App\Services\Booking\BookingConfirmationService;
-use App\Services\Commerce\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
@@ -83,12 +81,19 @@ class SessionSchedulingTest extends TestCase
         return [$tutorUser, $tutorProfile, $service];
     }
 
+    /**
+     * Created already Confirmed, bypassing OrderService/BookingConfirmationService
+     * entirely — this file exercises SessionSchedulingService's manual
+     * scheduling directly, deliberately at a different time than the
+     * booking's original 07:00-08:00 request (see BookingConfirmationServiceTest
+     * for coverage of the auto-scheduled first session).
+     */
     private function confirmedBookingFor(TutorProfile $tutor, Service $service, ?User $student = null): Booking
     {
         $student ??= User::factory()->create();
         $slot = $tutor->availabilityDates()->first()->slots()->first();
 
-        $booking = Booking::create([
+        return Booking::create([
             'student_id' => $student->id,
             'tutor_profile_id' => $tutor->id,
             'service_id' => $service->id,
@@ -98,13 +103,8 @@ class SessionSchedulingTest extends TestCase
             'end_time' => '08:00',
             'price' => $service->price,
             'currency' => $service->currency,
-            'status' => 'accepted',
+            'status' => 'confirmed',
         ]);
-
-        $order = app(OrderService::class)->createForBooking($booking);
-        app(BookingConfirmationService::class)->confirm($order);
-
-        return $booking->fresh();
     }
 
     private function publishedLessonFor(TutorProfile $tutor): Lesson

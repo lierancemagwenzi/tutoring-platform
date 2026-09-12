@@ -82,13 +82,9 @@ class SessionLifecycleTest extends TestCase
 
         $order = app(OrderService::class)->createForBooking($booking);
         app(BookingConfirmationService::class)->confirm($order);
-        $booking = $booking->fresh();
 
-        Sanctum::actingAs($tutorUser);
-        $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [
-            'date' => $this->futureDate, 'start_time' => '09:00', 'end_time' => '10:00',
-        ])->assertCreated();
-
+        // Auto-scheduled by BookingConfirmationService from the booking's
+        // own requested date/time.
         return [$tutorUser, $tutor, $booking->fresh()];
     }
 
@@ -140,10 +136,10 @@ class SessionLifecycleTest extends TestCase
         app(BookingConfirmationService::class)->confirm($order);
         $booking = $booking->fresh();
 
+        // The first (09:00-10:00) is auto-scheduled by
+        // BookingConfirmationService from the booking's own requested
+        // date/time; only the second needs scheduling manually here.
         Sanctum::actingAs($tutorUser);
-        $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [
-            'date' => $this->futureDate, 'start_time' => '09:00', 'end_time' => '10:00',
-        ])->assertCreated();
         $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [
             'date' => $this->futureDate, 'start_time' => '10:00', 'end_time' => '11:00',
         ])->assertCreated();

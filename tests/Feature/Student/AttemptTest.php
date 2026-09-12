@@ -13,7 +13,6 @@ use App\Models\SessionFormat;
 use App\Models\SessionLesson;
 use App\Models\SessionLessonBlock;
 use App\Models\Subject;
-use App\Models\TeachingSession;
 use App\Models\TutorProfile;
 use App\Models\User;
 use App\Services\Booking\BookingConfirmationService;
@@ -89,15 +88,9 @@ class AttemptTest extends TestCase
         app(BookingConfirmationService::class)->confirm($order);
         $booking = $booking->fresh();
 
-        $session = TeachingSession::create([
-            'tutor_profile_id' => $tutorProfile->id,
-            'service_id' => $service->id,
-            'date' => $this->futureDate,
-            'start_time' => '09:00',
-            'end_time' => '10:00',
-            'status' => 'scheduled',
-        ]);
-        $booking->teachingSessions()->attach($session->id);
+        // Auto-scheduled by BookingConfirmationService from the booking's
+        // own requested date/time.
+        $session = $booking->teachingSessions()->firstOrFail();
 
         $course = $tutorProfile->courses()->create([
             'curriculum_id' => $this->curriculum->id,
