@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Enums\ProductType;
 use App\Models\Booking;
 use App\Models\Order;
+use App\Notifications\BookingPaid;
 use App\Notifications\UserNotification;
 
 /**
@@ -37,12 +38,17 @@ class BookingConfirmationService
 
             $booking->update(['status' => BookingStatus::Confirmed]);
 
-            $booking->loadMissing('student', 'tutorProfile.user');
+            $booking->loadMissing('student', 'tutorProfile.user', 'service.subject');
             $booking->student->notify(new UserNotification(
                 type: 'booking.confirmed',
                 title: 'Booking confirmed',
                 body: "Your booking with {$booking->tutorProfile->user->first_name} was confirmed.",
                 url: "/student/bookings/{$booking->id}",
+            ));
+            $booking->tutorProfile->user->notify(new BookingPaid(
+                studentName: trim("{$booking->student->first_name} {$booking->student->last_name}"),
+                subjectName: $booking->service->subject->name,
+                bookingId: $booking->id,
             ));
         }
     }

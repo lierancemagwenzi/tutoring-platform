@@ -4,7 +4,7 @@ namespace App\Services\Booking;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
-use App\Notifications\UserNotification;
+use App\Notifications\BookingAccepted;
 use App\Services\Commerce\OrderService;
 use Illuminate\Support\Facades\DB;
 
@@ -29,11 +29,9 @@ class BookingAcceptanceService
             ]);
 
             $booking->loadMissing('student', 'tutorProfile.user');
-            $booking->student->notify(new UserNotification(
-                type: 'booking.accepted',
-                title: 'Booking accepted',
-                body: "{$booking->tutorProfile->user->first_name} accepted your booking request. Complete payment to confirm it.",
-                url: "/student/bookings/{$booking->id}",
+            $booking->student->notify(new BookingAccepted(
+                tutorName: trim("{$booking->tutorProfile->user->first_name} {$booking->tutorProfile->user->last_name}"),
+                bookingId: $booking->id,
             ));
 
             return $booking->fresh();
