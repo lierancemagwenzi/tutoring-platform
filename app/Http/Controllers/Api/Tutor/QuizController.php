@@ -38,11 +38,16 @@ class QuizController extends Controller
     }
 
     /**
-     * Publish a quiz, making it available for students to attempt.
+     * Publish a quiz, making it available for students to attempt. Also
+     * publishes the lesson block that wraps it — the tutor has no separate
+     * control for that block's own status, so leaving it Draft here would
+     * both mislead the Lesson Builder's badge and block the quiz from being
+     * assignable to a session (see AssignSessionLessonBlockRequest).
      */
     public function publish(PublishQuizRequest $request, Quiz $quiz): JsonResponse
     {
         $quiz->update(['status' => LessonBlockStatus::Published]);
+        $quiz->lessonBlock()?->update(['status' => LessonBlockStatus::Published]);
 
         return response()->json([
             'quiz' => new QuizResource($quiz->load('questions')),

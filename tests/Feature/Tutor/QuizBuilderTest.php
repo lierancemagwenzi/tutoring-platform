@@ -175,6 +175,26 @@ class QuizBuilderTest extends TestCase
         $response->assertOk()->assertJsonPath('quiz.status', 'published');
     }
 
+    public function test_publishing_a_quiz_also_publishes_its_lesson_block(): void
+    {
+        [$tutor, $quiz] = $this->tutorWithQuiz();
+        $quiz->questions()->create(['position' => 0, 'type' => 'text', 'definition' => ['title' => 'First'], 'points' => 1]);
+        $block = $quiz->lesson->blocks()->create([
+            'block_type' => 'quiz',
+            'position' => 0,
+            'content' => ['quiz_id' => $quiz->id],
+            'settings' => [],
+            'status' => 'draft',
+        ]);
+
+        Sanctum::actingAs($tutor);
+
+        $response = $this->patchJson("/api/tutor/quizzes/{$quiz->id}/publish");
+
+        $response->assertOk()->assertJsonPath('quiz.status', 'published');
+        $this->assertSame('published', $block->fresh()->status->value);
+    }
+
     public function test_tutor_cannot_manage_another_tutors_quiz(): void
     {
         [$owner, $quiz] = $this->tutorWithQuiz();
