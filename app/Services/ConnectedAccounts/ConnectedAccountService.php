@@ -77,6 +77,12 @@ class ConnectedAccountService
 
         try {
             $tokenData = ConnectedAccountProviderFactory::make($provider)->exchangeCode($code);
+        } catch (RuntimeException $exception) {
+            // A provider throws this itself for a specific, tutor-safe
+            // reason it wants surfaced verbatim (e.g. GoogleProvider's
+            // missing-calendar-scope check) — pass it straight through
+            // rather than replacing it with the generic message below.
+            throw $exception;
         } catch (Throwable $exception) {
             // Never surface the provider's raw error (e.g. a Google/Guzzle
             // HTTP exception body) to the frontend — log it for us, show

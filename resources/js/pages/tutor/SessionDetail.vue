@@ -102,7 +102,9 @@ async function retryMeeting() {
                 </a>
 
                 <div v-if="store.currentSession.meeting.status === 'failed'" class="border-border mt-4 border-t pt-4">
-                    <p class="text-sm text-red-600">Meeting creation failed.</p>
+                    <p class="text-sm text-red-600">
+                        {{ store.currentSession.meeting.failure_reason ?? 'Meeting creation failed.' }}
+                    </p>
                     <p v-if="retryError" class="mt-1 text-sm text-red-600">{{ retryError }}</p>
                     <button
                         type="button"

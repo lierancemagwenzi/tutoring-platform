@@ -45,6 +45,11 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
+        // TEMPORARY — see GoogleCalendarMeetingProvider::createMeeting().
+        // Skips the real Calendar API call and returns a placeholder
+        // meeting link instead, for use until existing connected accounts
+        // have been reconnected under the fixed OAuth scope.
+        'fake_meetings' => env('GOOGLE_FAKE_MEETINGS', false),
     ],
 
     'payfast' => [
