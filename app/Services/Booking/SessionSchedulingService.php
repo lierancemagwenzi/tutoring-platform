@@ -7,6 +7,7 @@ use App\Enums\SessionStatus;
 use App\Models\Booking;
 use App\Models\Lesson;
 use App\Models\TeachingSession;
+use App\Notifications\SessionScheduled;
 use App\Services\Meetings\MeetingService;
 use App\Services\Sessions\SessionContentService;
 use RuntimeException;
@@ -40,7 +41,7 @@ class SessionSchedulingService
             throw new RuntimeException('This booking has no remaining sessions to schedule.');
         }
 
-        $booking->loadMissing(['tutorProfile', 'service']);
+        $booking->loadMissing(['tutorProfile.user', 'student', 'service.subject']);
 
         $session = $this->findOrCreateSession($booking, $data);
 
@@ -53,6 +54,15 @@ class SessionSchedulingService
         }
 
         $this->meetings->createForSession($session, $booking);
+
+        $booking->student->notify(new SessionScheduled(
+            tutorName: trim("{$booking->tutorProfile->user->first_name} {$booking->tutorProfile->user->last_name}"),
+            subjectName: $booking->service->subject->name,
+            date: $data['date'],
+            startTime: $data['start_time'],
+            endTime: $data['end_time'],
+            bookingId: $booking->id,
+        ));
 
         return $session->fresh(['service', 'sessionMeeting', 'sessionLessons.lesson', 'bookings']);
     }
