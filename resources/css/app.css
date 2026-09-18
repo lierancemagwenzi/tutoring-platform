@@ -19,12 +19,13 @@
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* "default" theme — the original palette. */
-    --color-ink: #100054;
-    --color-accent: #1a0ad0;
-    --color-amber: #ffb100;
-    --color-panel-start: #0f0247;
-    --color-panel-end: #2405a9;
+    /* "default" theme — light background, itslearnable.ai brand accents
+     * (docs/Logo Board.pdf): Navy #253d8e, Orange #f47d4f, Teal #54c0a7. */
+    --color-ink: #253d8e;
+    --color-accent: #54c0a7;
+    --color-amber: #f47d4f;
+    --color-panel-start: #253d8e;
+    --color-panel-end: #3b52ad;
 
     /* Page/card surfaces — light defaults match the grays already used
      * throughout the app (gray-100/white/gray-900/gray-500), so switching
@@ -60,28 +61,25 @@
 }
 
 /*
- * "dark" theme — overrides the variables above wherever <html
- * data-theme="dark"> is set. Toggled via the account menu at runtime
- * (persisted to localStorage) or defaulted via VITE_THEME in .env — see
- * resources/js/stores/theme.js.
- *
- * Palette from the itslearnable.ai brand board (docs/Logo Board.pdf):
- * Navy #253d8e, Orange #f47d4f, Pink #ee99c2, Teal #54c0a7,
- * Yellow-green #dee56c, Light pink #f4dbea, Gold #ffc60b.
+ * "dark" theme (docs/theme.jpg) — overrides the variables above wherever
+ * <html data-theme="dark"> is set. Toggled via the account menu at
+ * runtime (persisted to localStorage) or defaulted via VITE_THEME in .env
+ * — see resources/js/stores/theme.js.
  */
 :root[data-theme='dark'] {
-    --color-ink: #253d8e;
-    --color-accent: #54c0a7;
-    --color-amber: #f47d4f;
-    --color-panel-start: #253d8e;
-    --color-panel-end: #34479e;
+    --color-ink: #0f0f0f;
+    --color-accent: #4f7a56;
+    --color-amber: #a7cba3;
+    --color-panel-start: #0f0f0f;
+    --color-panel-end: #1a1a1a;
 
-    --color-surface: #253d8e;
-    --color-card: #2c3f96;
-    --color-card-alt: #34479e;
-    --color-border: rgba(255, 255, 255, 0.12);
+    /* Neutrals from docs/theme.jpg: Deep Black / Charcoal / Soft Black / Soft White. */
+    --color-surface: #0f0f0f;
+    --color-card: #1a1a1a;
+    --color-card-alt: #242424;
+    --color-border: rgba(255, 255, 255, 0.08);
     --color-body: #f5f3ee;
-    --color-muted: rgba(245, 243, 238, 0.65);
+    --color-muted: rgba(245, 243, 238, 0.6);
 
     --shadow-elevated: 0 4px 16px 0 rgb(0 0 0 / 0.5), 0 0 0 1px rgb(255 255 255 / 0.06);
     --shadow-popover: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08);
