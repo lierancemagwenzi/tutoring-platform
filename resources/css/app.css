@@ -1,13 +1,22 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+/* itslearnable.ai brand typeface (docs/Logo Board.pdf) — self-hosted via
+ * @fontsource so it works offline/in production without an external
+ * Google Fonts request. Weights match the font-{normal,medium,semibold,
+ * bold} utility classes actually used across the app. */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* "default" theme — the original palette. */
