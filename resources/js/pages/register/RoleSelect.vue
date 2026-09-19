@@ -39,7 +39,7 @@ function continueRegistration() {
                 >
                     <BookOpenIcon class="h-6 w-6" />
                 </span>
-                <p class="text-body mt-4 font-bold">A guide</p>
+                <p class="text-body mt-4 font-bold">An Insider</p>
             </button>
 
             <button
@@ -54,7 +54,7 @@ function continueRegistration() {
                 >
                     <AcademicCapIcon class="h-6 w-6" />
                 </span>
-                <p class="text-body mt-4 font-bold">A learner</p>
+                <p class="text-body mt-4 font-bold">A Member</p>
             </button>
         </div>
 
