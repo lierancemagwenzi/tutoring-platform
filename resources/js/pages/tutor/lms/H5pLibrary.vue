@@ -211,7 +211,7 @@ function exportUrl(contentId) {
             </div>
         </template>
 
-        <Modal v-model="previewOpen" title="Preview">
+        <Modal v-model="previewOpen" title="Preview" size="xl">
             <H5pPlayerWidget v-if="previewContentId" :content-id="previewContentId" />
         </Modal>
     </div>
