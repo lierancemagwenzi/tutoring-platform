@@ -43,7 +43,7 @@ const doodles = [
             </div>
 
             <div class="relative p-8">
-                <img :src="logo" alt="ItsLearnable" class="h-10 w-auto" />
+                <img :src="logo" alt="ItsLearnable" class="h-16 w-auto" />
             </div>
         </div>
 
