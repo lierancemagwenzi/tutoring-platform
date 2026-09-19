@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
  */
 trait InteractsWithH5pLibrary
 {
-    protected function seedH5pLibrary(string $machineName = 'H5P.MultiChoice', int $major = 1, int $minor = 16): int
+    protected function seedH5pLibrary(string $machineName = 'H5P.MultiChoice', int $major = 1, int $minor = 16, ?array $semantics = null): int
     {
         $id = DB::table('h5p_libraries')->insertGetId([
             'machine_name' => $machineName,
@@ -24,7 +24,7 @@ trait InteractsWithH5pLibrary
             'has_icon' => false,
             'restricted' => false,
             'embed_types' => 'div',
-            'semantics' => json_encode([
+            'semantics' => json_encode($semantics ?? [
                 ['name' => 'question', 'type' => 'text', 'label' => 'Question'],
             ]),
             'created_at' => now(),

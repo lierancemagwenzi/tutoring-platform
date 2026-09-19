@@ -220,15 +220,46 @@ class H5PService
             'disable' => 0,
         ];
 
+        $oldLibrary = null;
+        $oldParameters = null;
+
         if ($contentId !== null) {
             $existing = $core->h5pF->loadContent($contentId);
             $content['slug'] = $existing['slug'] ?? null;
+
+            if ($existing) {
+                $oldLibrary = [
+                    'name' => $existing['libraryName'],
+                    'majorVersion' => $existing['libraryMajorVersion'],
+                    'minorVersion' => $existing['libraryMinorVersion'],
+                ];
+                $oldParameters = json_decode($existing['params']);
+            }
         } else {
             $content['slug'] = null;
         }
 
         $content['id'] = $core->saveContent($content);
         $core->filterParameters($content);
+
+        // saveContent()/filterParameters() never move a file a tutor just
+        // uploaded out of the shared editor tmp folder into this content's
+        // own content/{id} folder — that's H5peditor::processParameters()'s
+        // job (it's what the stock H5P editor client always calls on save).
+        // Skipping it left every uploaded file (video/image/audio/etc.)
+        // sitting in the editor tmp folder forever: it happened to still
+        // play back immediately after upload only because nothing had
+        // touched that tmp file yet, but the content's own params reference
+        // a content/{id}-relative path that was never actually populated,
+        // so the asset 404s for anyone else (or after the tmp file is
+        // eventually cleaned up).
+        $this->kernel->editor()->processParameters(
+            $content['id'],
+            $library,
+            json_decode($content['params']),
+            $oldLibrary,
+            $oldParameters,
+        );
 
         return $this->get((string) $content['id']) + ['metadata' => $content['metadata']];
     }

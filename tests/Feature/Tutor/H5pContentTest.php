@@ -163,6 +163,44 @@ class H5pContentTest extends TestCase
         ]);
     }
 
+    /**
+     * Regression test for the bug found in production: a tutor-uploaded
+     * video (or any file/image/audio field) never left the shared editor
+     * tmp folder, so the content's own content/{id} folder — the path every
+     * asset URL is actually served from (see H5pAssetController::content())
+     * — never received a copy. The file "worked" immediately after upload
+     * purely because the tmp copy was still there; it 404s for anyone else,
+     * or once that tmp file is cleaned up.
+     */
+    public function test_creating_content_moves_an_uploaded_file_out_of_the_editor_tmp_folder(): void
+    {
+        Sanctum::actingAs($this->tutorWithApprovedSubject());
+        $this->seedH5pLibrary('H5P.TestVideo', 1, 0, [
+            ['name' => 'video', 'type' => 'video', 'label' => 'Video'],
+        ]);
+
+        $tmpPath = storage_path('app/h5p/editor/videos/sample-clip.mp4');
+        @mkdir(dirname($tmpPath), 0755, true);
+        file_put_contents($tmpPath, 'fake video bytes');
+
+        $response = $this->postJson('/api/tutor/h5p-content', $this->classificationPayload([
+            'library' => 'H5P.TestVideo 1.0',
+            'params' => [
+                'params' => [
+                    'video' => [
+                        ['path' => 'videos/sample-clip.mp4', 'mime' => 'video/mp4', 'copyright' => ['license' => 'U']],
+                    ],
+                ],
+                'metadata' => ['title' => 'Sample Video'],
+            ],
+        ]));
+
+        $response->assertCreated();
+        $contentId = $response->json('id');
+
+        $this->assertFileExists(storage_path("app/h5p/content/{$contentId}/videos/sample-clip.mp4"));
+    }
+
     public function test_create_requires_library_and_params(): void
     {
         Sanctum::actingAs($this->tutorWithApprovedSubject());
