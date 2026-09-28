@@ -25,6 +25,30 @@ export const useAuthStore = defineStore('auth', {
             return data.user
         },
 
+        async updateProfile(payload) {
+            // A photo upload needs multipart, which PHP only parses on POST —
+            // spoof the PUT via _method in that case.
+            let request
+            if (payload.profile_photo instanceof File) {
+                const body = new FormData()
+                Object.entries({ ...payload, _method: 'PUT' }).forEach(([key, value]) => body.append(key, value ?? ''))
+                request = api.post('/profile', body)
+            } else {
+                const { profile_photo, ...rest } = payload
+                request = api.put('/profile', rest)
+            }
+
+            const { data } = await request
+            this.user = data.user
+            localStorage.setItem('auth_user', JSON.stringify(data.user))
+            return data.user
+        },
+
+        async changePassword(payload) {
+            const { data } = await api.put('/profile/password', payload)
+            return data
+        },
+
         async verifyEmail(otp) {
             const { data } = await api.post('/email/verify', { otp })
             this.user = data.user

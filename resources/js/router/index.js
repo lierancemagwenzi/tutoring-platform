@@ -89,6 +89,7 @@ import AdminTutorApprovals from '../pages/admin/TutorApprovals.vue'
 import AdminTutorApprovalDetail from '../pages/admin/TutorApprovalDetail.vue'
 import AdminTutorSubjectRequests from '../pages/admin/TutorSubjectRequests.vue'
 import AdminSettings from '../pages/admin/Settings.vue'
+import AccountProfile from '../pages/account/Profile.vue'
 import AdminLegalDocumentEditor from '../pages/admin/LegalDocumentEditor.vue'
 import AdminIntegrations from '../pages/admin/Integrations.vue'
 import AdminSystemHealth from '../pages/admin/SystemHealth.vue'
@@ -163,6 +164,7 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { path: '', name: 'student.dashboard', component: StudentDashboard },
+            { path: 'profile', name: 'student.profile', component: AccountProfile },
             { path: 'marketplace', name: 'student.marketplace', component: Marketplace },
             { path: 'marketplace/tutors/:id', name: 'student.marketplace.tutor', component: TutorProfile },
             { path: 'marketplace/courses/:id', name: 'student.marketplace.course', component: SelfPacedCourseDetails },
@@ -209,6 +211,7 @@ const routes = [
         meta: { requiresAuth: true },
         children: [
             { path: '', name: 'tutor.dashboard', component: TutorDashboard, meta: { requiresTutor: true } },
+            { path: 'profile', name: 'tutor.profile', component: AccountProfile, meta: { requiresTutor: true } },
             { path: 'subjects', name: 'tutor.subjects', component: TutorSubjects, meta: { requiresTutor: true } },
             { path: 'calendar', name: 'tutor.calendar', component: TutorCalendar, meta: { requiresTutor: true } },
             { path: 'services', name: 'tutor.services', component: TutorServices, meta: { requiresTutor: true } },
@@ -409,6 +412,7 @@ const routes = [
         meta: { requiresAuth: true, requiresAdmin: true },
         children: [
             { path: '', name: 'admin.dashboard', component: AdminDashboard },
+            { path: 'profile', name: 'admin.profile', component: AccountProfile },
             { path: 'quick-setup', name: 'admin.quick-setup', component: AdminQuickSetup },
             { path: 'subjects', name: 'admin.subjects', component: AdminSubjects },
             { path: 'faqs', name: 'admin.faqs', component: AdminFaqs },

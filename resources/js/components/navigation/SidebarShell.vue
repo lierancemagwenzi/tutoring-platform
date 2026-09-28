@@ -10,6 +10,7 @@ import {
     HomeIcon,
     MoonIcon,
     SunIcon,
+    UserCircleIcon,
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '../../stores/auth'
 import { useThemeStore } from '../../stores/theme'
@@ -231,6 +232,14 @@ onMounted(() => {
                         v-if="menuOpen"
                         class="bg-card text-body absolute top-full right-0 mt-2 w-44 overflow-hidden rounded-xl py-1 shadow-popover"
                     >
+                        <router-link
+                            :to="`${homeRoute}/profile`"
+                            class="hover:bg-card-alt flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"
+                            @click="menuOpen = false"
+                        >
+                            <UserCircleIcon class="h-4 w-4" />
+                            My Profile
+                        </router-link>
                         <button
                             type="button"
                             class="hover:bg-card-alt flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm"

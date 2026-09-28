@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Account\ProfileController;
 use App\Http\Controllers\Api\Admin\ActivityLogController;
 use App\Http\Controllers\Api\Admin\AdminAccountController;
 use App\Http\Controllers\Api\Admin\BookingManagementController;
@@ -138,6 +139,10 @@ Route::middleware('auth:sanctum')->group(function () {
 // `auth:sanctum` (not nested outside it) so the authenticated user is
 // already resolved by the time it runs.
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    // Every role manages its own profile and password here.
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->middleware('throttle:6,1');
+
     Route::get('/subjects', [SubjectController::class, 'index']);
     Route::get('/grades', [GradeController::class, 'index']);
     Route::get('/service-categories', [ServiceCategoryController::class, 'index']);

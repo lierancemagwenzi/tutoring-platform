@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -27,8 +28,10 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at?->toIso8601String(),
             'tutor_profile' => $this->whenLoaded('tutorProfile', fn () => [
                 'id' => $this->tutorProfile->id,
+                'display_name' => $this->tutorProfile->display_name,
                 'bio' => $this->tutorProfile->bio,
                 'profile_photo' => $this->tutorProfile->profile_photo,
+                'profile_photo_url' => $this->tutorProfile->profile_photo ? Storage::disk('public')->url($this->tutorProfile->profile_photo) : null,
                 'onboarding_step' => $this->tutorProfile->onboarding_step,
                 'onboarding_complete' => $this->tutorProfile->onboarding_complete,
             ]),
