@@ -41,6 +41,7 @@ const filters = reactive({
     priceMax: '',
     language: '',
     yearsExperienceMin: '',
+    availableOnly: false,
     sort: '',
 })
 
@@ -62,6 +63,7 @@ function buildParams(page) {
         price_max: filters.priceMax,
         language: filters.language,
         years_experience_min: filters.yearsExperienceMin,
+        available_only: filters.availableOnly ? 1 : '',
         sort: filters.sort,
         page,
     }
@@ -92,6 +94,7 @@ function clearFilters() {
     filters.priceMax = ''
     filters.language = ''
     filters.yearsExperienceMin = ''
+    filters.availableOnly = false
     filters.sort = ''
     applyFilters(1)
 }

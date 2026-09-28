@@ -48,7 +48,7 @@ function continueToBooking(service) {
             <div class="bg-card shadow-elevated flex flex-col gap-6 rounded-2xl p-6 sm:flex-row sm:items-center">
                 <img
                     v-if="store.tutorProfile.profile_photo"
-                    :src="store.tutorProfile.profile_photo"
+                    :src="store.tutorProfile.profile_photo_url"
                     :alt="store.tutorProfile.display_name"
                     class="h-24 w-24 shrink-0 rounded-full object-cover"
                 />

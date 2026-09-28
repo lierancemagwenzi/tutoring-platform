@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources\Marketplace;
 
+use App\Services\Booking\BookingAvailabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TutorCardResource extends JsonResource
@@ -24,6 +26,7 @@ class TutorCardResource extends JsonResource
             'id' => $this->id,
             'display_name' => $this->display_name,
             'profile_photo' => $this->profile_photo,
+            'profile_photo_url' => $this->profile_photo ? Storage::disk('public')->url($this->profile_photo) : null,
             'bio' => $this->bio ? Str::limit($this->bio, 160) : null,
             'years_experience' => $this->years_experience,
             'languages' => $this->languages ?? [],
@@ -32,6 +35,9 @@ class TutorCardResource extends JsonResource
             'starting_price' => $cheapestService?->price,
             'currency' => $cheapestService?->currency?->value,
             'published_services_count' => $publishedServices->count(),
+            // False when none of this tutor's services has an open slot, so
+            // the listing can flag them before a learner goes date-hunting.
+            'has_availability' => app(BookingAvailabilityService::class)->bookableServiceIds($this->resource, $publishedServices) !== [],
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Marketplace;
 
+use App\Models\AvailabilityDate;
+use App\Models\Booking;
 use App\Models\Curriculum;
 use App\Models\Grade;
 use App\Models\Service;
@@ -318,5 +320,96 @@ class TutorMarketplaceTest extends TestCase
         $response = $this->getJson('/api/marketplace/tutors/999999');
 
         $response->assertNotFound();
+    }
+
+    private function addSlot(TutorProfile $tutorProfile, string $date, string $start = '09:00', string $end = '10:00')
+    {
+        return AvailabilityDate::create(['tutor_profile_id' => $tutorProfile->id, 'date' => $date])
+            ->slots()->create(['start_time' => $start, 'end_time' => $end]);
+    }
+
+    public function test_listing_flags_tutors_without_any_open_slot_as_unavailable(): void
+    {
+        $this->actingStudent();
+
+        $available = $this->createTutor(['display_name' => 'Available Tutor']);
+        $this->createService($available);
+        $this->addSlot($available, now()->addDays(3)->toDateString());
+
+        $noSlots = $this->createTutor(['display_name' => 'No Slots Tutor']);
+        $this->createService($noSlots);
+
+        $onlyPast = $this->createTutor(['display_name' => 'Past Slots Tutor']);
+        $this->createService($onlyPast);
+        $this->addSlot($onlyPast, now()->subDays(2)->toDateString());
+
+        $tutors = collect($this->getJson('/api/marketplace/tutors')->assertOk()->json('tutors'))
+            ->pluck('has_availability', 'display_name');
+
+        $this->assertTrue($tutors['Available Tutor']);
+        $this->assertFalse($tutors['No Slots Tutor']);
+        $this->assertFalse($tutors['Past Slots Tutor']);
+    }
+
+    public function test_a_tutor_whose_only_slot_is_fully_booked_is_unavailable(): void
+    {
+        $student = $this->actingStudent();
+        $tutor = $this->createTutor();
+        $service = $this->createService($tutor);
+        $date = now()->addDays(3)->toDateString();
+        $slot = $this->addSlot($tutor, $date);
+
+        Booking::create([
+            'student_id' => $student->id,
+            'tutor_profile_id' => $tutor->id,
+            'service_id' => $service->id,
+            'availability_slot_id' => $slot->id,
+            'date' => $date,
+            'start_time' => '09:00',
+            'end_time' => '10:00',
+            'price' => $service->price,
+            'currency' => $service->currency,
+            'status' => 'confirmed',
+        ]);
+
+        $this->getJson('/api/marketplace/tutors')->assertOk()->assertJsonPath('tutors.0.has_availability', false);
+    }
+
+    public function test_profile_flags_each_service_by_whether_it_fits_an_open_slot(): void
+    {
+        $this->actingStudent();
+        $tutor = $this->createTutor();
+        $short = $this->createService($tutor, ['title' => 'Short', 'session_duration_minutes' => 60]);
+        $long = $this->createService($tutor, ['title' => 'Long', 'session_duration_minutes' => 120]);
+        $this->addSlot($tutor, now()->addDays(3)->toDateString(), '09:00', '10:00');
+
+        $services = collect($this->getJson("/api/marketplace/tutors/{$tutor->id}")->assertOk()->json('tutor.services'))
+            ->pluck('has_availability', 'id');
+
+        $this->assertTrue($services[$short->id]);
+        $this->assertFalse($services[$long->id]);
+    }
+
+    public function test_available_only_filter_returns_just_tutors_with_an_open_slot(): void
+    {
+        $this->actingStudent();
+
+        $available = $this->createTutor(['display_name' => 'Available Tutor']);
+        $this->createService($available);
+        $this->addSlot($available, now()->addDays(3)->toDateString());
+
+        $tooShort = $this->createTutor(['display_name' => 'Too Short Tutor']);
+        $this->createService($tooShort, ['session_duration_minutes' => 120]);
+        $this->addSlot($tooShort, now()->addDays(3)->toDateString());
+
+        $this->createService($this->createTutor(['display_name' => 'No Slots Tutor']));
+
+        $this->getJson('/api/marketplace/tutors?available_only=1')
+            ->assertOk()
+            ->assertJsonCount(1, 'tutors')
+            ->assertJsonPath('tutors.0.display_name', 'Available Tutor')
+            ->assertJsonPath('meta.total', 1);
+
+        $this->getJson('/api/marketplace/tutors')->assertOk()->assertJsonCount(3, 'tutors');
     }
 }

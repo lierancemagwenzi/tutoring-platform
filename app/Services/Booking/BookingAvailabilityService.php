@@ -49,6 +49,42 @@ class BookingAvailabilityService
     }
 
     /**
+     * The ids of the given services that have at least one bookable start
+     * time on any upcoming availability date — i.e. a learner opening the
+     * date picker for them would find something. Uses the same slot/capacity
+     * rules as availableTimesForMonth(), so the marketplace's "Unavailable"
+     * badge never disagrees with the picker.
+     *
+     * @param  iterable<Service>  $services
+     * @return list<int>
+     */
+    public function bookableServiceIds(TutorProfile $tutor, iterable $services): array
+    {
+        $availabilityDates = $tutor->availabilityDates()
+            ->where('date', '>=', Carbon::today()->toDateString())
+            ->whereHas('slots')
+            ->with('slots')
+            ->orderBy('date')
+            ->get();
+
+        $bookable = [];
+
+        foreach ($services as $service) {
+            foreach ($availabilityDates as $availabilityDate) {
+                foreach ($availabilityDate->slots as $slot) {
+                    if ($this->bookableStartTimesForSlot($service, $slot, $availabilityDate->date->toDateString()) !== []) {
+                        $bookable[] = $service->id;
+
+                        continue 3;
+                    }
+                }
+            }
+        }
+
+        return $bookable;
+    }
+
+    /**
      * Determine whether the given start time is currently bookable within the given slot.
      */
     public function isTimeAvailable(

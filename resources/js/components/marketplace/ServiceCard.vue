@@ -76,7 +76,11 @@ const emit = defineEmits(['continue'])
             </div>
         </div>
 
+        <p v-if="service.has_availability === false" class="mt-5 rounded-lg bg-red-50 px-4 py-2.5 text-center text-sm font-semibold text-red-600">
+            Unavailable — no open slots right now
+        </p>
         <button
+            v-else
             type="button"
             class="bg-amber shadow-elevated mt-5 rounded-full px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-95"
             @click="emit('continue')"

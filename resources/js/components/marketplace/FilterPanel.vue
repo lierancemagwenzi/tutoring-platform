@@ -16,6 +16,17 @@ const emit = defineEmits(['apply', 'clear'])
 
 <template>
     <div class="space-y-5">
+        <label class="text-body flex items-center gap-3 text-sm font-medium">
+            <input
+                id="filter-available-only"
+                v-model="filters.availableOnly"
+                type="checkbox"
+                class="text-accent border-border h-4 w-4 rounded"
+                @change="emit('apply')"
+            />
+            Available only
+        </label>
+
         <SelectInput id="filter-subject" v-model="filters.subjectId" label="Subject" :options="subjectOptions" />
         <SelectInput id="filter-grade" v-model="filters.gradeId" label="Grade" :options="gradeOptions" />
         <SelectInput id="filter-curriculum" v-model="filters.curriculumId" label="Curriculum" :options="curriculumOptions" />

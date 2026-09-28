@@ -11,7 +11,7 @@ defineProps({
         <div class="flex items-center gap-4">
             <img
                 v-if="tutor.profile_photo"
-                :src="tutor.profile_photo"
+                :src="tutor.profile_photo_url"
                 :alt="tutor.display_name"
                 class="h-16 w-16 shrink-0 rounded-full object-cover"
             />
@@ -21,6 +21,12 @@ defineProps({
             <div class="min-w-0">
                 <p class="text-body truncate font-bold">{{ tutor.display_name }}</p>
                 <p class="text-muted text-sm">{{ tutor.years_experience ?? 0 }} yrs experience</p>
+                <span
+                    v-if="tutor.has_availability === false"
+                    class="mt-1 inline-block rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-600"
+                >
+                    Unavailable
+                </span>
             </div>
         </div>
 
@@ -52,7 +58,10 @@ defineProps({
                     <span v-else class="text-muted">Price on request</span>
                 </p>
                 <p class="text-muted text-xs">
-                    {{ tutor.published_services_count }} service{{ tutor.published_services_count === 1 ? '' : 's' }}
+                    <template v-if="tutor.has_availability === false">No open slots right now</template>
+                    <template v-else>
+                        {{ tutor.published_services_count }} service{{ tutor.published_services_count === 1 ? '' : 's' }}
+                    </template>
                 </p>
             </div>
             <router-link

@@ -7,6 +7,7 @@ use App\Http\Requests\Marketplace\IndexTutorsRequest;
 use App\Http\Resources\Marketplace\TutorCardResource;
 use App\Http\Resources\Marketplace\TutorProfileResource;
 use App\Models\TutorProfile;
+use App\Services\Booking\BookingAvailabilityService;
 use Illuminate\Http\JsonResponse;
 
 class TutorController extends Controller
@@ -14,7 +15,7 @@ class TutorController extends Controller
     /**
      * Search, filter, sort, and paginate tutors who have at least one published service.
      */
-    public function index(IndexTutorsRequest $request): JsonResponse
+    public function index(IndexTutorsRequest $request, BookingAvailabilityService $availability): JsonResponse
     {
         $query = TutorProfile::query()
             ->whereHas('publishedServices')
@@ -72,6 +73,20 @@ class TutorController extends Controller
 
         if (($yearsMin = $request->validated('years_experience_min')) !== null) {
             $query->where('years_experience', '>=', $yearsMin);
+        }
+
+        // Whether a tutor has an open slot depends on slot length vs. session
+        // duration and per-time capacity, which SQL can't express — so narrow
+        // to tutors with any upcoming availability, check those in PHP, then
+        // constrain the paginated query to the survivors.
+        if ($request->boolean('available_only')) {
+            $availableIds = (clone $query)
+                ->whereHas('availabilityDates', fn ($q) => $q->where('date', '>=', today()->toDateString())->whereHas('slots'))
+                ->get()
+                ->filter(fn (TutorProfile $tutor) => $availability->bookableServiceIds($tutor, $tutor->publishedServices) !== [])
+                ->modelKeys();
+
+            $query->whereKey($availableIds);
         }
 
         match ($request->validated('sort')) {

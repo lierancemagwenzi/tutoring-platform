@@ -34,6 +34,7 @@ class IndexTutorsRequest extends FormRequest
             'price_max' => ['nullable', 'numeric', 'min:0', 'gte:price_min'],
             'language' => ['nullable', 'string', 'max:255'],
             'years_experience_min' => ['nullable', 'integer', 'min:0'],
+            'available_only' => ['nullable', 'boolean'],
             'sort' => ['nullable', 'string', Rule::in(['lowest_price', 'highest_price', 'most_experienced', 'alphabetical', 'newest'])],
             'page' => ['nullable', 'integer', 'min:1'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:50'],
