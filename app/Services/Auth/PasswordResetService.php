@@ -59,6 +59,15 @@ class PasswordResetService
 
         $this->otp->verify($user, OtpPurpose::PasswordReset, $code);
 
+        // Checked only after the code verifies, so this reveals the account's
+        // state solely to someone who controls its inbox. Without it a
+        // disabled user is told "You can now log in" and then rejected.
+        if ($user->disabled_at !== null) {
+            throw ValidationException::withMessages([
+                'email' => 'This account has been disabled, so its password can\'t be reset. Contact support for help.',
+            ]);
+        }
+
         $user->update(['password' => $password]);
     }
 }

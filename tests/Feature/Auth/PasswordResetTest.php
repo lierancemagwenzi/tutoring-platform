@@ -6,6 +6,7 @@ use App\Mail\PasswordResetOtpMail;
 use App\Models\EmailOtp;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -181,5 +182,42 @@ class PasswordResetTest extends TestCase
         ])->assertOk();
 
         $this->assertNotNull($user->fresh()->email_verified_at);
+    }
+
+    public function test_a_disabled_account_is_told_it_is_disabled_instead_of_having_its_password_reset(): void
+    {
+        Mail::fake();
+        $user = User::factory()->create(['email' => 'disabled@example.com', 'disabled_at' => now()]);
+        $this->postJson('/api/forgot-password', ['email' => 'disabled@example.com'])->assertOk();
+
+        $code = null;
+        Mail::assertQueued(PasswordResetOtpMail::class, function ($mail) use (&$code) {
+            $code = $mail->code;
+
+            return true;
+        });
+
+        $this->postJson('/api/reset-password', [
+            'email' => 'disabled@example.com',
+            'otp' => $code,
+            'password' => 'NewPassword!123',
+            'password_confirmation' => 'NewPassword!123',
+        ])->assertUnprocessable()->assertJsonValidationErrors('email');
+
+        $this->assertTrue(Hash::check('password', $user->fresh()->password));
+    }
+
+    public function test_a_disabled_account_with_a_wrong_code_gets_the_generic_code_error(): void
+    {
+        Mail::fake();
+        User::factory()->create(['email' => 'disabled@example.com', 'disabled_at' => now()]);
+        $this->postJson('/api/forgot-password', ['email' => 'disabled@example.com'])->assertOk();
+
+        $this->postJson('/api/reset-password', [
+            'email' => 'disabled@example.com',
+            'otp' => '000000',
+            'password' => 'NewPassword!123',
+            'password_confirmation' => 'NewPassword!123',
+        ])->assertUnprocessable()->assertJsonValidationErrors('otp')->assertJsonMissingValidationErrors('email');
     }
 }
