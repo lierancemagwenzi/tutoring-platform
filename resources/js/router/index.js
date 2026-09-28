@@ -208,7 +208,7 @@ const routes = [
         component: TutorLayout,
         meta: { requiresAuth: true },
         children: [
-            { path: '', name: 'tutor.dashboard', component: TutorDashboard },
+            { path: '', name: 'tutor.dashboard', component: TutorDashboard, meta: { requiresTutor: true } },
             { path: 'subjects', name: 'tutor.subjects', component: TutorSubjects, meta: { requiresTutor: true } },
             { path: 'calendar', name: 'tutor.calendar', component: TutorCalendar, meta: { requiresTutor: true } },
             { path: 'services', name: 'tutor.services', component: TutorServices, meta: { requiresTutor: true } },
