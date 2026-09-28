@@ -54,7 +54,7 @@ const userName = computed(() => {
 <template>
     <SidebarShell
         :user-name="userName"
-        user-role="Student"
+        user-role="Member"
         home-route="/student"
         :groups="STUDENT_GROUPS"
         :trailing-links="STUDENT_TRAILING_LINKS"
