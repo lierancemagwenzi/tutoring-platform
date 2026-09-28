@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SelfPacedActivityAttachmentResource extends JsonResource
 {
@@ -20,6 +21,7 @@ class SelfPacedActivityAttachmentResource extends JsonResource
             'media_type' => $this->media_type->value,
             'title' => $this->title,
             'file_path' => $this->file_path,
+            'url' => $this->file_path ? Storage::disk('public')->url($this->file_path) : null,
             'external_url' => $this->external_url,
             'original_name' => $this->original_name,
             'size' => $this->size,

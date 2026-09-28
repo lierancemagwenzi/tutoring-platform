@@ -10,8 +10,8 @@ defineProps({
     <div class="bg-card shadow-elevated flex flex-col rounded-2xl p-5">
         <div class="bg-card-alt relative -mx-5 -mt-5 mb-3 h-36 overflow-hidden rounded-t-2xl">
             <img
-                v-if="course.thumbnail_path"
-                :src="`/storage/${course.thumbnail_path}`"
+                v-if="course.thumbnail_url"
+                :src="course.thumbnail_url"
                 :alt="course.title"
                 class="h-full w-full object-cover"
             />
@@ -49,7 +49,7 @@ defineProps({
         <div class="text-muted mt-3 flex items-center gap-2 text-sm">
             <img
                 v-if="course.tutor?.profile_photo"
-                :src="`/storage/${course.tutor.profile_photo}`"
+                :src="course.tutor.profile_photo_url"
                 :alt="course.tutor.display_name"
                 class="h-6 w-6 rounded-full object-cover"
             />

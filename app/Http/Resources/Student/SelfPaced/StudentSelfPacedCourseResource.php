@@ -7,6 +7,7 @@ use App\Models\SelfPacedCourse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * The course-player "bootstrap" payload: the full curriculum tree plus this
@@ -44,12 +45,14 @@ class StudentSelfPacedCourseResource extends JsonResource
             'subtitle' => $this->subtitle,
             'description' => $this->description,
             'thumbnail_path' => $this->thumbnail_path,
+            'thumbnail_url' => $this->thumbnail_path ? Storage::disk('public')->url($this->thumbnail_path) : null,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'learning_objectives' => $this->learning_objectives,
             'tutor' => $this->whenLoaded('tutorProfile', fn () => [
                 'id' => $this->tutorProfile->id,
                 'display_name' => $this->tutorProfile->display_name,
                 'profile_photo' => $this->tutorProfile->profile_photo,
+                'profile_photo_url' => $this->tutorProfile->profile_photo ? Storage::disk('public')->url($this->tutorProfile->profile_photo) : null,
             ]),
             'enrollment' => [
                 'id' => $this->enrollment->id,

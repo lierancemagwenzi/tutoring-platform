@@ -4,6 +4,7 @@ namespace App\Http\Resources\Commerce;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class EnrollmentCardResource extends JsonResource
 {
@@ -34,6 +35,7 @@ class EnrollmentCardResource extends JsonResource
                 'id' => $course->id,
                 'title' => $course->title,
                 'thumbnail_path' => $course->thumbnail_path,
+                'thumbnail_url' => $course->thumbnail_path ? Storage::disk('public')->url($course->thumbnail_path) : null,
                 'difficulty' => $course->difficulty?->value,
                 'subject' => $course->relationLoaded('subject') && $course->subject
                     ? ['id' => $course->subject->id, 'name' => $course->subject->name]
@@ -45,6 +47,7 @@ class EnrollmentCardResource extends JsonResource
                     'id' => $course->tutorProfile->id,
                     'display_name' => $course->tutorProfile->display_name,
                     'profile_photo' => $course->tutorProfile->profile_photo,
+                    'profile_photo_url' => $course->tutorProfile->profile_photo ? Storage::disk('public')->url($course->tutorProfile->profile_photo) : null,
                 ] : null,
             ],
         ];

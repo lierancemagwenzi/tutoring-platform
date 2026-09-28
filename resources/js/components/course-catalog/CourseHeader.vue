@@ -10,8 +10,8 @@ defineProps({
     <div>
         <div class="bg-card-alt overflow-hidden rounded-2xl">
             <img
-                v-if="course.thumbnail_path"
-                :src="`/storage/${course.thumbnail_path}`"
+                v-if="course.thumbnail_url"
+                :src="course.thumbnail_url"
                 :alt="course.title"
                 class="h-64 w-full object-cover"
             />
@@ -20,7 +20,7 @@ defineProps({
             </div>
         </div>
 
-        <video v-if="course.promo_video_path" :src="`/storage/${course.promo_video_path}`" controls class="mt-4 w-full rounded-2xl bg-black" />
+        <video v-if="course.promo_video_path" :src="course.promo_video_url" controls class="mt-4 w-full rounded-2xl bg-black" />
 
         <h1 class="text-body mt-6 text-3xl font-bold">{{ course.title }}</h1>
         <p v-if="course.subtitle" class="text-muted mt-2 text-lg">{{ course.subtitle }}</p>

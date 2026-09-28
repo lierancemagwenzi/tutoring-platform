@@ -79,7 +79,7 @@ function firstAttachmentUrl(item) {
     const attachment = item.attachments?.[0]
     if (!attachment) return null
 
-    return attachment.file_path ? `/storage/${attachment.file_path}` : attachment.external_url
+    return attachment.url ?? attachment.external_url
 }
 
 async function onReorder() {

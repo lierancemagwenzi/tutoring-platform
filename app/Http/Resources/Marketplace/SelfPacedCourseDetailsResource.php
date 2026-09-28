@@ -7,6 +7,7 @@ use App\Http\Resources\TutorQualificationResource;
 use App\Services\Marketplace\SelfPacedCoursePricingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SelfPacedCourseDetailsResource extends JsonResource
 {
@@ -26,7 +27,9 @@ class SelfPacedCourseDetailsResource extends JsonResource
             'description' => $this->description,
             'promo_description' => $this->promo_description,
             'thumbnail_path' => $this->thumbnail_path,
+            'thumbnail_url' => $this->thumbnail_path ? Storage::disk('public')->url($this->thumbnail_path) : null,
             'promo_video_path' => $this->promo_video_path,
+            'promo_video_url' => $this->promo_video_path && ! str_starts_with($this->promo_video_path, 'http') ? Storage::disk('public')->url($this->promo_video_path) : $this->promo_video_path,
             'is_enrolled' => (bool) ($this->is_enrolled ?? false),
             'subject' => $this->whenLoaded('subject', fn () => $this->subject ? ['id' => $this->subject->id, 'name' => $this->subject->name] : null),
             'grade' => $this->whenLoaded('grade', fn () => $this->grade ? ['id' => $this->grade->id, 'name' => $this->grade->name] : null),
@@ -90,6 +93,7 @@ class SelfPacedCourseDetailsResource extends JsonResource
             'id' => $tutor->id,
             'display_name' => $tutor->display_name,
             'profile_photo' => $tutor->profile_photo,
+            'profile_photo_url' => $tutor->profile_photo ? Storage::disk('public')->url($tutor->profile_photo) : null,
             'bio' => $tutor->bio,
             'years_experience' => $tutor->years_experience,
             'qualifications' => TutorQualificationResource::collection(

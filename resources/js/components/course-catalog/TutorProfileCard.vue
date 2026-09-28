@@ -12,7 +12,7 @@ defineProps({
         <div class="flex items-center gap-3">
             <img
                 v-if="tutor.profile_photo"
-                :src="`/storage/${tutor.profile_photo}`"
+                :src="tutor.profile_photo_url"
                 :alt="tutor.display_name"
                 class="h-14 w-14 rounded-full object-cover"
             />

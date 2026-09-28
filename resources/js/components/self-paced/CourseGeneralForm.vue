@@ -116,8 +116,8 @@ async function uploadThumbnail(event) {
             <p class="mb-2 text-sm font-semibold text-body">Thumbnail</p>
             <div class="flex items-center gap-4">
                 <img
-                    v-if="course.thumbnail_path"
-                    :src="`/storage/${course.thumbnail_path}`"
+                    v-if="course.thumbnail_url"
+                    :src="course.thumbnail_url"
                     class="h-20 w-32 rounded-lg object-cover"
                     alt="Course thumbnail"
                 />

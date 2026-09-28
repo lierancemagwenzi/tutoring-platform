@@ -11,8 +11,8 @@ defineProps({
     <div class="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
         <div class="relative -mx-5 -mt-5 mb-3 h-36 overflow-hidden rounded-t-2xl bg-gray-100">
             <img
-                v-if="enrollment.course.thumbnail_path"
-                :src="`/storage/${enrollment.course.thumbnail_path}`"
+                v-if="enrollment.course.thumbnail_url"
+                :src="enrollment.course.thumbnail_url"
                 :alt="enrollment.course.title"
                 class="h-full w-full object-cover"
             />

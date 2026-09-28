@@ -225,7 +225,7 @@ function finishAttachments() {
 }
 
 function previewUrl(attachment) {
-    return attachment.file_path ? `/storage/${attachment.file_path}` : attachment.external_url
+    return attachment.url ?? attachment.external_url
 }
 </script>
 

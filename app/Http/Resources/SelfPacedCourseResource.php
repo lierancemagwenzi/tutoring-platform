@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Services\SelfPaced\SelfPacedPublishingService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SelfPacedCourseResource extends JsonResource
 {
@@ -24,7 +25,9 @@ class SelfPacedCourseResource extends JsonResource
             'description' => $this->description,
             'promo_description' => $this->promo_description,
             'thumbnail_path' => $this->thumbnail_path,
+            'thumbnail_url' => $this->thumbnail_path ? Storage::disk('public')->url($this->thumbnail_path) : null,
             'promo_video_path' => $this->promo_video_path,
+            'promo_video_url' => $this->promo_video_path && ! str_starts_with($this->promo_video_path, 'http') ? Storage::disk('public')->url($this->promo_video_path) : $this->promo_video_path,
             'subject' => new SubjectResource($this->whenLoaded('subject')),
             'grade' => new GradeResource($this->whenLoaded('grade')),
             'category' => new ServiceCategoryResource($this->whenLoaded('category')),
