@@ -72,7 +72,7 @@ const userName = computed(() => {
 </script>
 
 <template>
-    <SidebarShell :user-name="userName" user-role="Guide" home-route="/tutor" :groups="TUTOR_GROUPS" :trailing-links="TUTOR_TRAILING_LINKS">
+    <SidebarShell :user-name="userName" user-role="Insider" home-route="/tutor" :groups="TUTOR_GROUPS" :trailing-links="TUTOR_TRAILING_LINKS">
         <router-view />
     </SidebarShell>
 </template>
