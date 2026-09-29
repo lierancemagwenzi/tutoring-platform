@@ -40,7 +40,7 @@ async function enroll() {
 
         <router-link
             v-if="course.is_enrolled"
-            :to="`/student/marketplace/courses/${course.id}`"
+            :to="`/student/self-paced-courses/${course.id}/learn`"
             class="bg-amber shadow-elevated mt-5 block w-full rounded-full px-6 py-3 text-center font-bold text-white transition hover:brightness-95"
         >
             Go To Course

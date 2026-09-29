@@ -67,7 +67,7 @@ defineProps({
                 <p class="text-muted text-xs">{{ course.modules_count }} module{{ course.modules_count === 1 ? '' : 's' }}</p>
             </div>
             <router-link
-                :to="`/student/marketplace/courses/${course.id}`"
+                :to="course.is_enrolled ? `/student/self-paced-courses/${course.id}/learn` : `/student/marketplace/courses/${course.id}`"
                 class="bg-amber shadow-elevated rounded-full px-4 py-2 text-sm font-bold text-white transition hover:brightness-95"
             >
                 {{ course.is_enrolled ? 'Go To Course' : 'View Course' }}
