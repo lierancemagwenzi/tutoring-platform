@@ -3,6 +3,7 @@
 namespace App\Services\ConnectedAccounts;
 
 use App\Contracts\ConnectedAccountProviderInterface;
+use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
 use RuntimeException;
 
@@ -74,5 +75,14 @@ class GoogleProvider implements ConnectedAccountProviderInterface
             'access_token' => $token->token,
             'expires_at' => $token->expiresIn ? now()->addSeconds($token->expiresIn) : null,
         ];
+    }
+
+    /**
+     * Revoking either token revokes the whole grant, so the app disappears
+     * from the user's https://myaccount.google.com/permissions list.
+     */
+    public function revokeToken(string $token): void
+    {
+        Http::asForm()->post('https://oauth2.googleapis.com/revoke', ['token' => $token])->throw();
     }
 }

@@ -111,6 +111,8 @@ class ConnectedAccountService
 
     public function disconnect(TutorConnectedAccount $account): void
     {
+        $this->revokeAtProvider($account);
+
         $tutor = $account->tutorProfile;
 
         if ($tutor->meeting_provider === $account->provider) {
@@ -118,5 +120,27 @@ class ConnectedAccountService
         }
 
         $account->delete();
+    }
+
+    /**
+     * Best-effort: the tutor asked to disconnect, so a provider outage or an
+     * already-revoked/expired token must never block deleting our copy of
+     * the tokens — log it and carry on.
+     */
+    private function revokeAtProvider(TutorConnectedAccount $account): void
+    {
+        try {
+            $token = $account->refresh_token ?? $account->access_token;
+
+            if ($token) {
+                ConnectedAccountProviderFactory::make($account->provider)->revokeToken($token);
+            }
+        } catch (Throwable $exception) {
+            Log::warning('Connected account token revocation failed; disconnecting anyway.', [
+                'connected_account_id' => $account->id,
+                'provider' => $account->provider->value,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

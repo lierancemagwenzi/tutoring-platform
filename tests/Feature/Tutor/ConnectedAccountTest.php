@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\ConnectedAccounts\GoogleProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -60,6 +61,8 @@ class ConnectedAccountTest extends TestCase
             {
                 return ['access_token' => 'refreshed-token', 'expires_at' => now()->addHour()];
             }
+
+            public function revokeToken(string $token): void {}
         });
     }
 
@@ -196,11 +199,33 @@ class ConnectedAccountTest extends TestCase
             'connected_at' => now(),
         ]);
 
+        Http::fake(['oauth2.googleapis.com/revoke' => Http::response([], 200)]);
         Sanctum::actingAs($tutor->user);
 
         $response = $this->deleteJson("/api/tutor/settings/connected-accounts/{$account->id}");
 
         $response->assertOk();
+        $this->assertDatabaseCount('tutor_connected_accounts', 0);
+        Http::assertSent(fn ($request) => $request->url() === 'https://oauth2.googleapis.com/revoke' && $request['token'] === 'refresh');
+    }
+
+    public function test_disconnect_still_succeeds_when_google_revocation_fails(): void
+    {
+        $tutor = $this->tutor();
+        $account = TutorConnectedAccount::create([
+            'tutor_profile_id' => $tutor->id,
+            'provider' => 'google',
+            'provider_user_id' => 'google-123',
+            'email' => 'teacher@gmail.com',
+            'access_token' => 'token',
+            'refresh_token' => 'already-revoked',
+            'connected_at' => now(),
+        ]);
+
+        Http::fake(['oauth2.googleapis.com/revoke' => Http::response(['error' => 'invalid_token'], 400)]);
+        Sanctum::actingAs($tutor->user);
+
+        $this->deleteJson("/api/tutor/settings/connected-accounts/{$account->id}")->assertOk();
         $this->assertDatabaseCount('tutor_connected_accounts', 0);
     }
 

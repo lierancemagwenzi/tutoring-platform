@@ -26,4 +26,10 @@ interface ConnectedAccountProviderInterface
      * @return array{access_token: string, expires_at: ?Carbon}
      */
     public function refreshAccessToken(string $refreshToken): array;
+
+    /**
+     * Revoke the app's access at the provider, so it no longer appears in
+     * the user's connected-apps list there. Throws on failure.
+     */
+    public function revokeToken(string $token): void;
 }
