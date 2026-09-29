@@ -31,8 +31,9 @@ import VideoRenderer from '../components/self-paced-player/renderers/VideoRender
 // component — nothing else in the Course Player needs to change.
 //
 // `autoComplete: true` means the renderer emits an `auto-complete` event
-// (currently only video/audio, on native playback end) that the page
-// listens for instead of requiring an explicit Mark Complete click.
+// (currently only video/audio, on native playback end) that completes the
+// activity without a click. Mark Complete is still shown for these as a
+// fallback, since not every video can report that it ended.
 export const selfPacedActivityRegistry = {
     rich_text: { label: 'Reading', icon: DocumentTextIcon, component: RichTextRenderer, autoComplete: false },
     video: { label: 'Video', icon: VideoCameraIcon, component: VideoRenderer, autoComplete: true },

@@ -97,7 +97,10 @@ watch(() => route.params.activityId, load)
                 <p v-else class="text-sm text-gray-500">This content type isn't supported yet.</p>
             </div>
 
-            <div v-if="!registryEntry?.autoComplete" class="mt-6 flex justify-end">
+            <!-- Always offered, even for types that also auto-complete: an
+                 embedded YouTube/Vimeo player never reports "ended", and an
+                 upload the browser can't play inline never gets there. -->
+            <div class="mt-6 flex justify-end">
                 <button
                     v-if="!activity.completed"
                     type="button"
