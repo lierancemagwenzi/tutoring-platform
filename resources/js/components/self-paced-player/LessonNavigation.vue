@@ -27,6 +27,22 @@ const nextItem = computed(() => {
     return currentIndex.value >= 0 && currentIndex.value < items.length - 1 ? items[currentIndex.value + 1] : null
 })
 
+// Chapters unlock strictly in order, so when Next points into a locked
+// chapter, say what's still outstanding in this one instead of leaving a
+// silently greyed-out button.
+const blockingItem = computed(() => {
+    if (!nextItem.value || nextItem.value.moduleState !== 'locked') return null
+
+    const current = playerStore.orderedItems[currentIndex.value]
+    const unfinished = playerStore.orderedItems.filter(
+        (item) => item.moduleId === current?.moduleId && !(item.kind === 'activity' ? item.completed : item.passed),
+    )
+
+    return unfinished.find((item) => item.required) ?? unfinished[0] ?? null
+})
+
+const nextLocked = computed(() => Boolean(nextItem.value) && nextItem.value.moduleState === 'locked')
+
 function isNavigable(item) {
     return Boolean(item) && item.moduleState !== 'locked'
 }
@@ -53,13 +69,26 @@ function go(item) {
             &larr; Previous
         </button>
 
-        <button
-            type="button"
-            class="bg-amber shadow-elevated rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
-            :disabled="!isNavigable(nextItem)"
-            @click="go(nextItem)"
-        >
-            Next &rarr;
-        </button>
+        <div class="flex min-w-0 items-center gap-3">
+            <p v-if="nextLocked" class="text-muted text-right text-xs">
+                <template v-if="blockingItem">
+                    Finish
+                    <button type="button" class="text-accent font-semibold hover:underline" @click="go(blockingItem)">
+                        {{ blockingItem.title }}
+                    </button>
+                    to unlock the next chapter.
+                </template>
+                <template v-else>Complete this chapter to unlock the next one.</template>
+            </p>
+            <button
+                type="button"
+                class="bg-amber shadow-elevated shrink-0 rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                :disabled="!isNavigable(nextItem)"
+                :title="nextLocked ? 'Finish this chapter to unlock the next one' : undefined"
+                @click="go(nextItem)"
+            >
+                Next &rarr;
+            </button>
+        </div>
     </div>
 </template>
