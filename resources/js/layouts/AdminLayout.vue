@@ -4,6 +4,7 @@ import {
     AcademicCapIcon,
     BanknotesIcon,
     BookOpenIcon,
+    ChartBarIcon,
     CalendarDaysIcon,
     ChatBubbleLeftRightIcon,
     CheckBadgeIcon,
@@ -30,6 +31,7 @@ const BASE_ADMIN_GROUPS = [
         label: 'Content',
         items: [
             { to: '/admin/subjects', label: 'Subjects', icon: BookOpenIcon },
+            { to: '/admin/grades', label: 'Grades', icon: ChartBarIcon },
             { to: '/admin/faqs', label: 'FAQs', icon: QuestionMarkCircleIcon },
             { to: '/admin/terms-and-conditions', label: 'Terms & Conditions', icon: DocumentTextIcon },
             { to: '/admin/privacy-policy', label: 'Privacy Policy', icon: ShieldCheckIcon },

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Grade extends Model
 {
@@ -29,5 +30,15 @@ class Grade extends Model
             'level' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(Service::class);
+    }
+
+    public function selfPacedCourses(): HasMany
+    {
+        return $this->hasMany(SelfPacedCourse::class);
     }
 }

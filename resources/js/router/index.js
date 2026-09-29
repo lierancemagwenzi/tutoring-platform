@@ -79,6 +79,7 @@ import ApplicationSuccess from '../pages/tutor/application/Success.vue'
 import AdminDashboard from '../pages/admin/Dashboard.vue'
 import AdminQuickSetup from '../pages/admin/QuickSetup.vue'
 import AdminSubjects from '../pages/admin/Subjects.vue'
+import AdminGrades from '../pages/admin/Grades.vue'
 import AdminFaqs from '../pages/admin/Faqs.vue'
 import AdminTutors from '../pages/admin/Tutors.vue'
 import AdminTutorDetail from '../pages/admin/TutorDetail.vue'
@@ -415,6 +416,7 @@ const routes = [
             { path: 'profile', name: 'admin.profile', component: AccountProfile },
             { path: 'quick-setup', name: 'admin.quick-setup', component: AdminQuickSetup },
             { path: 'subjects', name: 'admin.subjects', component: AdminSubjects },
+            { path: 'grades', name: 'admin.grades', component: AdminGrades },
             { path: 'faqs', name: 'admin.faqs', component: AdminFaqs },
             { path: 'tutors', name: 'admin.tutors', component: AdminTutors },
             { path: 'tutors/:id', name: 'admin.tutors.show', component: AdminTutorDetail },

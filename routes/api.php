@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\DashboardController as AdminDashboardControll
 use App\Http\Controllers\Api\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Api\Admin\FinancialRuleController;
 use App\Http\Controllers\Api\Admin\FinancialTransactionController;
+use App\Http\Controllers\Api\Admin\GradeController as AdminGradeController;
 use App\Http\Controllers\Api\Admin\IntegrationStatusController;
 use App\Http\Controllers\Api\Admin\PaymentManagementController;
 use App\Http\Controllers\Api\Admin\PaymentTicketController as AdminPaymentTicketController;
@@ -564,6 +565,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'show']);
         Route::get('/activity-log', [ActivityLogController::class, 'index']);
+
+        Route::prefix('grades')->group(function () {
+            Route::get('/', [AdminGradeController::class, 'index']);
+            Route::post('/', [AdminGradeController::class, 'store']);
+            Route::patch('/{grade}', [AdminGradeController::class, 'update']);
+            Route::post('/{grade}/activate', [AdminGradeController::class, 'activate']);
+            Route::post('/{grade}/deactivate', [AdminGradeController::class, 'deactivate']);
+        });
 
         Route::prefix('subjects')->group(function () {
             Route::get('/', [AdminSubjectController::class, 'index']);
