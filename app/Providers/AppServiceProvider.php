@@ -41,6 +41,16 @@ class AppServiceProvider extends ServiceProvider
 
         if ($defaultDisk !== 'public' && config("filesystems.disks.{$defaultDisk}.driver") === 's3') {
             config(['filesystems.disks.public' => config("filesystems.disks.{$defaultDisk}")]);
+
+            // Certificates were written to the local disk, which on Cloud is
+            // per-instance and wiped on deploy — a PDF could be served right
+            // after it was issued, then 404 on the next request. Keep them in
+            // the same persistent bucket, under their own private prefix.
+            config(['filesystems.disks.certificates' => [
+                ...config("filesystems.disks.{$defaultDisk}"),
+                'root' => 'private',
+                'visibility' => 'private',
+            ]]);
         }
     }
 

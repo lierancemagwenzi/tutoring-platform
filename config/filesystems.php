@@ -38,6 +38,17 @@ return [
             'report' => false,
         ],
 
+        // Issued course certificates (private — only ever streamed through
+        // the authenticated download endpoint). Same root as 'local' so
+        // certificates already written there are still found; in production
+        // AppServiceProvider points this at Laravel Cloud's persistent bucket.
+        'certificates' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

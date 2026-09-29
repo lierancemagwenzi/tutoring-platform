@@ -8,6 +8,7 @@ use App\Models\TutorProfile;
 use App\Models\User;
 use App\Services\LearnerProgress\CertificateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -77,5 +78,36 @@ class CertificateTest extends TestCase
 
         $download = $this->get("/api/student/certificates/{$certificate->id}/download");
         $download->assertForbidden();
+    }
+
+    public function test_certificates_are_stored_on_the_certificates_disk(): void
+    {
+        Storage::fake('certificates');
+
+        $certificate = app(CertificateService::class)->generate($this->completedEnrollment());
+
+        Storage::disk('certificates')->assertExists($certificate->pdf_path);
+    }
+
+    public function test_a_certificate_whose_pdf_was_lost_is_rebuilt_on_download_unchanged(): void
+    {
+        Storage::fake('certificates');
+        $enrollment = $this->completedEnrollment();
+        $certificate = app(CertificateService::class)->generate($enrollment);
+        Storage::disk('certificates')->delete($certificate->pdf_path);
+
+        // The course is renamed after issue — the rebuilt PDF must still use
+        // the certificate's own snapshot, not live course data.
+        $enrollment->course->update(['title' => 'Renamed Later']);
+
+        Sanctum::actingAs($enrollment->student);
+
+        $this->get("/api/student/certificates/{$certificate->id}/download")
+            ->assertOk()
+            ->assertHeader('content-type', 'application/pdf');
+
+        Storage::disk('certificates')->assertExists($certificate->fresh()->pdf_path);
+        $this->assertSame('Completed Course', $certificate->fresh()->course_title);
+        $this->assertSame(1, CourseCertificate::count());
     }
 }

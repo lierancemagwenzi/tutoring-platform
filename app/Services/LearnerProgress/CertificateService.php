@@ -47,11 +47,7 @@ class CertificateService
             return CourseCertificate::where('enrollment_id', $enrollment->id)->firstOrFail();
         }
 
-        $pdfPath = "certificates/{$certificate->certificate_number}.pdf";
-        $pdf = Pdf::loadView('certificates.course-completion', ['certificate' => $certificate]);
-        Storage::disk('local')->put($pdfPath, $pdf->output());
-
-        $certificate->update(['pdf_path' => $pdfPath]);
+        $this->storePdf($certificate);
 
         return $certificate->fresh();
     }
@@ -62,13 +58,27 @@ class CertificateService
      */
     public function download(CourseCertificate $certificate): Response
     {
-        abort_unless(
-            $certificate->pdf_path && Storage::disk('local')->exists($certificate->pdf_path),
-            404,
-            'This certificate is not available for download.',
-        );
+        $disk = Storage::disk('certificates');
 
-        return Storage::disk('local')->download($certificate->pdf_path, "{$certificate->certificate_number}.pdf");
+        // PDFs issued before certificates moved to persistent storage may
+        // have been lost with the instance that wrote them. Re-render from
+        // the certificate's own snapshot fields (name, course, tutor, number,
+        // issue date) — never from live course data — so the result is the
+        // same certificate, not a new one.
+        if (! $certificate->pdf_path || ! $disk->exists($certificate->pdf_path)) {
+            $this->storePdf($certificate);
+        }
+
+        return $disk->download($certificate->pdf_path, "{$certificate->certificate_number}.pdf");
+    }
+
+    private function storePdf(CourseCertificate $certificate): void
+    {
+        $pdfPath = "certificates/{$certificate->certificate_number}.pdf";
+        $pdf = Pdf::loadView('certificates.course-completion', ['certificate' => $certificate]);
+        Storage::disk('certificates')->put($pdfPath, $pdf->output());
+
+        $certificate->update(['pdf_path' => $pdfPath]);
     }
 
     /**
