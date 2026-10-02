@@ -150,6 +150,23 @@ class SessionSchedulingTest extends TestCase
         $this->assertTrue($booking->teachingSessions()->exists());
     }
 
+    public function test_a_session_can_be_scheduled_outside_the_tutors_published_availability(): void
+    {
+        [$tutorUser, $tutorProfile, $service] = $this->createTutorWithService();
+        $booking = $this->confirmedBookingFor($tutorProfile, $service);
+        Sanctum::actingAs($tutorUser);
+
+        // Availability on futureDate is 07:00-11:00 only; and the day after
+        // has no availability at all.
+        $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [
+            'date' => $this->futureDate, 'start_time' => '18:00', 'end_time' => '19:00',
+        ])->assertCreated();
+
+        $this->postJson("/api/tutor/bookings/{$booking->id}/sessions", [
+            'date' => Carbon::parse($this->futureDate)->addDay()->toDateString(), 'start_time' => '10:00', 'end_time' => '11:00',
+        ])->assertCreated();
+    }
+
     public function test_booking_progress_reflects_purchased_and_remaining_counts(): void
     {
         [$tutorUser, $tutorProfile, $service] = $this->createTutorWithService(['sessions_included' => 2]);

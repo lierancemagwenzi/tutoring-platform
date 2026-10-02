@@ -111,10 +111,11 @@ class SessionSchedulingService
             return $existing;
         }
 
-        if (! $this->availability->isWindowAvailable($tutor, $data['date'], $data['start_time'], $data['end_time'])) {
-            throw new RuntimeException('You are not available at the requested time.');
-        }
-
+        // Deliberately not limited to the Insider's published availability:
+        // that governs what learners can book in the marketplace, but an
+        // Insider arranging a session for an existing booking can agree any
+        // time with their learner. A clash with another session is still a
+        // genuine double-booking, so that stays blocked.
         if ($this->availability->hasOverlap($tutor, $data['date'], $data['start_time'], $data['end_time'])) {
             throw new RuntimeException('This overlaps another session you already have scheduled.');
         }
