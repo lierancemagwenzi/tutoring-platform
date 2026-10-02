@@ -39,7 +39,7 @@ class H5pAssetMirrorFallbackTest extends TestCase
         $response = $this->get("/h5p-assets/libraries/{$library}/library.json");
 
         $response->assertOk();
-        $this->assertSame('{"mirrored":true}', $response->streamedContent());
+        $this->assertSame('{"mirrored":true}', file_get_contents($response->baseResponse->getFile()->getPathname()));
         $this->assertFileExists($this->localFile);
     }
 

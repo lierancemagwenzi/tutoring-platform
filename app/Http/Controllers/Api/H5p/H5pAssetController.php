@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\H5p;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Serves the static files H5PCore/H5peditor point the browser at directly:
@@ -25,12 +24,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class H5pAssetController extends Controller
 {
-    public function library(string $library, string $file): StreamedResponse|Response
+    public function library(string $library, string $file): Response
     {
         return $this->stream($this->root().'/libraries/'.$library.'/'.$file, mirror: true);
     }
 
-    public function content(string $contentId, string $file): StreamedResponse|Response
+    public function content(string $contentId, string $file): Response
     {
         return $this->stream($this->root().'/content/'.$contentId.'/'.$file, mirror: true);
     }
@@ -41,7 +40,7 @@ class H5pAssetController extends Controller
      * paths relative to that package root) — not installed content, so this
      * reads straight from vendor/, not storage_path('app/h5p').
      */
-    public function core(string $file): StreamedResponse|Response
+    public function core(string $file): Response
     {
         return $this->stream(base_path('vendor/h5p/h5p-core').'/'.$file, base_path('vendor/h5p/h5p-core'));
     }
@@ -50,12 +49,12 @@ class H5pAssetController extends Controller
      * Same idea for the editor's own bundled scripts/styles/ckeditor/etc
      * (H5peditor::$scripts/$styles) from the h5p/h5p-editor package.
      */
-    public function editor(string $file): StreamedResponse|Response
+    public function editor(string $file): Response
     {
         return $this->stream(base_path('vendor/h5p/h5p-editor').'/'.$file, base_path('vendor/h5p/h5p-editor'));
     }
 
-    protected function stream(string $path, ?string $root = null, bool $mirror = false): StreamedResponse|Response
+    protected function stream(string $path, ?string $root = null, bool $mirror = false): Response
     {
         $root ??= $this->root();
 
@@ -69,11 +68,13 @@ class H5pAssetController extends Controller
             return response('Not found', 404);
         }
 
-        return response()->stream(function () use ($real) {
-            readfile($real);
-        }, 200, [
+        // A file response (not a hand-rolled stream) so HTTP Range requests
+        // work: browsers fetch video in ranges, and an MP4 whose index sits
+        // at the end of the file can't start playing until the tail range
+        // comes back. Answering every range with the whole file left H5P
+        // videos stuck at 0:00 and made seeking impossible.
+        return response()->file($real, [
             'Content-Type' => $this->mimeType($real),
-            'Content-Length' => filesize($real),
             'Cache-Control' => 'public, max-age=31536000, immutable',
         ]);
     }
@@ -135,6 +136,13 @@ class H5pAssetController extends Controller
             'woff2' => 'font/woff2',
             'ttf' => 'font/ttf',
             'eot' => 'application/vnd.ms-fontobject',
+            'mp4', 'm4v' => 'video/mp4',
+            'webm' => 'video/webm',
+            'ogv' => 'video/ogg',
+            'mp3' => 'audio/mpeg',
+            'm4a' => 'audio/mp4',
+            'wav' => 'audio/wav',
+            'ogg', 'oga' => 'audio/ogg',
             default => mime_content_type($path) ?: 'application/octet-stream',
         };
     }
