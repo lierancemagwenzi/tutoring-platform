@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tutor\SelfPaced;
 
 use App\Enums\SelfPacedActivityType;
 use App\Models\H5pContentClassification;
+use App\Support\ContentItems;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -35,6 +36,9 @@ class UpdateSelfPacedActivityRequest extends FormRequest
             'required' => ['sometimes', 'boolean'],
             'content' => ['sometimes', 'nullable', 'array'],
             'settings' => ['sometimes', 'nullable', 'array'],
+            ...($this->route('selfPacedActivity')->type === SelfPacedActivityType::Content && $this->has('content')
+                ? ContentItems::rules('content.items', required: true)
+                : []),
         ];
     }
 

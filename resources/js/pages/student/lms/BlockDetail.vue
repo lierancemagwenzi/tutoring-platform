@@ -5,6 +5,8 @@ import { blockRegistry } from '../../../lms/blockRegistry'
 import { useBookingStore } from '../../../stores/booking'
 import MermaidRender from '../../../components/lms/MermaidRender.vue'
 import KatexRender from '../../../components/lms/KatexRender.vue'
+import ContentItemsView from '../../../components/lms/ContentItemsView.vue'
+import MediaItemView from '../../../components/lms/MediaItemView.vue'
 import StudentSubmissionPanel from '../../../components/lms/StudentSubmissionPanel.vue'
 import StudentAttemptPanel from '../../../components/lms/StudentAttemptPanel.vue'
 
@@ -43,10 +45,6 @@ const supportsSubmissions = computed(
 // Mirrors the Attempt Engine's eligible types (App\Models\LessonBlock::attemptProvider).
 const supportsAttempts = computed(() => ['h5p', 'quiz'].includes(block.value?.block_type))
 
-const isPlayableMedia = (item) => ['video_upload', 'mp3', 'wav'].includes(item.media_type)
-const isImage = (item) => item.media_type === 'image'
-const isAudio = (item) => ['mp3', 'wav'].includes(item.media_type)
-
 onMounted(async () => {
     try {
         block.value = await store.fetchLessonBlock(route.params.bookingId, route.params.blockId)
@@ -84,7 +82,9 @@ function backToBooking() {
             </div>
 
             <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-                <div v-if="block.block_type === 'rich_text'" class="prose prose-sm max-w-none" v-html="block.content?.html" />
+                <ContentItemsView v-if="block.block_type === 'content'" :items="block.content?.items ?? []" :media="block.media_items ?? []" />
+
+                <div v-else-if="block.block_type === 'rich_text'" class="prose prose-sm max-w-none" v-html="block.content?.html" />
 
                 <KatexRender v-else-if="block.block_type === 'math'" :latex="block.content?.latex" :display-mode="block.content?.display_mode" />
 
@@ -92,14 +92,7 @@ function backToBooking() {
 
                 <div v-else-if="block.block_type === 'media'" class="space-y-3">
                     <p v-if="!block.media_items?.length" class="text-sm text-gray-500">No media has been added yet.</p>
-                    <div v-for="item in block.media_items ?? []" :key="item.id">
-                        <img v-if="isImage(item)" :src="item.url" :alt="item.title" class="max-w-full rounded-xl" />
-                        <video v-else-if="isPlayableMedia(item) && !isAudio(item)" :src="item.url" controls class="w-full rounded-xl" />
-                        <audio v-else-if="isAudio(item)" :src="item.url" controls class="w-full" />
-                        <a v-else :href="item.url" target="_blank" rel="noopener" class="text-accent text-sm font-semibold underline">
-                            {{ item.title || item.original_name || 'Open file' }}
-                        </a>
-                    </div>
+                    <MediaItemView v-for="item in block.media_items ?? []" :key="item.id" :item="item" />
                 </div>
 
                 <p v-else-if="block.block_type === 'h5p' && block.h5p_content" class="text-sm text-gray-500">

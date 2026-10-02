@@ -57,6 +57,7 @@ import TutorCourseForm from '../pages/tutor/lms/CourseForm.vue'
 import TutorChapterManager from '../pages/tutor/lms/ChapterManager.vue'
 import TutorLessonManager from '../pages/tutor/lms/LessonManager.vue'
 import TutorLessonBuilder from '../pages/tutor/lms/LessonBuilder.vue'
+import TutorContentBlockEditor from '../pages/tutor/lms/ContentBlockEditor.vue'
 import TutorMediaManager from '../pages/tutor/lms/MediaManager.vue'
 import TutorQuizBuilder from '../pages/tutor/lms/QuizBuilder.vue'
 import TutorH5pManager from '../pages/tutor/lms/H5pManager.vue'
@@ -278,6 +279,12 @@ const routes = [
                 path: 'lessons/:id/builder',
                 name: 'tutor.lessons.builder',
                 component: TutorLessonBuilder,
+                meta: { requiresTutor: true },
+            },
+            {
+                path: 'lesson-blocks/:id/content',
+                name: 'tutor.lesson-blocks.content',
+                component: TutorContentBlockEditor,
                 meta: { requiresTutor: true },
             },
             {

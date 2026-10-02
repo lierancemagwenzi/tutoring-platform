@@ -5,7 +5,6 @@ namespace App\Services\LessonBlocks;
 use App\Contracts\LessonBlockHandler;
 use App\Models\LessonBlock;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class MediaBlockHandler implements LessonBlockHandler
 {
@@ -31,13 +30,7 @@ class MediaBlockHandler implements LessonBlockHandler
     public function afterDelete(LessonBlock $block): void
     {
         foreach ($block->mediaItems as $mediaItem) {
-            if ($mediaItem->file_path) {
-                Storage::disk('public')->delete($mediaItem->file_path);
-            }
-
-            if ($mediaItem->thumbnail_path) {
-                Storage::disk('public')->delete($mediaItem->thumbnail_path);
-            }
+            $mediaItem->deleteFilesIfUnshared();
         }
     }
 

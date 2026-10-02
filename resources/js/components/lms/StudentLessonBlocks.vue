@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import StudentBlockView from './StudentBlockView.vue'
 
 const TAB_DEFINITIONS = [
-    { key: 'content', label: 'Lesson Content', types: ['rich_text', 'media', 'math', 'mermaid', 'h5p'] },
+    { key: 'content', label: 'Lesson Content', types: ['content', 'rich_text', 'media', 'math', 'mermaid', 'h5p'] },
     { key: 'quizzes', label: 'Quizzes', types: ['quiz'] },
     {
         key: 'activities',

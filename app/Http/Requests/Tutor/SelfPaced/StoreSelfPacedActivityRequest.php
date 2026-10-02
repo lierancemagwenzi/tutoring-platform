@@ -4,6 +4,7 @@ namespace App\Http\Requests\Tutor\SelfPaced;
 
 use App\Enums\SelfPacedActivityType;
 use App\Models\H5pContentClassification;
+use App\Support\ContentItems;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,11 @@ class StoreSelfPacedActivityRequest extends FormRequest
             'required' => ['sometimes', 'boolean'],
             'content' => ['nullable', 'array'],
             'settings' => ['nullable', 'array'],
+            // A new Content activity can't reference files yet — they're
+            // uploaded to it once it exists (see SelfPacedActivityService).
+            ...(SelfPacedActivityType::tryFrom((string) $this->input('type')) === SelfPacedActivityType::Content
+                ? ContentItems::rules('content.items', required: false)
+                : []),
         ];
     }
 

@@ -18,6 +18,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * One-off: wipe a tutor's authored content and reseed a fresh, complete
@@ -378,28 +379,27 @@ class ResetTutorDemoData extends Command
 
                     foreach ($lessonDef['blocks'] as $blockPosition => $blockDef) {
                         $block = $lesson->blocks()->create([
-                            'block_type' => $blockDef['type'] === 'media' ? 'media' : $blockDef['type'],
+                            'block_type' => 'content',
                             'title' => $blockDef['title'] ?? null,
                             'position' => $blockPosition,
                             'status' => 'published',
                             'settings' => [],
-                            'content' => match ($blockDef['type']) {
-                                'rich_text' => ['html' => $blockDef['html'], 'json' => ['type' => 'doc', 'content' => []]],
-                                'mermaid' => ['diagram' => $blockDef['diagram']],
-                                'media' => [],
-                                default => [],
-                            },
+                            'content' => ['items' => []],
                         ]);
 
-                        if ($blockDef['type'] === 'media') {
-                            $block->mediaItems()->create([
+                        $item = match ($blockDef['type']) {
+                            'rich_text' => ['type' => 'rich_text', 'html' => $blockDef['html'], 'json' => ['type' => 'doc', 'content' => []]],
+                            'mermaid' => ['type' => 'mermaid', 'diagram' => $blockDef['diagram']],
+                            'media' => ['type' => 'media', 'media_item_id' => $block->mediaItems()->create([
                                 'media_type' => 'video_youtube',
                                 'title' => $blockDef['title'],
                                 'external_url' => $blockDef['youtube'],
                                 'position' => 0,
                                 'status' => 'published',
-                            ]);
-                        }
+                            ])->id],
+                        };
+
+                        $block->update(['content' => ['items' => [['id' => (string) Str::uuid(), ...$item]]]]);
                     }
                 }
             }

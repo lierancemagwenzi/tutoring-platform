@@ -10,7 +10,6 @@ const props = defineProps({
 
 const svg = ref('')
 const error = ref('')
-let renderCount = 0
 
 async function render() {
     if (!props.diagram?.trim()) {
@@ -19,7 +18,9 @@ async function render() {
         return
     }
 
-    const id = `mermaid-${Date.now()}-${renderCount++}`
+    // Unique across instances: a Content block can hold several diagrams that
+    // all render in the same tick, and mermaid needs a distinct DOM id each.
+    const id = `mermaid-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 
     try {
         const result = await mermaid.render(id, props.diagram)

@@ -6,6 +6,7 @@ use App\Enums\LessonBlockStatus;
 use App\Enums\MediaType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class MediaItem extends Model
 {
@@ -49,5 +50,30 @@ class MediaItem extends Model
     public function lessonBlock(): BelongsTo
     {
         return $this->belongsTo(LessonBlock::class);
+    }
+
+    /**
+     * Delete this item's stored file and thumbnail — but only where no other
+     * media item still points at the same path. Duplicating a block copies
+     * its media rows while sharing the underlying files, so deleting the copy
+     * must not pull files out from under the original (or vice versa).
+     *
+     * @param  list<string>  $columns
+     */
+    public function deleteFilesIfUnshared(array $columns = ['file_path', 'thumbnail_path']): void
+    {
+        foreach ($columns as $column) {
+            $path = $this->{$column};
+
+            if (! $path) {
+                continue;
+            }
+
+            $sharedElsewhere = static::query()->whereKeyNot($this->getKey())->where($column, $path)->exists();
+
+            if (! $sharedElsewhere) {
+                Storage::disk('public')->delete($path);
+            }
+        }
     }
 }

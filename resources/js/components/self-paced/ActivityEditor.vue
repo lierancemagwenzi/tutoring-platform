@@ -10,8 +10,12 @@ import SelectInput from '../forms/SelectInput.vue'
 import RichTextEditor from '../lms/RichTextEditor.vue'
 import MermaidRender from '../lms/MermaidRender.vue'
 import KatexRender from '../lms/KatexRender.vue'
+import ContentItemsEditor from '../lms/content/ContentItemsEditor.vue'
+import MediaItemFormModal from '../lms/content/MediaItemFormModal.vue'
+import { CONTENT_ITEM_TYPES, contentItemsSnapshot } from '../../lms/contentItemTypes'
 
 const TYPE_OPTIONS = [
+    { value: 'content', label: 'Content (text, maths, diagrams & files)' },
     { value: 'rich_text', label: 'Rich Text' },
     { value: 'video', label: 'Video' },
     { value: 'pdf', label: 'PDF' },
@@ -81,7 +85,7 @@ const current = ref(props.activity)
 const wasEditingExisting = props.activity !== null
 
 const form = reactive({
-    type: props.activity?.type ?? 'rich_text',
+    type: props.activity?.type ?? 'content',
     title: props.activity?.title ?? '',
     description: props.activity?.description ?? '',
     required: props.activity?.required ?? true,
@@ -91,7 +95,50 @@ const form = reactive({
     url: props.activity?.content?.url ?? '',
     instructions: props.activity?.content?.instructions ?? '',
     h5pContentId: props.activity?.content?.h5p_content_id ?? '',
+    // A plain deep copy so editing doesn't mutate the list we were handed.
+    items: JSON.parse(JSON.stringify(props.activity?.content?.items ?? [])),
 });
+
+// --- Content activities: an ordered list of text/maths/diagram/file items.
+// File items point at this activity's attachments, which can only be
+// uploaded once the activity exists — so adding the first file saves it.
+const itemsEditor = ref(null)
+const mediaModalOpen = ref(false)
+const editingMedia = ref(null)
+const insertAt = ref(null)
+const savedItemsSnapshot = ref(contentItemsSnapshot(form.items))
+const mediaById = computed(() => Object.fromEntries((current.value?.attachments ?? []).map((attachment) => [attachment.id, attachment])))
+const itemsDirty = computed(() => form.type === 'content' && contentItemsSnapshot(form.items) !== savedItemsSnapshot.value)
+
+async function openAddMedia(index) {
+    if (!current.value) {
+        if (!form.title.trim()) {
+            error.value = 'Give the activity a title before adding files.'
+            return
+        }
+        const created = await persist()
+        if (!created) return
+    }
+    insertAt.value = index
+    editingMedia.value = null
+    mediaModalOpen.value = true
+}
+
+function openEditMedia(item) {
+    editingMedia.value = mediaById.value[item.media_item_id]
+    mediaModalOpen.value = true
+}
+
+function saveMedia(payload, existing) {
+    const { status, ...attachment } = payload
+    return existing ? store.updateAttachment(existing.id, attachment) : store.addAttachment(current.value.id, attachment)
+}
+
+function onMediaSaved(attachment) {
+    const others = (current.value.attachments ?? []).filter((item) => item.id !== attachment.id)
+    current.value = { ...current.value, attachments: [...others, attachment] }
+    if (!editingMedia.value) itemsEditor.value?.addMediaItem(attachment.id, insertAt.value)
+}
 
 const isAttachmentType = computed(() => ATTACHMENT_TYPES.includes(form.type))
 const newAttachmentMediaType = ref('')
@@ -142,12 +189,18 @@ function contentPayload() {
             return { instructions: form.instructions };
         case 'h5p':
             return { h5p_content_id: form.h5pContentId };
+        case 'content':
+            return { items: form.items.map((item) => ({ ...item })) };
         default:
             return null;
     }
 }
 
-async function save() {
+/**
+ * Create or update the activity. Resolves with the saved activity, or null
+ * if it failed (the error is shown).
+ */
+async function persist() {
     saving.value = true
     error.value = ''
 
@@ -162,17 +215,26 @@ async function save() {
         current.value = current.value
             ? await store.updateActivity(current.value.id, payload)
             : await store.createActivity(props.moduleId, { ...payload, type: form.type })
-
-        // Attachment-backed types keep the modal open so files can be
-        // attached to the now-existing activity; everything else is done.
-        if (!isAttachmentType.value) {
-            emit('saved', current.value)
+        if (form.type === 'content') {
+            savedItemsSnapshot.value = contentItemsSnapshot(form.items)
         }
+        return current.value
     } catch (err) {
         const errors = err.response?.data?.errors
-        error.value = errors ? Object.values(errors).flat().join(' ') : (err.response?.data?.message ?? 'Something went wrong.')
+        error.value = errors ? [...new Set(Object.values(errors).flat())].join(' ') : (err.response?.data?.message ?? 'Something went wrong.')
+        return null
     } finally {
         saving.value = false
+    }
+}
+
+async function save() {
+    const saved = await persist()
+
+    // Attachment-backed types keep the modal open so files can be
+    // attached to the now-existing activity; everything else is done.
+    if (saved && !isAttachmentType.value) {
+        emit('saved', saved)
     }
 }
 
@@ -221,6 +283,7 @@ async function removeAttachment(attachment) {
 }
 
 function finishAttachments() {
+    if (itemsDirty.value && !confirm('You have unsaved changes to this activity. Close without saving?')) return
     emit('saved', current.value)
 }
 
@@ -230,8 +293,13 @@ function previewUrl(attachment) {
 </script>
 
 <template>
-    <Modal :model-value="true" :title="activity ? 'Edit Activity' : 'Add Learning Activity'" @update:model-value="$emit('cancelled')">
-        <form class="space-y-4" novalidate @submit.prevent="save">
+    <Modal
+        :model-value="true"
+        :title="activity ? 'Edit Activity' : 'Add Learning Activity'"
+        :size="form.type === 'content' ? 'xl' : 'md'"
+        @update:model-value="current ? finishAttachments() : $emit('cancelled')"
+    >
+        <form class="space-y-4 pt-2" novalidate @submit.prevent="save">
             <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
 
             <SelectInput
@@ -251,7 +319,26 @@ function previewUrl(attachment) {
                 Required for module completion
             </label>
 
-            <div v-if="form.type === 'rich_text'">
+            <div v-if="form.type === 'content'" class="space-y-3">
+                <p class="text-sm font-semibold text-body">Items</p>
+                <p class="text-xs text-muted">Add as many text, maths, diagram and file items as you need, in any order.</p>
+                <ContentItemsEditor ref="itemsEditor" v-model="form.items" :media-by-id="mediaById" @add-media="openAddMedia" @edit-media="openEditMedia" />
+                <div v-if="form.items.length" class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs text-muted">Add at the end:</span>
+                    <button
+                        v-for="(meta, type) in CONTENT_ITEM_TYPES"
+                        :key="type"
+                        type="button"
+                        class="flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-body hover:border-accent"
+                        @click="itemsEditor?.addItem(type)"
+                    >
+                        <component :is="meta.icon" class="text-accent h-3.5 w-3.5" />
+                        {{ meta.label }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-else-if="form.type === 'rich_text'">
                 <p class="mb-1 text-sm font-semibold text-body">Content</p>
                 <RichTextEditor v-model="form.html" />
             </div>
@@ -380,4 +467,6 @@ function previewUrl(attachment) {
             </div>
         </form>
     </Modal>
+
+    <MediaItemFormModal v-model="mediaModalOpen" :save="saveMedia" :item="editingMedia" @saved="onMediaSaved" />
 </template>

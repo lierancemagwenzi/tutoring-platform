@@ -70,6 +70,7 @@ class SelfPacedActivity extends Model
         }
 
         return match ($this->type) {
+            SelfPacedActivityType::Content => filled($this->content['items'] ?? null),
             SelfPacedActivityType::RichText => filled($this->content['html'] ?? null),
             SelfPacedActivityType::Mermaid => filled($this->content['syntax'] ?? null),
             SelfPacedActivityType::Katex => filled($this->content['latex'] ?? null),

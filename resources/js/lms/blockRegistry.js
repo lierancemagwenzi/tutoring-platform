@@ -14,10 +14,12 @@ import {
     QuestionMarkCircleIcon,
     RectangleGroupIcon,
     ShareIcon,
+    Squares2X2Icon,
 } from '@heroicons/vue/24/outline'
 import RichTextBlockEditor from '../components/lms/blocks/RichTextBlockEditor.vue'
 import MathBlockEditor from '../components/lms/blocks/MathBlockEditor.vue'
 import MermaidBlockEditor from '../components/lms/blocks/MermaidBlockEditor.vue'
+import { summariseContentItems } from './contentItemTypes'
 
 function stripHtml(html) {
     const text = (html ?? '').replace(/<[^>]*>/g, ' ').trim()
@@ -32,10 +34,22 @@ function stripHtml(html) {
  * in the Lesson Builder needs to change. An optional `group` key clusters
  * entries under a labeled section in the Add Block menu (see the "Learning
  * Activity" types below) — omit it for a top-level, ungrouped entry.
+ *
+ * `legacy: true` types are no longer offered in the Add Block menu — the
+ * Content block replaced them (one block, any number of text/maths/diagram/
+ * file items). They stay registered so any remaining rows still display.
  */
 export const blockRegistry = {
+    content: {
+        label: 'Content',
+        icon: Squares2X2Icon,
+        mode: 'page',
+        route: (block) => `/tutor/lesson-blocks/${block.id}/content`,
+        summary: (block) => summariseContentItems(block.content?.items),
+    },
     rich_text: {
         label: 'Rich Text',
+        legacy: true,
         icon: DocumentTextIcon,
         mode: 'modal',
         editor: RichTextBlockEditor,
@@ -43,6 +57,7 @@ export const blockRegistry = {
     },
     media: {
         label: 'Media',
+        legacy: true,
         icon: PhotoIcon,
         mode: 'page',
         route: (block) => `/tutor/lesson-blocks/${block.id}/media`,
@@ -63,6 +78,7 @@ export const blockRegistry = {
     },
     math: {
         label: 'Mathematics',
+        legacy: true,
         icon: CalculatorIcon,
         mode: 'modal',
         editor: MathBlockEditor,
@@ -70,6 +86,7 @@ export const blockRegistry = {
     },
     mermaid: {
         label: 'Mermaid Diagram',
+        legacy: true,
         icon: ShareIcon,
         mode: 'modal',
         editor: MermaidBlockEditor,
@@ -157,5 +174,7 @@ export const blockRegistry = {
 }
 
 export function blockTypeOptions() {
-    return Object.entries(blockRegistry).map(([type, meta]) => ({ type, ...meta }))
+    return Object.entries(blockRegistry)
+        .filter(([, meta]) => !meta.legacy)
+        .map(([type, meta]) => ({ type, ...meta }))
 }

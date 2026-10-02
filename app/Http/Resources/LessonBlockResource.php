@@ -25,7 +25,7 @@ class LessonBlockResource extends JsonResource
             'settings' => $this->settings,
             'status' => $this->status->value,
             'media_items' => $this->when(
-                $this->block_type === LessonBlockType::Media,
+                in_array($this->block_type, [LessonBlockType::Media, LessonBlockType::Content], true),
                 fn () => MediaItemResource::collection($this->whenLoaded('mediaItems')),
             ),
             'quiz' => $this->when(

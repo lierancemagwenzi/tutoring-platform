@@ -376,4 +376,27 @@ class SessionContentTest extends TestCase
 
         $response->assertOk()->assertJsonCount(0, 'lessons');
     }
+
+    public function test_student_receives_a_content_blocks_items_and_files(): void
+    {
+        [$studentUser, $booking, $sessionLesson] = $this->createBookedSession();
+        $block = $this->makeBlock($sessionLesson, 'Photosynthesis', ['availability_mode' => 'always_available']);
+        $pdf = $block->mediaItems()->create(['media_type' => 'pdf', 'title' => 'Worksheet', 'file_path' => 'media-items/w.pdf', 'position' => 0, 'status' => 'published']);
+        $block->update([
+            'block_type' => 'content',
+            'content' => ['items' => [
+                ['id' => 'a', 'type' => 'rich_text', 'html' => '<p>Intro</p>'],
+                ['id' => 'b', 'type' => 'mermaid', 'diagram' => 'flowchart TD; A-->B'],
+                ['id' => 'c', 'type' => 'media', 'media_item_id' => $pdf->id],
+            ]],
+        ]);
+        Sanctum::actingAs($studentUser);
+
+        $this->getJson("/api/bookings/{$booking->id}/lesson-blocks/{$block->id}")
+            ->assertOk()
+            ->assertJsonPath('block.block_type', 'content')
+            ->assertJsonCount(3, 'block.content.items')
+            ->assertJsonPath('block.media_items.0.id', $pdf->id)
+            ->assertJsonPath('block.media_items.0.title', 'Worksheet');
+    }
 }

@@ -24,7 +24,7 @@ class UpdateLessonBlockRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        foreach (['content_json', 'settings'] as $field) {
+        foreach (['content_json', 'settings', 'items'] as $field) {
             if (is_string($this->input($field))) {
                 $this->merge([$field => json_decode($this->input($field), true)]);
             }

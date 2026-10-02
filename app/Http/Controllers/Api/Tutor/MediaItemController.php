@@ -13,7 +13,6 @@ use App\Models\MediaItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class MediaItemController extends Controller
 {
@@ -67,9 +66,7 @@ class MediaItemController extends Controller
         ];
 
         if ($request->hasFile('file')) {
-            if ($mediaItem->file_path) {
-                Storage::disk('public')->delete($mediaItem->file_path);
-            }
+            $mediaItem->deleteFilesIfUnshared(['file_path']);
 
             $file = $request->file('file');
             $attributes['file_path'] = $file->store('media-items', 'public');
@@ -77,9 +74,7 @@ class MediaItemController extends Controller
             $attributes['original_name'] = $file->getClientOriginalName();
             $attributes['size'] = $file->getSize();
         } elseif ($request->filled('external_url')) {
-            if ($mediaItem->file_path) {
-                Storage::disk('public')->delete($mediaItem->file_path);
-            }
+            $mediaItem->deleteFilesIfUnshared(['file_path']);
 
             $attributes['file_path'] = null;
             $attributes['external_url'] = $request->validated('external_url');
@@ -88,9 +83,7 @@ class MediaItemController extends Controller
         }
 
         if ($request->hasFile('thumbnail')) {
-            if ($mediaItem->thumbnail_path) {
-                Storage::disk('public')->delete($mediaItem->thumbnail_path);
-            }
+            $mediaItem->deleteFilesIfUnshared(['thumbnail_path']);
 
             $attributes['thumbnail_path'] = $request->file('thumbnail')->store('media-item-thumbnails', 'public');
         }
@@ -112,14 +105,7 @@ class MediaItemController extends Controller
             403,
         );
 
-        if ($mediaItem->file_path) {
-            Storage::disk('public')->delete($mediaItem->file_path);
-        }
-
-        if ($mediaItem->thumbnail_path) {
-            Storage::disk('public')->delete($mediaItem->thumbnail_path);
-        }
-
+        $mediaItem->deleteFilesIfUnshared();
         $mediaItem->delete();
 
         return response()->json([

@@ -2,42 +2,14 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import draggable from 'vuedraggable'
-import {
-    ArchiveBoxIcon,
-    Bars3Icon,
-    DocumentIcon,
-    MusicalNoteIcon,
-    PencilSquareIcon,
-    PhotoIcon,
-    PlusIcon,
-    TrashIcon,
-    VideoCameraIcon,
-} from '@heroicons/vue/24/outline'
+import { Bars3Icon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { useMediaItemsStore } from '../../../stores/mediaItems'
 import Modal from '../../../components/common/Modal.vue'
 import FloatingLabelInput from '../../../components/forms/FloatingLabelInput.vue'
 import TextareaInput from '../../../components/forms/TextareaInput.vue'
 import SelectInput from '../../../components/forms/SelectInput.vue'
 import FileUploadInput from '../../../components/forms/FileUploadInput.vue'
-
-const MEDIA_TYPE_OPTIONS = [
-    { value: 'pdf', label: 'PDF', accept: '.pdf', icon: DocumentIcon },
-    { value: 'image', label: 'Image', accept: '.jpg,.jpeg,.png,.webp,.gif', icon: PhotoIcon },
-    { value: 'video_upload', label: 'Uploaded Video', accept: '.mp4,.mov,.avi,.webm', icon: VideoCameraIcon },
-    { value: 'video_youtube', label: 'YouTube Video', icon: VideoCameraIcon },
-    { value: 'video_vimeo', label: 'Vimeo Video', icon: VideoCameraIcon },
-    { value: 'zip', label: 'ZIP Archive', accept: '.zip', icon: ArchiveBoxIcon },
-    { value: 'doc', label: 'Word Document (.doc)', accept: '.doc', icon: DocumentIcon },
-    { value: 'docx', label: 'Word Document (.docx)', accept: '.docx', icon: DocumentIcon },
-    { value: 'ppt', label: 'PowerPoint (.ppt)', accept: '.ppt', icon: DocumentIcon },
-    { value: 'pptx', label: 'PowerPoint (.pptx)', accept: '.pptx', icon: DocumentIcon },
-    { value: 'xls', label: 'Excel (.xls)', accept: '.xls', icon: DocumentIcon },
-    { value: 'xlsx', label: 'Excel (.xlsx)', accept: '.xlsx', icon: DocumentIcon },
-    { value: 'csv', label: 'CSV', accept: '.csv', icon: DocumentIcon },
-    { value: 'txt', label: 'Text File', accept: '.txt', icon: DocumentIcon },
-    { value: 'mp3', label: 'Audio (MP3)', accept: '.mp3', icon: MusicalNoteIcon },
-    { value: 'wav', label: 'Audio (WAV)', accept: '.wav', icon: MusicalNoteIcon },
-]
+import { EXTERNAL_MEDIA_TYPES, MEDIA_TYPE_OPTIONS } from '../../../lms/mediaTypes'
 
 const STATUS_OPTIONS = [
     { value: 'draft', label: 'Draft' },
@@ -45,7 +17,7 @@ const STATUS_OPTIONS = [
     { value: 'archived', label: 'Archived' },
 ]
 
-const EXTERNAL_TYPES = ['video_youtube', 'video_vimeo']
+const EXTERNAL_TYPES = EXTERNAL_MEDIA_TYPES
 
 const route = useRoute()
 const store = useMediaItemsStore()

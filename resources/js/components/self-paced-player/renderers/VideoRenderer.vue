@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'
+import { EMBEDDED_VIDEO_TYPES, videoEmbedUrl } from '../../../utils/videoEmbed'
 
 // Auto-completes on native playback end — the one concrete, unambiguous
 // "viewed" signal available without a backend-configured auto-complete
@@ -18,43 +19,12 @@ const emit = defineEmits(['auto-complete'])
 // MOV with an unsupported codec — both are accepted uploads).
 const unplayable = reactive(new Set())
 
-/**
- * A YouTube/Vimeo attachment stores the page URL the Insider pasted, which a
- * <video> element can't play — turn it into the provider's embeddable player
- * URL. Returns null if the URL isn't recognised, so the caller falls back to
- * a plain "open" link (the same thing the Insider's preview does).
- */
 function embedUrl(attachment) {
-    let url
-    try {
-        url = new URL(attachment.url)
-    } catch {
-        return null
-    }
-    const host = url.hostname.replace(/^(www\.|m\.)/, '')
-
-    if (attachment.media_type === 'video_youtube') {
-        let id = null
-        if (host === 'youtu.be') id = url.pathname.slice(1)
-        else if (url.searchParams.get('v')) id = url.searchParams.get('v')
-        else id = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/)?.[1] ?? null
-
-        return id ? `https://www.youtube-nocookie.com/embed/${id.split('/')[0]}` : null
-    }
-
-    if (attachment.media_type === 'video_vimeo') {
-        // vimeo.com/123, vimeo.com/123/<privacy hash>, player.vimeo.com/video/123
-        const [, id, hash] = url.pathname.match(/(?:\/video)?\/(\d+)(?:\/([0-9a-f]+))?/) ?? []
-        if (!id) return null
-
-        return `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ''}`
-    }
-
-    return null
+    return videoEmbedUrl(attachment.media_type, attachment.url)
 }
 
 function isEmbed(attachment) {
-    return ['video_youtube', 'video_vimeo'].includes(attachment.media_type)
+    return EMBEDDED_VIDEO_TYPES.includes(attachment.media_type)
 }
 </script>
 

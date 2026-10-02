@@ -9,10 +9,12 @@ import {
     PresentationChartBarIcon,
     PuzzlePieceIcon,
     SpeakerWaveIcon,
+    Squares2X2Icon,
     TableCellsIcon,
     VideoCameraIcon,
 } from '@heroicons/vue/24/outline'
 import AudioRenderer from '../components/self-paced-player/renderers/AudioRenderer.vue'
+import ContentActivityRenderer from '../components/self-paced-player/renderers/ContentActivityRenderer.vue'
 import DocumentRenderer from '../components/self-paced-player/renderers/DocumentRenderer.vue'
 import DownloadRenderer from '../components/self-paced-player/renderers/DownloadRenderer.vue'
 import ExternalResourceRenderer from '../components/self-paced-player/renderers/ExternalResourceRenderer.vue'
@@ -35,6 +37,7 @@ import VideoRenderer from '../components/self-paced-player/renderers/VideoRender
 // activity without a click. Mark Complete is still shown for these as a
 // fallback, since not every video can report that it ended.
 export const selfPacedActivityRegistry = {
+    content: { label: 'Content', icon: Squares2X2Icon, component: ContentActivityRenderer, autoComplete: false },
     rich_text: { label: 'Reading', icon: DocumentTextIcon, component: RichTextRenderer, autoComplete: false },
     video: { label: 'Video', icon: VideoCameraIcon, component: VideoRenderer, autoComplete: true },
     audio: { label: 'Audio', icon: SpeakerWaveIcon, component: AudioRenderer, autoComplete: true },

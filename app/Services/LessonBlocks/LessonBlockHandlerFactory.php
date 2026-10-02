@@ -13,6 +13,7 @@ class LessonBlockHandlerFactory
     public static function make(LessonBlockType $type): LessonBlockHandler
     {
         return match ($type) {
+            LessonBlockType::Content => new ContentBlockHandler,
             LessonBlockType::RichText => new RichTextBlockHandler,
             LessonBlockType::Media => new MediaBlockHandler,
             LessonBlockType::Quiz => new QuizBlockHandler,

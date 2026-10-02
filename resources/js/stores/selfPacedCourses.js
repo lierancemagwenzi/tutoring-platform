@@ -107,6 +107,13 @@ export const useSelfPacedCoursesStore = defineStore('selfPacedCourses', {
             return data.attachment
         },
 
+        async updateAttachment(attachmentId, payload) {
+            // Multipart (a replacement file) is only parsed on POST — spoof the PUT.
+            const form = toFormData({ ...payload, _method: 'PUT' })
+            const { data } = await api.post(`/tutor/self-paced-activity-attachments/${attachmentId}`, form)
+            return data.attachment
+        },
+
         async deleteAttachment(attachmentId) {
             await api.delete(`/tutor/self-paced-activity-attachments/${attachmentId}`)
         },

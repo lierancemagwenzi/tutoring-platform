@@ -4,6 +4,10 @@ namespace App\Enums;
 
 enum SelfPacedActivityType: string
 {
+    // Any number and mix of rich text / maths / diagram / file items in one
+    // activity (see App\Support\ContentItems). Its file items live in the
+    // activity's attachments, but it isn't an attachment-only type.
+    case Content = 'content';
     case RichText = 'rich_text';
     case Video = 'video';
     case Pdf = 'pdf';

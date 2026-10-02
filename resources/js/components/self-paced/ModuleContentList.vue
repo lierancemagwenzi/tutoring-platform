@@ -1,4 +1,5 @@
 <script setup>
+import { summariseContentItems } from '../../lms/contentItemTypes'
 import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 import { Bars3Icon, EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
@@ -112,13 +113,17 @@ async function onReorder() {
                     </span>
                     <div class="min-w-0 flex-1">
                         <p class="text-body truncate text-sm font-semibold">{{ item.title }}</p>
-                        <p class="text-xs text-muted capitalize">
+                        <p v-if="item.kind === 'activity' && item.type === 'content'" class="text-xs text-muted">
+                            Content · {{ summariseContentItems(item.content?.items) }}
+                            <span v-if="!item.required"> · optional</span>
+                        </p>
+                        <p v-else class="text-xs text-muted capitalize">
                             {{ item.kind === 'activity' ? item.type.replace('_', ' ') : `Assessment · ${item.assessment_type.replace('_', ' ')}` }}
                             <span v-if="!item.required"> · optional</span>
                         </p>
                     </div>
                     <a
-                        v-if="item.kind === 'activity' && firstAttachmentUrl(item)"
+                        v-if="item.kind === 'activity' && item.type !== 'content' && firstAttachmentUrl(item)"
                         :href="firstAttachmentUrl(item)"
                         target="_blank"
                         rel="noopener"
