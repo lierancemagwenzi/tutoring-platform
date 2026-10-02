@@ -357,14 +357,20 @@ class LaravelH5PFramework implements \H5PFrameworkInterface
 
     public function saveLibraryUsage($contentId, $librariesInUse)
     {
-        $weight = 0;
+        $fallbackWeight = 0;
         foreach ($librariesInUse as $dependency) {
             DB::table('h5p_content_libraries')->insert([
                 'content_id' => $contentId,
                 'library_id' => $dependency['library']['libraryId'],
                 'dependency_type' => $dependency['type'],
                 'drop_css' => filled($dependency['library']['dropLibraryCss'] ?? null),
-                'weight' => $weight++,
+                // H5P computes each dependency's load order itself — a
+                // library's own dependencies get a lower weight than it does,
+                // even though the library is listed first. Numbering in list
+                // order instead loaded e.g. H5P.MultiChoice before the
+                // H5P.Question it extends ("Cannot read properties of
+                // undefined (reading 'prototype')").
+                'weight' => $dependency['weight'] ?? $fallbackWeight++,
             ]);
         }
     }
