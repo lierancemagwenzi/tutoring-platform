@@ -2,12 +2,14 @@
 
 namespace App\Services\Meetings;
 
+use App\Enums\ConnectedAccountProvider;
 use App\Enums\MeetingStatus;
 use App\Jobs\CancelSessionMeetingJob;
 use App\Jobs\CreateSessionMeetingJob;
 use App\Models\Booking;
 use App\Models\SessionMeeting;
 use App\Models\TeachingSession;
+use App\Models\TutorProfile;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
@@ -90,10 +92,10 @@ class MeetingService
             return;
         }
 
-        $provider = $session->tutorProfile->meeting_provider;
+        $provider = $session->tutorProfile->meeting_provider ?? $this->soleConnectedProvider($session->tutorProfile);
 
         if (! $provider) {
-            $this->markFailed($sessionMeeting, 'The tutor has not selected a meeting provider.');
+            $this->markFailed($sessionMeeting, 'No meeting provider is selected. Choose one under Settings → Meeting Providers, then retry.');
 
             return;
         }
@@ -190,5 +192,26 @@ class MeetingService
             'status' => MeetingStatus::Failed,
             'metadata' => [...($sessionMeeting->metadata ?? []), 'error' => $reason],
         ]);
+    }
+
+    /**
+     * With no provider selected but exactly one account connected, there is
+     * only one sensible choice — use it, and remember it, rather than
+     * failing every meeting until the tutor finds the setting. (The
+     * selection is cleared when a tutor disconnects that provider, so a
+     * disconnect/reconnect previously left meetings failing silently.)
+     */
+    private function soleConnectedProvider(TutorProfile $tutor): ?ConnectedAccountProvider
+    {
+        $providers = $tutor->connectedAccounts()->pluck('provider')->unique();
+
+        if ($providers->count() !== 1) {
+            return null;
+        }
+
+        $provider = $providers->first();
+        $tutor->update(['meeting_provider' => $provider]);
+
+        return $provider;
     }
 }

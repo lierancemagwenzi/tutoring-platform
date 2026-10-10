@@ -1,4 +1,5 @@
 <script setup>
+import SpeedTestModal from '../../components/network/SpeedTestModal.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { VideoCameraIcon } from '@heroicons/vue/24/outline'
@@ -137,6 +138,9 @@ async function retryMeeting(session) {
         retryingMeetingId.value = null
     }
 }
+
+// Join links run a quick network check first (see SpeedTestModal).
+const joinUrl = ref(null)
 </script>
 
 <template>
@@ -221,9 +225,10 @@ async function retryMeeting(session) {
                     </div>
 
                     <div v-if="session.meeting && !session.meeting.meeting_url" class="border-border mt-4 border-t pt-4">
-                        <p v-if="session.meeting.status === 'failed'" class="text-sm text-red-600">
-                            We couldn't create the meeting link for this session.
-                        </p>
+                        <template v-if="session.meeting.status === 'failed'">
+                            <p class="text-sm text-red-600">We couldn't create the meeting link for this session.</p>
+                            <p v-if="session.meeting.failure_reason" class="text-muted mt-1 text-sm">{{ session.meeting.failure_reason }}</p>
+                        </template>
                         <p v-else class="text-muted text-sm">Setting up the meeting link…</p>
                         <p v-if="retryError" class="mt-1 text-sm text-red-600">{{ retryError }}</p>
                         <button
@@ -244,6 +249,7 @@ async function retryMeeting(session) {
                             target="_blank"
                             rel="noopener"
                             class="text-accent flex items-center gap-1 text-sm font-semibold"
+                            @click.exact.prevent="joinUrl = session.meeting.meeting_url"
                         >
                             <VideoCameraIcon class="h-4 w-4" /> Open Meeting
                         </a>
@@ -330,5 +336,7 @@ async function retryMeeting(session) {
                 @cancelled="pickerOpen = false"
             />
         </Modal>
+
+        <SpeedTestModal :model-value="joinUrl !== null" :join-url="joinUrl" @update:model-value="(open) => !open && (joinUrl = null)" />
     </div>
 </template>

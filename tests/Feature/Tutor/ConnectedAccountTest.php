@@ -108,6 +108,18 @@ class ConnectedAccountTest extends TestCase
         $response->assertUnprocessable();
     }
 
+    public function test_connecting_selects_the_provider_for_meetings_when_none_is_selected(): void
+    {
+        $this->bindFakeGoogleProvider();
+        $tutor = $this->tutor();
+
+        $this->get('/api/tutor/settings/connected-accounts/google/callback?'.http_build_query([
+            'code' => 'fake-code', 'state' => $this->validState($tutor->id),
+        ]))->assertRedirect();
+
+        $this->assertSame('google', $tutor->fresh()->meeting_provider->value);
+    }
+
     public function test_callback_with_valid_state_and_code_creates_a_connected_account(): void
     {
         $this->bindFakeGoogleProvider();

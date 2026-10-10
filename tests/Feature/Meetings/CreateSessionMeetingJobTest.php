@@ -167,7 +167,28 @@ class CreateSessionMeetingJobTest extends TestCase
 
         $sessionMeeting->refresh();
         $this->assertSame(MeetingStatus::Failed, $sessionMeeting->status);
-        $this->assertSame('The tutor has not selected a meeting provider.', $sessionMeeting->metadata['error'] ?? null);
+        $this->assertSame('No meeting provider is selected. Choose one under Settings → Meeting Providers, then retry.', $sessionMeeting->metadata['error'] ?? null);
+    }
+
+    public function test_with_no_provider_selected_the_only_connected_account_is_used_and_remembered(): void
+    {
+        $tutor = $this->tutor();
+        $this->connectGoogle($tutor);
+        // e.g. cleared by an earlier disconnect — Google is reconnected but not re-selected.
+        $this->assertNull($tutor->fresh()->meeting_provider);
+        [$session] = $this->sessionWithBooking($tutor);
+        $sessionMeeting = $this->pendingMeetingFor($session);
+
+        $this->bindFakeProvider(fn () => [
+            'calendar_event_id' => 'evt-1', 'meeting_id' => 'meet-1', 'meeting_url' => 'https://meet.google.com/abc-defg-hij',
+            'organizer_email' => 'tutor@gmail.com', 'starts_at' => now()->addDays(10), 'ends_at' => now()->addDays(10)->addHour(),
+            'metadata' => [],
+        ]);
+
+        $this->app->call([new CreateSessionMeetingJob($sessionMeeting->id), 'handle']);
+
+        $this->assertSame(MeetingStatus::Scheduled, $sessionMeeting->fresh()->status);
+        $this->assertSame('google', $tutor->fresh()->meeting_provider->value);
     }
 
     public function test_provider_runtime_exception_marks_meeting_failed_without_propagating(): void

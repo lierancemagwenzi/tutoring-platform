@@ -95,6 +95,12 @@ class ConnectedAccountService
             throw new RuntimeException('This account could not be connected. Please try again.');
         }
 
+        // Connecting is the moment a tutor sets up meetings — if they have
+        // no provider selected yet, this one is the obvious choice.
+        if ($tutor->meeting_provider === null) {
+            $tutor->update(['meeting_provider' => $provider]);
+        }
+
         return TutorConnectedAccount::updateOrCreate(
             ['tutor_profile_id' => $tutor->id, 'provider' => $provider],
             [
