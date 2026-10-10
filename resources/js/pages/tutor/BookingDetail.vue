@@ -1,5 +1,4 @@
 <script setup>
-import SpeedTestModal from '../../components/network/SpeedTestModal.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { VideoCameraIcon } from '@heroicons/vue/24/outline'
@@ -10,6 +9,8 @@ import LessonPicker from '../../components/lms/LessonPicker.vue'
 import FloatingLabelInput from '../../components/forms/FloatingLabelInput.vue'
 import TextareaInput from '../../components/forms/TextareaInput.vue'
 import BookingChat from '../../components/booking/BookingChat.vue'
+import SpeedTestModal from '../../components/network/SpeedTestModal.vue'
+import NetworkStatusInline from '../../components/network/NetworkStatusInline.vue'
 
 const CHAT_VISIBLE_STATUSES = ['confirmed', 'completed', 'cancelled']
 
@@ -308,6 +309,11 @@ const joinUrl = ref(null)
                     <p class="bg-card-alt text-muted border-border rounded-xl border px-4 py-3 text-sm capitalize">
                         {{ settings.meetingProvider.selected ?? 'None selected' }}
                     </p>
+                </div>
+
+                <div>
+                    <p class="text-body mb-1 text-sm font-medium">Your Connection</p>
+                    <NetworkStatusInline />
                 </div>
 
                 <TextareaInput id="schedule-notes" v-model="form.tutor_notes" label="Notes (optional)" :rows="3" />
