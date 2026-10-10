@@ -1,4 +1,5 @@
 <script setup>
+import SpeedTestModal from '../../components/network/SpeedTestModal.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTutorBookingsStore } from '../../stores/tutorBookings'
@@ -34,6 +35,9 @@ async function retryMeeting() {
         retrying.value = false
     }
 }
+
+// Join links run a quick network check first (see SpeedTestModal).
+const joinUrl = ref(null)
 </script>
 
 <template>
@@ -97,6 +101,7 @@ async function retryMeeting() {
                     target="_blank"
                     rel="noopener"
                     class="text-accent mt-3 block text-sm font-semibold underline"
+                    @click.exact.prevent="joinUrl = store.currentSession.meeting.meeting_url"
                 >
                     {{ store.currentSession.meeting.meeting_url }}
                 </a>
@@ -130,5 +135,7 @@ async function retryMeeting() {
                 </ul>
             </div>
         </template>
+
+        <SpeedTestModal :model-value="joinUrl !== null" :join-url="joinUrl" @update:model-value="(open) => !open && (joinUrl = null)" />
     </div>
 </template>

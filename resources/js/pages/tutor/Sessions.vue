@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { SignalIcon } from '@heroicons/vue/24/outline'
 import { useTutorBookingsStore } from '../../stores/tutorBookings'
+import SpeedTestModal from '../../components/network/SpeedTestModal.vue'
 
 const STATUS_CLASSES = {
     scheduled: 'bg-blue-100 text-blue-700',
@@ -18,6 +20,7 @@ const router = useRouter()
 const store = useTutorBookingsStore()
 
 const loading = ref(true)
+const speedTestOpen = ref(false)
 
 onMounted(async () => {
     loading.value = true
@@ -43,7 +46,17 @@ function viewSession(session) {
 
 <template>
     <div class="p-8">
-        <h1 class="text-body text-2xl font-bold">Sessions</h1>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <h1 class="text-body text-2xl font-bold">Sessions</h1>
+            <button
+                type="button"
+                class="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-body hover:border-accent"
+                @click="speedTestOpen = true"
+            >
+                <SignalIcon class="text-accent h-4 w-4" />
+                Test my connection
+            </button>
+        </div>
 
         <div v-if="loading" class="flex justify-center py-24">
             <div class="border-amber h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" />
@@ -82,5 +95,7 @@ function viewSession(session) {
                 </div>
             </div>
         </div>
+
+        <SpeedTestModal v-model="speedTestOpen" />
     </div>
 </template>

@@ -41,6 +41,7 @@ import TutorServiceDetail from '../pages/tutor/ServiceDetail.vue'
 import BookingRequests from '../pages/tutor/BookingRequests.vue'
 import TutorBookingDetail from '../pages/tutor/BookingDetail.vue'
 import TutorSessions from '../pages/tutor/Sessions.vue'
+import TutorSpeedTest from '../pages/tutor/SpeedTest.vue'
 import TutorSessionDetail from '../pages/tutor/SessionDetail.vue'
 import TutorSessionContent from '../pages/tutor/SessionContent.vue'
 import TutorSessionLessonBlocks from '../pages/tutor/SessionLessonBlocks.vue'
@@ -223,6 +224,7 @@ const routes = [
             { path: 'booking-requests', name: 'tutor.booking-requests', component: BookingRequests, meta: { requiresTutor: true } },
             { path: 'bookings/:id', name: 'tutor.bookings.show', component: TutorBookingDetail, meta: { requiresTutor: true } },
             { path: 'sessions', name: 'tutor.sessions', component: TutorSessions, meta: { requiresTutor: true } },
+            { path: 'speed-test', name: 'tutor.speed-test', component: TutorSpeedTest, meta: { requiresTutor: true } },
             { path: 'sessions/:id', name: 'tutor.sessions.show', component: TutorSessionDetail, meta: { requiresTutor: true } },
             {
                 path: 'sessions/:id/content',

@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+import SpeedTestModal from '../network/SpeedTestModal.vue'
 import { CalendarDaysIcon, UserGroupIcon, VideoCameraIcon } from '@heroicons/vue/24/outline'
 
 defineProps({
@@ -10,6 +12,9 @@ function studentNames(session) {
         .map((booking) => `${booking.student.first_name} ${booking.student.last_name}`)
         .join(', ')
 }
+
+// Join links run a quick network check first (see SpeedTestModal).
+const joinUrl = ref(null)
 </script>
 
 <template>
@@ -51,6 +56,7 @@ function studentNames(session) {
                         target="_blank"
                         rel="noopener"
                         class="text-green-600"
+                        @click.exact.prevent="joinUrl = entry.session.meeting.meeting_url"
                     >
                         Join Meeting
                     </a>
@@ -59,5 +65,7 @@ function studentNames(session) {
                 </div>
             </li>
         </ul>
+
+        <SpeedTestModal :model-value="joinUrl !== null" :join-url="joinUrl" @update:model-value="(open) => !open && (joinUrl = null)" />
     </div>
 </template>

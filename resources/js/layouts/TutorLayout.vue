@@ -14,6 +14,7 @@ import {
     PuzzlePieceIcon,
     QuestionMarkCircleIcon,
     RectangleStackIcon,
+    SignalIcon,
     VideoCameraIcon,
 } from '@heroicons/vue/24/outline'
 import SidebarShell from '../components/navigation/SidebarShell.vue'
@@ -38,6 +39,7 @@ const TUTOR_GROUPS = [
         items: [
             { to: '/tutor/booking-requests', label: 'Requests', icon: ClipboardDocumentListIcon },
             { to: '/tutor/sessions', label: 'Sessions', icon: VideoCameraIcon },
+            { to: '/tutor/speed-test', label: 'Speed Test', icon: SignalIcon },
         ],
     },
     {
