@@ -6,6 +6,7 @@ const props = defineProps({
     modelValue: { type: String, default: '' },
     countryCode: { type: String, default: '+27' },
     id: { type: String, required: true },
+    label: { type: String, default: 'Phone number' },
 })
 
 const emit = defineEmits(['update:modelValue', 'update:countryCode'])
@@ -23,18 +24,8 @@ function selectCode(code) {
 
 <template>
     <div class="relative">
-        <label
-            :for="id"
-            class="bg-surface pointer-events-none absolute left-3 px-1 transition-all duration-150"
-            :class="[
-                floating ? '-top-2.5 text-xs' : 'top-1/2 -translate-y-1/2 text-base',
-                focused ? 'text-accent font-medium' : 'text-muted',
-            ]"
-        >
-            Country code
-        </label>
         <div
-            class="bg-surface flex w-full items-stretch rounded-xl border transition-colors"
+            class="bg-card flex w-full items-stretch rounded-xl border transition-colors"
             :class="focused ? 'border-accent border-2' : 'border-border'"
         >
             <div class="relative">
@@ -60,17 +51,30 @@ function selectCode(code) {
                     </li>
                 </ul>
             </div>
-            <div class="bg-border w-px shrink-0" />
-            <input
-                :id="id"
-                type="tel"
-                :value="modelValue"
-                autocomplete="tel"
-                class="text-body w-full rounded-r-xl px-4 py-3.5 outline-none"
-                @input="$emit('update:modelValue', $event.target.value)"
-                @focus="focused = true"
-                @blur="focused = false"
-            />
+            <div class="bg-muted/30 my-2.5 w-px shrink-0" />
+            <!-- Label is scoped to the number side so it never sits on top of the country code. -->
+            <div class="relative min-w-0 flex-1">
+                <label
+                    :for="id"
+                    class="bg-card pointer-events-none absolute left-3 px-1 whitespace-nowrap transition-all duration-150"
+                    :class="[
+                        floating ? '-top-2.5 text-xs' : 'top-1/2 -translate-y-1/2 text-base',
+                        focused ? 'text-accent font-medium' : 'text-muted',
+                    ]"
+                >
+                    {{ label }}
+                </label>
+                <input
+                    :id="id"
+                    type="tel"
+                    :value="modelValue"
+                    autocomplete="tel"
+                    class="bg-card text-body w-full rounded-r-xl px-4 py-3.5 outline-none"
+                    @input="$emit('update:modelValue', $event.target.value)"
+                    @focus="focused = true"
+                    @blur="focused = false"
+                />
+            </div>
         </div>
     </div>
 </template>

@@ -113,7 +113,7 @@ onBeforeUnmount(() => clearInterval(timer))
         <form class="mt-10" novalidate @submit.prevent="verify">
             <p v-if="errorMessage" class="mb-6 rounded-lg bg-red-50 px-4 py-3 text-center text-sm text-red-600">{{ errorMessage }}</p>
 
-            <div class="flex justify-center gap-3">
+            <div class="flex justify-center gap-2 sm:gap-3">
                 <input
                     v-for="(digit, index) in digits"
                     :key="index"
@@ -122,7 +122,7 @@ onBeforeUnmount(() => clearInterval(timer))
                     type="text"
                     inputmode="numeric"
                     maxlength="1"
-                    class="focus:border-accent bg-surface text-body h-16 w-12 rounded-xl border border-border text-center text-2xl outline-none"
+                    class="focus:border-accent bg-card text-body border-muted/40 h-14 w-11 min-w-0 rounded-xl border text-center text-2xl outline-none focus:border-2 sm:h-16 sm:w-12"
                     @input="handleInput(index, $event)"
                     @keydown="handleKeydown(index, $event)"
                 />
