@@ -15,6 +15,7 @@ import {
 import { useAuthStore } from '../../stores/auth'
 import { useThemeStore } from '../../stores/theme'
 import { useNotificationsStore } from '../../stores/notifications'
+import logoMark from '../../assets/logo-mark.png'
 
 const props = defineProps({
     userName: { type: String, required: true },
@@ -76,15 +77,21 @@ onMounted(() => {
             class="from-panel-start to-panel-end flex shrink-0 flex-col gap-6 bg-gradient-to-b py-6 text-white transition-all duration-200"
             :class="collapsed ? 'w-28 items-center' : 'w-64 px-4'"
         >
-            <button
-                type="button"
-                aria-label="Toggle menu"
-                class="text-white/80 hover:text-white"
-                :class="collapsed ? 'self-start pl-6' : 'self-start'"
-                @click="collapsed = !collapsed"
-            >
-                <Bars3Icon class="h-6 w-6" />
-            </button>
+            <div class="flex items-center gap-3" :class="collapsed ? 'flex-col items-center self-stretch' : 'px-1'">
+                <button
+                    type="button"
+                    aria-label="Toggle menu"
+                    class="text-white/80 hover:text-white"
+                    :class="collapsed ? 'self-start pl-6' : ''"
+                    @click="collapsed = !collapsed"
+                >
+                    <Bars3Icon class="h-6 w-6" />
+                </button>
+                <router-link :to="homeRoute" class="flex items-center gap-2" aria-label="ItsLearnable home">
+                    <img :src="logoMark" alt="ItsLearnable" class="h-9 w-9 shrink-0" />
+                    <span v-if="!collapsed" class="text-lg font-semibold tracking-tight">ItsLearnable</span>
+                </router-link>
+            </div>
 
             <nav class="flex flex-1 flex-col gap-1 overflow-y-auto" :class="collapsed ? 'items-center gap-6' : ''">
                 <router-link
