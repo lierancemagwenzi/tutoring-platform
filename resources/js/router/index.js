@@ -13,6 +13,7 @@ import RoleSelect from '../pages/register/RoleSelect.vue'
 import AgeGate from '../pages/register/AgeGate.vue'
 import PersonalDetails from '../pages/register/PersonalDetails.vue'
 import Otp from '../pages/register/Otp.vue'
+import SpeedTestStep from '../pages/register/SpeedTestStep.vue'
 import CreatePassword from '../pages/register/CreatePassword.vue'
 import Success from '../pages/register/Success.vue'
 import StudentDashboard from '../pages/student/Dashboard.vue'
@@ -41,7 +42,6 @@ import TutorServiceDetail from '../pages/tutor/ServiceDetail.vue'
 import BookingRequests from '../pages/tutor/BookingRequests.vue'
 import TutorBookingDetail from '../pages/tutor/BookingDetail.vue'
 import TutorSessions from '../pages/tutor/Sessions.vue'
-import TutorSpeedTest from '../pages/tutor/SpeedTest.vue'
 import TutorSessionDetail from '../pages/tutor/SessionDetail.vue'
 import TutorSessionContent from '../pages/tutor/SessionContent.vue'
 import TutorSessionLessonBlocks from '../pages/tutor/SessionLessonBlocks.vue'
@@ -133,6 +133,12 @@ const routes = [
                 component: Otp,
                 meta: { requiresAuth: true, afterVerify: 'dashboard' },
             },
+            {
+                path: 'speed-test',
+                name: 'speed-test',
+                component: SpeedTestStep,
+                meta: { requiresAuth: true, afterPass: 'dashboard' },
+            },
         ],
     },
     {
@@ -141,7 +147,15 @@ const routes = [
         children: [
             { path: 'details', name: 'register.details', component: PersonalDetails, meta: { step: 1 } },
             { path: 'password', name: 'register.password', component: CreatePassword, meta: { step: 2 } },
-            { path: 'otp', name: 'register.otp', component: Otp, meta: { step: 3, afterVerify: 'success' } },
+            // Tutors take the mandatory speed test between password and OTP — a
+            // 4-step wizard for them, 3 for learners (see WizardLayout).
+            {
+                path: 'speed-test',
+                name: 'register.speed-test',
+                component: SpeedTestStep,
+                meta: { step: 3, totalSteps: 4, requiresAuth: true, afterPass: 'otp' },
+            },
+            { path: 'otp', name: 'register.otp', component: Otp, meta: { step: 3, tutorStep: 4, afterVerify: 'success' } },
         ],
     },
     {
@@ -224,7 +238,6 @@ const routes = [
             { path: 'booking-requests', name: 'tutor.booking-requests', component: BookingRequests, meta: { requiresTutor: true } },
             { path: 'bookings/:id', name: 'tutor.bookings.show', component: TutorBookingDetail, meta: { requiresTutor: true } },
             { path: 'sessions', name: 'tutor.sessions', component: TutorSessions, meta: { requiresTutor: true } },
-            { path: 'speed-test', name: 'tutor.speed-test', component: TutorSpeedTest, meta: { requiresTutor: true } },
             { path: 'sessions/:id', name: 'tutor.sessions.show', component: TutorSessionDetail, meta: { requiresTutor: true } },
             {
                 path: 'sessions/:id/content',
@@ -472,6 +485,8 @@ function storedUser() {
     return JSON.parse(localStorage.getItem('auth_user') ?? 'null')
 }
 
+const SPEED_TEST_ROUTES = ['speed-test', 'register.speed-test']
+
 router.beforeEach((to) => {
     const token = localStorage.getItem('auth_token')
 
@@ -489,11 +504,27 @@ router.beforeEach((to) => {
 
     const user = token ? storedUser() : null
 
+    // A tutor applicant can't go anywhere else until their connection has
+    // passed the registration speed test (backstopped server-side by
+    // EnsureTutorPassedSpeedTest). Checked before email verification
+    // because that's the order of the sign-up wizard.
+    const isSpeedTestRoute = SPEED_TEST_ROUTES.includes(to.name)
+    const speedTestPassed = user?.tutor_profile?.speed_test_passed !== false
+
+    if (to.matched.some((record) => record.meta.requiresAuth) && user?.role === 'tutor' && !speedTestPassed && !isSpeedTestRoute) {
+        return { name: 'speed-test' }
+    }
+
+    if (to.name === 'speed-test' && user && speedTestPassed) {
+        return DASHBOARD_BY_ROLE[user.role] ?? { name: 'login' }
+    }
+
     if (
         to.matched.some((record) => record.meta.requiresAuth) &&
         user &&
         !user.email_verified_at &&
-        to.name !== 'verify-account'
+        to.name !== 'verify-account' &&
+        !isSpeedTestRoute
     ) {
         return { name: 'verify-account' }
     }

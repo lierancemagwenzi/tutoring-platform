@@ -36,6 +36,21 @@ api.interceptors.response.use(
             }
         }
 
+        // A tutor applicant who hasn't passed the registration speed test
+        // (see EnsureTutorPassedSpeedTest) — e.g. a session stored before
+        // the test existed, which the router guard can't tell apart.
+        if (error.response?.data?.code === 'TUTOR_SPEED_TEST_REQUIRED') {
+            const user = JSON.parse(localStorage.getItem('auth_user') ?? 'null')
+            if (user?.tutor_profile) {
+                user.tutor_profile.speed_test_passed = false
+                localStorage.setItem('auth_user', JSON.stringify(user))
+            }
+
+            if (router.currentRoute.value.name !== 'speed-test') {
+                router.push({ name: 'speed-test' })
+            }
+        }
+
         // A tutor whose application isn't complete yet (see
         // EnsureTutorOnboardingComplete) gets this on every other endpoint.
         // The router guard already redirects `/tutor` itself, but a direct

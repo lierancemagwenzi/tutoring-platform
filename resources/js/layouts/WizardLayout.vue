@@ -3,12 +3,17 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import logo from '../assets/logo.png'
+import { useRegistrationStore } from '../stores/registration'
 
 const route = useRoute()
 const router = useRouter()
+const registration = useRegistrationStore()
 
-const step = computed(() => route.meta.step ?? 1)
-const totalSteps = computed(() => route.meta.totalSteps ?? 3)
+// Tutor sign-up has an extra speed test step before the OTP, so its shared
+// steps count out of 4 rather than 3 (see the /register routes).
+const isTutorSignUp = computed(() => registration.role === 'guide')
+const step = computed(() => (isTutorSignUp.value && route.meta.tutorStep) || route.meta.step || 1)
+const totalSteps = computed(() => route.meta.totalSteps ?? (isTutorSignUp.value ? 4 : 3))
 </script>
 
 <template>

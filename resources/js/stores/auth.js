@@ -56,6 +56,13 @@ export const useAuthStore = defineStore('auth', {
             return data.user
         },
 
+        async submitSpeedTest(metrics) {
+            const { data } = await api.post('/tutor/speed-test', metrics)
+            this.user = data.user
+            localStorage.setItem('auth_user', JSON.stringify(data.user))
+            return data
+        },
+
         async resendVerification() {
             const { data } = await api.post('/email/resend')
             return data

@@ -80,7 +80,7 @@ async function continueRegistration() {
     try {
         const { data } = await api.post(endpoint, buildPayload())
         auth.setSession(data.user, data.token)
-        router.push('/register/otp')
+        router.push(registration.role === 'guide' ? '/register/speed-test' : '/register/otp')
     } catch (error) {
         const errors = error.response?.data?.errors
         submitError.value = errors

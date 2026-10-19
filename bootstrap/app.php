@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureEmailVerified;
 use App\Http\Middleware\EnsureTutorOnboardingComplete;
+use App\Http\Middleware\EnsureTutorPassedSpeedTest;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsSuperAdmin;
 use App\Http\Middleware\EnsureUserIsTutor;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'tutor' => EnsureUserIsTutor::class,
             'tutor.onboarded' => EnsureTutorOnboardingComplete::class,
+            'tutor.speed-tested' => EnsureTutorPassedSpeedTest::class,
             'admin' => EnsureUserIsAdmin::class,
             'super_admin' => EnsureUserIsSuperAdmin::class,
             'verified' => EnsureEmailVerified::class,

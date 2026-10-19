@@ -107,6 +107,7 @@ use App\Http\Controllers\Api\Tutor\SelfPaced\SelfPacedSurveyQuestionController;
 use App\Http\Controllers\Api\Tutor\ServiceController;
 use App\Http\Controllers\Api\Tutor\SessionLessonBlockController;
 use App\Http\Controllers\Api\Tutor\SessionLessonController;
+use App\Http\Controllers\Api\Tutor\SpeedTestController;
 use App\Http\Controllers\Api\Tutor\SubmissionController as TutorSubmissionController;
 use App\Http\Controllers\Api\Tutor\SubmissionFeedbackAttachmentController;
 use App\Http\Controllers\Api\Tutor\SubmitTutorApplicationController;
@@ -128,12 +129,18 @@ Route::post('/accept-admin-invite', AcceptAdminInviteController::class)->middlew
 
 // Deliberately NOT gated by the `verified` middleware — an unverified
 // account must still be able to log out, check who it is, and verify
-// itself. Nothing else lives in this group.
+// itself. The only other thing here is the tutor registration speed test,
+// which comes before email verification in the sign-up flow.
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::get('/me', [AuthenticatedSessionController::class, 'me']);
     Route::post('/email/verify', VerifyEmailController::class);
     Route::post('/email/resend', ResendEmailVerificationController::class)->middleware('throttle:6,1');
+
+    Route::middleware('tutor')->prefix('tutor/speed-test')->group(function () {
+        Route::get('/', [SpeedTestController::class, 'show']);
+        Route::post('/', [SpeedTestController::class, 'store'])->middleware('throttle:10,1');
+    });
 });
 
 // Everything below requires a verified account. `verified` sits alongside
@@ -156,7 +163,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/assessment-types', [AssessmentTypeController::class, 'index']);
     Route::get('/curricula', [CurriculumController::class, 'index']);
 
-    Route::middleware('tutor')->prefix('tutor/application')->group(function () {
+    Route::middleware(['tutor', 'tutor.speed-tested'])->prefix('tutor/application')->group(function () {
         Route::get('/', [TutorApplicationController::class, 'show']);
         Route::post('/basic-info', BasicInformationController::class);
         Route::post('/professional-profile', ProfessionalProfileController::class);

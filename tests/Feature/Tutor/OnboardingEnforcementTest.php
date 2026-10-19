@@ -38,7 +38,7 @@ class OnboardingEnforcementTest extends TestCase
     public function test_a_tutor_with_an_incomplete_application_can_still_reach_the_application_wizard_itself(): void
     {
         $tutorUser = User::factory()->tutor()->create();
-        TutorProfile::create(['user_id' => $tutorUser->id, 'onboarding_complete' => false]);
+        TutorProfile::create(['user_id' => $tutorUser->id, 'onboarding_complete' => false, 'speed_test_passed_at' => now()]);
         Sanctum::actingAs($tutorUser);
 
         $response = $this->getJson('/api/tutor/application');

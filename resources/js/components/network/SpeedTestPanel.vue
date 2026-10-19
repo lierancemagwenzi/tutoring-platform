@@ -19,6 +19,8 @@ const props = defineProps({
     autoStart: { type: Boolean, default: false },
     // Show a previous result (instead of an empty state) until a new run.
     initialResult: { type: Object, default: undefined },
+    // Hide the video-session health banner when the parent shows its own verdict.
+    showHealth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['running', 'finished'])
@@ -107,14 +109,14 @@ onBeforeUnmount(() => controller?.abort())
         <template v-else>
             <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{{ error }}</p>
 
-            <div v-if="health" class="flex items-start gap-3 rounded-2xl p-4" :class="RATING_STYLES[health.level]">
+            <div v-if="health && showHealth" class="flex items-start gap-3 rounded-2xl p-4" :class="RATING_STYLES[health.level]">
                 <component :is="healthIcon" class="mt-0.5 h-6 w-6 shrink-0" />
                 <div class="min-w-0">
                     <p class="font-bold">Network health: {{ health.label }}</p>
                     <p class="text-sm">{{ health.summary }}</p>
                 </div>
             </div>
-            <div v-else-if="!error" class="rounded-2xl bg-card-alt p-6 text-center">
+            <div v-else-if="!health && !error" class="rounded-2xl bg-card-alt p-6 text-center">
                 <SignalIcon class="text-accent mx-auto h-10 w-10" />
                 <p class="text-body mt-3 font-semibold">Check your connection before teaching</p>
                 <p class="text-muted mt-1 text-sm">We'll measure your speed and tell you if it's ready for a video session.</p>

@@ -34,6 +34,7 @@ class UserResource extends JsonResource
                 'profile_photo_url' => $this->tutorProfile->profile_photo ? Storage::disk('public')->url($this->tutorProfile->profile_photo) : null,
                 'onboarding_step' => $this->tutorProfile->onboarding_step,
                 'onboarding_complete' => $this->tutorProfile->onboarding_complete,
+                'speed_test_passed' => $this->tutorProfile->speed_test_passed_at !== null,
             ]),
             'student_guardian' => $this->whenLoaded('studentGuardian', fn () => $this->studentGuardian ? [
                 'guardian_first_name' => $this->studentGuardian->guardian_first_name,

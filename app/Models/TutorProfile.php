@@ -31,6 +31,8 @@ class TutorProfile extends Model
         'government_id_name',
         'onboarding_step',
         'onboarding_complete',
+        'speed_test_result',
+        'speed_test_passed_at',
         'meeting_provider',
         'admin_note',
     ];
@@ -47,6 +49,8 @@ class TutorProfile extends Model
             'years_experience' => 'integer',
             'onboarding_step' => 'integer',
             'onboarding_complete' => 'boolean',
+            'speed_test_result' => 'array',
+            'speed_test_passed_at' => 'datetime',
             'meeting_provider' => ConnectedAccountProvider::class,
         ];
     }
