@@ -4,7 +4,7 @@ import KatexRender from './KatexRender.vue'
 import MermaidRender from './MermaidRender.vue'
 import MediaItemView from './MediaItemView.vue'
 
-// Renders a Content block's / Content activity's items in the Insider's
+// Renders a Content block's / Content activity's items in the tutor's
 // order. File items point by id at `media` (the block's media_items, or the
 // activity's attachments).
 const props = defineProps({

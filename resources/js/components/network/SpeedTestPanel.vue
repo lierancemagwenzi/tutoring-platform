@@ -94,7 +94,7 @@ onMounted(() => {
 })
 
 // Closing the dialog / leaving the page mid-test stops it, so it doesn't
-// keep using the Insider's data in the background.
+// keep using the tutor's data in the background.
 onBeforeUnmount(() => controller?.abort())
 </script>
 

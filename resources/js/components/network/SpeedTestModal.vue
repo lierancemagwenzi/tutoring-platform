@@ -7,7 +7,7 @@ import { recentResult } from '../../services/speedTest'
 
 // The network check in a dialog. Given a joinUrl it's the pre-session
 // check: it tests straight away (unless there's a result from the last
-// 15 minutes) and offers "Join meeting" throughout — the Insider is told
+// 15 minutes) and offers "Join meeting" throughout — the tutor is told
 // about their connection, never blocked by it.
 const props = defineProps({
     modelValue: { type: Boolean, required: true },

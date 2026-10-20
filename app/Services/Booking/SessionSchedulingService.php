@@ -111,9 +111,9 @@ class SessionSchedulingService
             return $existing;
         }
 
-        // Deliberately not limited to the Insider's published availability:
+        // Deliberately not limited to the tutor's published availability:
         // that governs what learners can book in the marketplace, but an
-        // Insider arranging a session for an existing booking can agree any
+        // A tutor arranging a session for an existing booking can agree any
         // time with their learner. A clash with another session is still a
         // genuine double-booking, so that stays blocked.
         if ($this->availability->hasOverlap($tutor, $data['date'], $data['start_time'], $data['end_time'])) {

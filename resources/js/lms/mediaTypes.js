@@ -29,7 +29,7 @@ export function mediaTypeMeta(mediaType) {
     return MEDIA_TYPE_OPTIONS.find((option) => option.value === mediaType) ?? MEDIA_TYPE_OPTIONS[0]
 }
 
-// How a file is described to learners (vs. the Insider-facing upload labels above).
+// How a file is described to learners (vs. the tutor-facing upload labels above).
 const LEARNER_LABELS = {
     pdf: 'PDF',
     image: 'Image',

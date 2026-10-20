@@ -14,7 +14,7 @@ useThemeStore().init()
 // The auth token lives in localStorage, which every tab shares. If another
 // tab logs in as a different account (or logs out), this tab's in-memory
 // state still reflects the old user while its requests now carry the new
-// token — e.g. a Guide's sidebar calling tutor-only endpoints as a Member.
+// token — e.g. a Guide's sidebar calling tutor-only endpoints as a student.
 // Reload onto the new account's dashboard (or login) so the two stay in sync.
 window.addEventListener('storage', (event) => {
     if (event.key !== 'auth_token' && event.key !== null) {

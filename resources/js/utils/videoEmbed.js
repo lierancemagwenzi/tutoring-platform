@@ -1,5 +1,5 @@
 /**
- * Turn a YouTube/Vimeo page URL (what an Insider pastes) into the provider's
+ * Turn a YouTube/Vimeo page URL (what a tutor pastes) into the provider's
  * embeddable player URL — a <video> element can't play a page URL. Returns
  * null for anything unrecognised, so callers can fall back to a plain link.
  *

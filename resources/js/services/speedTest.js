@@ -24,7 +24,7 @@ const PHASE_LABELS = { latency: 'Checking response time', download: 'Measuring d
 
 const STORAGE_KEY = 'network-check:last-result'
 
-// Video sessions need upload as much as download — the Insider's camera and
+// Video sessions need upload as much as download — the tutor's camera and
 // screen share go up. Thresholds are per metric; the overall health is the
 // worst of them, because one weak link (e.g. high jitter) is what learners
 // actually notice. "Good" comfortably covers HD video in Google Meet.
