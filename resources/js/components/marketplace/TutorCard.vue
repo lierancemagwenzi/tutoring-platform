@@ -51,7 +51,10 @@ defineProps({
 
         <p v-if="tutor.languages.length" class="text-muted mt-3 text-sm">Speaks {{ tutor.languages.join(', ') }}</p>
 
-        <div class="border-border mt-4 flex items-center justify-between border-t pt-4">
+        <!-- Takes up the leftover height so footers line up across cards in a row. -->
+        <div class="min-h-4 flex-1" />
+
+        <div class="border-border flex items-center justify-between border-t pt-4">
             <div>
                 <p class="text-body font-bold">
                     <span v-if="tutor.starting_price">{{ tutor.currency }} {{ tutor.starting_price }}</span>

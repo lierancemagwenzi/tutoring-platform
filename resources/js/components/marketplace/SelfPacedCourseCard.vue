@@ -56,7 +56,10 @@ defineProps({
             <span>{{ course.tutor?.display_name }}</span>
         </div>
 
-        <div class="border-border mt-4 flex items-center justify-between border-t pt-4">
+        <!-- Takes up the leftover height so footers line up across cards in a row. -->
+        <div class="min-h-4 flex-1" />
+
+        <div class="border-border flex items-center justify-between border-t pt-4">
             <div>
                 <p v-if="course.pricing.is_free" class="text-body font-bold">Free</p>
                 <p v-else-if="course.pricing.discounted_price !== null" class="flex items-baseline gap-2">
