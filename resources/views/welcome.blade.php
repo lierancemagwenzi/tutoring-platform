@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Learning Platform</title>
+    <title>{{ config('app.name') }}</title>
 
     {{-- The iL mark from the login screen. "?v=" busts browsers' long-lived favicon cache. --}}
     <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
